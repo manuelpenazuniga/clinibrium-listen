@@ -1,0 +1,2 @@
+{"ts": "2026-11-04T18:08:49+00:00", "endpoint": "realtime", "model": "muse-voice-transcribe-1.0", "audio_seconds": 0.0, "purpose": "session", "status": "open"}
+{"ts": "2026-11-04T18:08:57+00:00", "endpoint": "realtime", "model": "muse-voice-transcribe-1.0", "audio_seconds": 7.58, "purpose": "session", "status": "closed"}

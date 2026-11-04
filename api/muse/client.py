@@ -333,6 +333,11 @@ class LiveTransport:
                 ms = round((time.monotonic() - t0) * 1000)
                 self.guard.record(req, {}, ms, type(exc).__name__)
                 last = type(exc).__name__
+            except asyncio.CancelledError:
+                # A caller's timeout cancelled an in-flight request. Meta may still
+                # bill it, so it must count against the caps like any attempt.
+                self.guard.record(req, {}, round((time.monotonic() - t0) * 1000), "cancelled")
+                raise
             else:
                 ms = round((time.monotonic() - t0) * 1000)
                 usage = _usage(getattr(resp, "usage", None))

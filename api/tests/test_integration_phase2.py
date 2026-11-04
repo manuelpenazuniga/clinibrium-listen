@@ -392,3 +392,16 @@ def test_deploy_files_default_to_replay_and_hold_no_secrets() -> None:
                 "LIVE_DAILY_SESSIONS", "LIVE_DAILY_MODEL_CALLS", "LIVE_DAILY_ASR_STREAMS",
                 "NEXT_PUBLIC_API_URL", "NEXT_PUBLIC_API_WS_URL", "Root Directory"):
         assert var in deploy, var
+
+
+def test_final_pass_gets_a_longer_timeout_than_turn_jobs() -> None:
+    """Live reasoner calls take 15-20 s; the 12 s turn timeout made every live
+    explanation 'unavailable'. The final pass runs after the receipt, so it may wait."""
+    from api.listen.session import FINAL_PASS_TIMEOUT_S, MODEL_TIMEOUT_S, Session
+    from api.muse.interfaces import get_providers
+
+    s = Session("t-final", get_providers("mock"))
+    assert s.timeout == MODEL_TIMEOUT_S
+    assert s.final_timeout == FINAL_PASS_TIMEOUT_S > 20
+    short = Session("t-short", get_providers("mock"), model_timeout_s=0.1)
+    assert short.final_timeout == 0.1  # explicit short timeouts (tests) are kept

@@ -58,6 +58,9 @@ from clinibrium.grounding.factory import get_grounding
 log = logging.getLogger("clinibrium.listen.session")
 
 MODEL_TIMEOUT_S = 12.0
+# The final pass (reasoner + last advocate) runs after the receipt is issued, so it
+# never blocks the clinician. Live reasoner calls take 15-20 s (fixtures/usage).
+FINAL_PASS_TIMEOUT_S = 45.0
 ADVOCATE_EVERY_TURNS = 3
 MAX_ERRORS = 20
 PROMPTS_DIR = Path(__file__).resolve().parents[1] / "muse" / "prompts"
@@ -87,10 +90,14 @@ class Session:
     def __init__(self, session_id: str, providers: Providers, *,
                  live_audio_allowed: bool = False,
                  clock: Callable[[], datetime] = utcnow,
-                 model_timeout_s: float = MODEL_TIMEOUT_S) -> None:
+                 model_timeout_s: float = MODEL_TIMEOUT_S,
+                 final_timeout_s: float | None = None) -> None:
         self.providers = providers
         self.clock = clock
         self.timeout = model_timeout_s
+        self.final_timeout = (final_timeout_s if final_timeout_s is not None
+                              else max(model_timeout_s, FINAL_PASS_TIMEOUT_S)
+                              if model_timeout_s == MODEL_TIMEOUT_S else model_timeout_s)
         self._t0 = clock()
         self.state = SessionState(
             session_id=session_id, started_at=self._t0.isoformat(timespec="seconds"),
@@ -534,7 +541,7 @@ class Session:
         self._final_task = asyncio.create_task(self._final_pass(self.state.epoch))
 
     async def _final_pass(self, epoch: int) -> None:
-        """Reasoner + advocate (last pass) in parallel, 12 s timeout each."""
+        """Reasoner + advocate (last pass) in parallel, `final_timeout` each."""
         assert self._eval is not None and self.state.result is not None
         result = self.state.result
         chunks = get_grounding().retrieve(self._eval.r_cp.differential,
@@ -546,8 +553,8 @@ class Session:
         actx = egress.advocate_ctx(self.state.turns,
                                    policy.confirmed_values(self.state.fields), result)
         r_out, a_out = await asyncio.gather(
-            asyncio.wait_for(reasoner.explain(rctx), self.timeout),
-            asyncio.wait_for(self.providers.advocate.review(actx), self.timeout),
+            asyncio.wait_for(reasoner.explain(rctx), self.final_timeout),
+            asyncio.wait_for(self.providers.advocate.review(actx), self.final_timeout),
             return_exceptions=True)
         meta = {"model_id": reasoner.model_id, "delivered": [g.chunk_id for g in grounding]}
         await self._q.put(("final", _Job(epoch, "final", _noop, meta), r_out, a_out))
@@ -616,4 +623,4 @@ def _unavailable(why: str) -> ReasonerView:
                         citations_verified=False)
 
 
-__all__ = ["MODEL_TIMEOUT_S", "Session", "prompt_hashes", "utcnow"]
+__all__ = ["FINAL_PASS_TIMEOUT_S", "MODEL_TIMEOUT_S", "Session", "prompt_hashes", "utcnow"]
