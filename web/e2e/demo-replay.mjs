@@ -110,6 +110,7 @@ async function caseA(browser) {
   st = await obs.until((s) => s.result.urgency === "ambulatoria", "Ambulatoria after confirm")
   check("A", "After the clinician confirms: Ambulatoria, Epley not blocked", st.result.urgency === "ambulatoria" && !st.result.blocked_actions.includes("EPLEY"),
     `top1=${st.result.differential[0]?.diagnosis}, referral=“${st.result.referral_label_es}”`)
+  await page.getByTestId("urgency").filter({ hasText: /Ambulatoria/i }).waitFor({ timeout: 10_000 }).catch(() => {})
   const urgencyText = await page.getByTestId("urgency").textContent()
   check("A", "Decision card shows Ambulatoria", /Ambulatoria/i.test(urgencyText ?? ""), urgencyText ?? "")
   await finalizeAndVerify(page, obs, "A")
