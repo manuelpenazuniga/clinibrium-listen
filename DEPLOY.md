@@ -37,7 +37,7 @@ bound the spend overall.
 
 ## API — Railway
 
-Railway builds `Dockerfile.api` (see `railway.json`), checks health at
+Railway builds `Dockerfile.api`. **Set the service variable `RAILWAY_DOCKERFILE_PATH=Dockerfile.api`:** with Railway CLI 5.x the `railway.json` builder setting was not applied, and the first build fell back to Railpack and failed with "No start command detected". `railway.json` still configures the health check at
 `GET /api/health`, and runs 1 replica with 1 worker. Sessions live in memory and
 the daily cap is per process. The image's defaults are `MUSE_MODE=replay` and
 `LIVE_AUDIO=0`.
