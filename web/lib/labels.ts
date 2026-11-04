@@ -34,8 +34,16 @@ export const dxLabel = (id: string, lang: Lang) => pick(DX, id, lang)
 export const actionLabel = (id: string, lang: Lang) => pick(ACTIONS, id, lang)
 export const urgencyLabel = (id: string, lang: Lang) => pick(URGENCY, id, lang)
 
+/** Semantic signal per urgency (tokens in globals.css; they adapt to dark mode). */
 export const URGENCY_TONE: Record<string, string> = {
-  inmediata: "bg-red-600 text-white",
-  prioritaria: "bg-amber-500 text-white",
-  ambulatoria: "bg-emerald-600 text-white",
+  inmediata: "bg-urgent text-on-signal",
+  prioritaria: "bg-priority text-on-signal",
+  ambulatoria: "bg-routine text-on-signal",
+}
+
+/** Text colour for the same signal, for small marks on neutral backgrounds. */
+export const URGENCY_TEXT: Record<string, string> = {
+  inmediata: "text-urgent",
+  prioritaria: "text-priority",
+  ambulatoria: "text-routine",
 }

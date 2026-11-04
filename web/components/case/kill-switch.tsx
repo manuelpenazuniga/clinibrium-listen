@@ -22,10 +22,10 @@ export function KillSwitch({
         render={
           <label
             className={cn(
-              "flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium",
+              "flex cursor-pointer items-center gap-2 rounded-full border px-2 py-1 text-xs font-medium whitespace-nowrap sm:px-3",
               museEnabled
-                ? "border-emerald-500/40 text-emerald-700 dark:text-emerald-300"
-                : "border-red-500/50 bg-red-500/10 text-red-700 dark:text-red-300"
+                ? "border-routine/40 text-routine"
+                : "border-urgent/50 bg-urgent/10 text-urgent"
             )}
           />
         }
@@ -36,7 +36,7 @@ export function KillSwitch({
           disabled={disabled}
           onCheckedChange={(checked) => onToggle(!checked)}
         />
-        {museEnabled ? t("muse_on") : t("muse_off")}
+        <span className="max-sm:sr-only">{museEnabled ? t("muse_on") : t("muse_off")}</span>
       </TooltipTrigger>
       <TooltipContent side="bottom">{t("kill_switch_hint")}</TooltipContent>
     </Tooltip>

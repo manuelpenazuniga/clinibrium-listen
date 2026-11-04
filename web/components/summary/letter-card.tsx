@@ -48,15 +48,15 @@ export function LetterCard({ letter }: { letter: ReferralLetter }) {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-xs text-muted-foreground">{t("letter_note")}</p>
+      <CardContent className="space-y-4 font-serif">
+        <p className="font-sans text-xs text-muted-foreground">{t("letter_note")}</p>
         <p className="font-mono text-sm text-muted-foreground">
           {lang === "es" ? "Paciente: ____________   RUT: ____________" : "Patient: ____________   ID: ____________"}
         </p>
         {letter.sections.map((s) => (
           <section key={s.title_en} className="space-y-1">
-            <h3 className="font-semibold">{lang === "es" ? s.title_es : s.title_en}</h3>
-            <ul className="space-y-1 text-sm">
+            <h3 className="font-sans text-sm font-semibold">{lang === "es" ? s.title_es : s.title_en}</h3>
+            <ul className="max-w-[68ch] space-y-1 text-base leading-relaxed">
               {s.statements.map((st, i) => (
                 <li key={i} title={st.keys.join(", ")}>
                   {lang === "es" ? st.text_es : st.text_en}

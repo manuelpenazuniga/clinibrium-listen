@@ -34,10 +34,10 @@ function itemState(f: FieldState): ItemState {
 
 const ROW_STYLE: Record<ItemState, string> = {
   proposed: "border-dashed border-foreground/25 bg-background",
-  alert: "border-red-500 bg-red-500/5 ring-1 ring-red-500/40",
+  alert: "border-urgent bg-urgent/5 ring-1 ring-urgent/40",
   confirmed: "border-transparent bg-primary/[0.07]",
   rejected: "border-transparent bg-muted/50 text-muted-foreground",
-  conflict: "border-amber-500 bg-amber-500/5 ring-1 ring-amber-500/40",
+  conflict: "border-priority bg-priority/5 ring-1 ring-priority/40",
 }
 
 function EvidenceLine({ ev }: { ev: Evidence }) {
@@ -161,14 +161,14 @@ function FieldRow({
       </div>
       {f.conflict && (
         <div className="mt-2 space-y-1.5 text-sm">
-          <p className="text-xs text-amber-800 dark:text-amber-300">{f.conflict.note}</p>
+          <p className="text-xs text-priority">{f.conflict.note}</p>
           <div className="flex flex-wrap gap-1.5">
             {f.conflict.candidates.map((c, i) => (
               <Button
                 key={i}
                 size="sm"
                 variant="outline"
-                className={cn(c.sticky_alert && "border-red-500/60")}
+                className={cn(c.sticky_alert && "border-urgent/60")}
                 disabled={locked}
                 onClick={() => send({ type: "resolve_conflict", key: f.key, choice_index: i })}
               >
@@ -279,7 +279,7 @@ export function FieldForm({
           const missing = cats.filter((c) => !fields[c.key])
           return (
             <section key={g.id} className="space-y-2">
-              <h3 className="flex items-baseline gap-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+              <h3 className="flex items-baseline gap-2 text-[13px] font-medium text-muted-foreground">
                 {lang === "es" ? g.label_es : g.label_en}
                 <span className="font-normal normal-case">
                   {assessed.length}/{cats.length}

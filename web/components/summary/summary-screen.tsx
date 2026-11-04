@@ -75,10 +75,10 @@ export function SummaryScreen({ sessionId }: { sessionId: string }) {
                 <p className="text-muted-foreground">{t("unavailable")}</p>
               ) : (
                 <>
-                  <p>{r.explanation}</p>
+                  <p className="max-w-[68ch] font-serif text-[1.0625rem] leading-relaxed">{r.explanation}</p>
                   {r.reconciliation && (
                     <div>
-                      <div className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                      <div className="text-[13px] font-medium text-muted-foreground">
                         {t("reconciliation")}
                       </div>
                       <p>{r.reconciliation}</p>
@@ -86,7 +86,7 @@ export function SummaryScreen({ sessionId }: { sessionId: string }) {
                   )}
                   {r.suggested_next_steps.length > 0 && (
                     <div>
-                      <div className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                      <div className="text-[13px] font-medium text-muted-foreground">
                         {t("next_steps")}
                       </div>
                       <ul className="list-disc space-y-0.5 pl-5">

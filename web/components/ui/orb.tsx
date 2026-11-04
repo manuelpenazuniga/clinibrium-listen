@@ -148,20 +148,16 @@ function Scene({
   }, [colors])
 
   useEffect(() => {
+    // Clinibrium: the app themes with prefers-color-scheme (no .dark class).
+    const mq = window.matchMedia("(prefers-color-scheme: dark)")
     const apply = () => {
       if (!circleRef.current) return
-      const isDark = document.documentElement.classList.contains("dark")
-      circleRef.current.material.uniforms.uInverted.value = isDark ? 1 : 0
+      circleRef.current.material.uniforms.uInverted.value = mq.matches ? 1 : 0
     }
 
     apply()
-
-    const observer = new MutationObserver(apply)
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    })
-    return () => observer.disconnect()
+    mq.addEventListener("change", apply)
+    return () => mq.removeEventListener("change", apply)
   }, [])
 
   useFrame((_, delta: number) => {
@@ -237,8 +233,8 @@ function Scene({
     perlinNoiseTexture.wrapS = THREE.RepeatWrapping
     perlinNoiseTexture.wrapT = THREE.RepeatWrapping
     const isDark =
-      typeof document !== "undefined" &&
-      document.documentElement.classList.contains("dark")
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
     return {
       uColor1: new THREE.Uniform(new THREE.Color(initialColorsRef.current[0])),
       uColor2: new THREE.Uniform(new THREE.Color(initialColorsRef.current[1])),
@@ -511,6 +507,7 @@ function createNoiseTexture(size = 256): THREE.DataTexture {
   )
   const smooth = (t: number) => t * t * (3 - 2 * t)
   const data = new Uint8Array(size * size * 4)
+  const values = new Float32Array(size * size)
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       let value = 0
@@ -531,11 +528,23 @@ function createNoiseTexture(size = 256): THREE.DataTexture {
         norm += amp
         amp *= 0.5
       })
-      const v = Math.round((value / norm) * 255)
-      const i = (y * size + x) * 4
-      data[i] = data[i + 1] = data[i + 2] = v
-      data[i + 3] = 255
+      values[y * size + x] = value / norm
     }
+  }
+  // Value noise clusters around 0.5; stretch it to a known range so the lobe size
+  // does not depend on where the lattice happened to land.
+  let lo = 1
+  let hi = 0
+  for (const v of values) {
+    lo = Math.min(lo, v)
+    hi = Math.max(hi, v)
+  }
+  for (let k = 0; k < values.length; k++) {
+    // Floor at 0.45 so every lobe stays broad: the orb reads as a filled sphere.
+    const v = Math.round((0.45 + 0.55 * ((values[k] - lo) / (hi - lo || 1))) * 255)
+    const i = k * 4
+    data[i] = data[i + 1] = data[i + 2] = v
+    data[i + 3] = 255
   }
   const tex = new THREE.DataTexture(data, size, size, THREE.RGBAFormat)
   tex.magFilter = THREE.LinearFilter

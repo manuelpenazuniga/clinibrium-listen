@@ -29,7 +29,7 @@ export function ReceiptCard({ receipt }: { receipt: Receipt }) {
   return (
     <Card
       className={cn(
-        computed != null && (ok ? "ring-2 ring-emerald-500/60" : "ring-2 ring-red-500/60")
+        computed != null && (ok ? "ring-2 ring-routine/60" : "ring-2 ring-urgent/60")
       )}
     >
       <CardHeader>
@@ -60,8 +60,8 @@ export function ReceiptCard({ receipt }: { receipt: Receipt }) {
             className={cn(
               "flex items-center gap-2 rounded-lg px-3 py-2 font-medium",
               ok
-                ? "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300"
-                : "bg-red-500/15 text-red-800 dark:text-red-300"
+                ? "bg-routine/15 text-routine"
+                : "bg-urgent/15 text-urgent"
             )}
           >
             {ok ? <ShieldCheckIcon className="size-4" /> : <ShieldXIcon className="size-4" />}

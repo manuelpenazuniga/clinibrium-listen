@@ -2,14 +2,21 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (@media (prefers-color-scheme: dark));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-ui);
+  --font-serif: var(--font-read);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  --color-listen: var(--listen);
+  --color-listen-soft: var(--listen-soft);
+  --color-urgent: var(--urgent);
+  --color-priority: var(--priority);
+  --color-routine: var(--routine);
+  --color-on-signal: var(--on-signal);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -49,72 +56,88 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Clinibrium Listen — "an instrument that listens".
+     Cool paper + slate ink; one listening blue; three urgency signals. */
+  --background: #f5f7f6;
+  --foreground: #15222c;
+  --card: #ffffff;
+  --card-foreground: #15222c;
+  --popover: #ffffff;
+  --popover-foreground: #15222c;
+  --primary: #15222c;
+  --primary-foreground: #f5f7f6;
+  --secondary: #eaf0ef;
+  --secondary-foreground: #15222c;
+  --muted: #edf1f0;
+  --muted-foreground: #5a6872;
+  --accent: #e6eef4;
+  --accent-foreground: #15222c;
+  --destructive: #c2262e;
+  --border: #dce3e4;
+  --input: #cfd8da;
+  --ring: #2f6690;
+  --listen: #2f6690;
+  --listen-soft: #e3edf5;
+  --urgent: #c2262e;
+  --priority: #b4640a;
+  --routine: #1d7653;
+  --on-signal: #ffffff;
+  --chart-1: #2f6690;
+  --chart-2: #8aa4b4;
+  --chart-3: #5a6872;
+  --chart-4: #b4640a;
+  --chart-5: #1d7653;
+  --radius: 0.5rem;
+  --sidebar: #f5f7f6;
+  --sidebar-foreground: #15222c;
+  --sidebar-primary: #15222c;
+  --sidebar-primary-foreground: #f5f7f6;
+  --sidebar-accent: #eaf0ef;
+  --sidebar-accent-foreground: #15222c;
+  --sidebar-border: #dce3e4;
+  --sidebar-ring: #2f6690;
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0e161c;
+    --foreground: #e4ebee;
+    --card: #142028;
+    --card-foreground: #e4ebee;
+    --popover: #142028;
+    --popover-foreground: #e4ebee;
+    --primary: #e4ebee;
+    --primary-foreground: #0e161c;
+    --secondary: #1b2a33;
+    --secondary-foreground: #e4ebee;
+    --muted: #1b2a33;
+    --muted-foreground: #93a3ad;
+    --accent: #1c2e3b;
+    --accent-foreground: #e4ebee;
+    --destructive: #ef5a5f;
+    --border: #24343e;
+    --input: #2c3e49;
+    --ring: #6fa8d6;
+    --listen: #6fa8d6;
+    --listen-soft: #172a38;
+    --urgent: #e5484f;
+    --priority: #d9902a;
+    --routine: #2fa877;
+    --on-signal: #0e161c;
+    --chart-1: #6fa8d6;
+    --chart-2: #5d7584;
+    --chart-3: #93a3ad;
+    --chart-4: #d9902a;
+    --chart-5: #2fa877;
+    --sidebar: #0e161c;
+    --sidebar-foreground: #e4ebee;
+    --sidebar-primary: #e4ebee;
+    --sidebar-primary-foreground: #0e161c;
+    --sidebar-accent: #1b2a33;
+    --sidebar-accent-foreground: #e4ebee;
+    --sidebar-border: #24343e;
+    --sidebar-ring: #6fa8d6;
+  }
 }
 
 @layer base {
@@ -126,5 +149,16 @@
   }
   html {
     @apply font-sans;
+    color-scheme: light dark;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }

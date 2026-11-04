@@ -37,17 +37,17 @@ export function QuestionCard({
   }
 
   return (
-    <Card className="ring-2 ring-sky-500/40">
+    <Card className="ring-2 ring-listen/40">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           {t("question")}
           <Badge variant="outline">{fieldLabel(question.key, lang)}</Badge>
         </CardTitle>
-        <span className="text-xs text-muted-foreground">impact {question.impact}</span>
+        <span className="text-xs text-muted-foreground tabular-nums" title="impact">{t("impact")} {question.impact}</span>
       </CardHeader>
       <CardContent className="space-y-3">
-        <p className="text-lg leading-snug font-medium text-balance">{text}</p>
-        <p className="font-mono text-xs text-muted-foreground">{question.reason}</p>
+        <p className="font-serif text-[1.375rem] leading-snug text-balance">{text}</p>
+        <p className="text-xs leading-relaxed text-muted-foreground">{question.reason}</p>
         <p className="text-xs text-muted-foreground">{t("answer_hint")}</p>
         <div className="flex gap-2">
           {canSpeak && (
