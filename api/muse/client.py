@@ -119,6 +119,9 @@ class ChatRequest:
     reasoning_effort: Effort
     replay_key: str  # sha256 over the role's semantic inputs (see replay_key())
     has_image: bool = False
+    # Replay-only fallbacks, tried in order when `replay_key` has no recording
+    # (e.g. the same turn recorded without a pending question). Never recorded.
+    alt_replay_keys: tuple[str, ...] = ()
 
     def payload(self) -> dict[str, Any]:
         return {
@@ -359,7 +362,8 @@ class MuseClient:
 
     async def complete(self, *, role: Role, model: str, system: str, user: Any,
                        out: type[M], key_inputs: Any, prompt_name: str,
-                       image_data_url: str | None = None) -> M:
+                       image_data_url: str | None = None,
+                       alt_key_inputs: list[Any] | None = None) -> M:
         max_tokens, effort = ROLE_LIMITS[role]
         text = user if isinstance(user, str) else canonical(user)
         content: Any = text
@@ -374,6 +378,8 @@ class MuseClient:
             max_completion_tokens=max_tokens, reasoning_effort=effort,
             replay_key=replay_key(role, model, prompt_name, key_inputs),
             has_image=image_data_url is not None,
+            alt_replay_keys=tuple(replay_key(role, model, prompt_name, alt)
+                                  for alt in (alt_key_inputs or [])),
         )
         result = await self.transport.send(req)
         try:
@@ -385,32 +391,48 @@ class MuseClient:
 # ------------------------------------------------------------ providers
 
 
-def _asr(model_ids: dict[str, str]) -> tuple[Any, Any]:
-    """1B1's live ASR if present (`open_asr()` / `build_asr_file()`), else the mock."""
-    from api.muse import mock
+class DailyCappedTransport:
+    """Charges the server-side daily cap (api/muse/daily_cap.py) before every
+    live request; the inner LiveTransport keeps its own fail-closed budget."""
 
-    open_asr: Any = None
-    asr_file: Any = None
-    try:
-        from api.muse import asr_realtime  # type: ignore[attr-defined]
+    def __init__(self, inner: Transport) -> None:
+        self.inner = inner
 
-        open_asr = getattr(asr_realtime, "open_asr", None)
-    except ImportError:
-        pass
-    try:
-        from api.muse import asr_file as asr_file_mod  # type: ignore[attr-defined]
+    async def send(self, req: ChatRequest) -> ChatResult:
+        from api.muse.daily_cap import DailyCapExceeded, daily_cap
 
-        build = getattr(asr_file_mod, "build_asr_file", None)
-        asr_file = build() if callable(build) else None
-    except ImportError:
-        pass
-    script = mock._default_script()
-    if open_asr is None:
-        open_asr = lambda: mock.MockAsrStream(script)  # noqa: E731
-        model_ids["asr"] = "mock-asr"
-    if asr_file is None:
-        asr_file = mock.MockAsrFile(script)
-    return open_asr, asr_file
+        try:
+            daily_cap().charge("model_calls")
+        except DailyCapExceeded as exc:
+            raise BudgetExceeded(str(exc)) from None
+        return await self.inner.send(req)
+
+
+class _DailyCappedFileAsr:
+    def __init__(self, inner: Any) -> None:
+        self.inner = inner
+
+    async def transcribe(self, wav: bytes, first_turn_id: int) -> Any:
+        from api.muse.daily_cap import daily_cap
+
+        daily_cap().charge("asr_streams")
+        return await self.inner.transcribe(wav, first_turn_id)
+
+
+def live_asr() -> tuple[Any, Any]:
+    """1B1's live ASR: `RealtimeAsrStream` (lazy; connects on the first audio frame)
+    and the push-to-talk `FileAsr`. Both are budget-guarded by 1B1's usage ledger
+    (MUSE_MAX_AUDIO_SECONDS unset → fail closed before any network I/O), and each
+    stream / file request is charged to the daily cap when it is opened."""
+    from api.muse.asr_file import FileAsr
+    from api.muse.asr_realtime import RealtimeAsrStream
+    from api.muse.daily_cap import daily_cap
+
+    def open_asr() -> RealtimeAsrStream:
+        daily_cap().charge("asr_streams")
+        return RealtimeAsrStream()
+
+    return open_asr, _DailyCappedFileAsr(FileAsr())
 
 
 def build_with_transport(mode: Literal["live", "replay"], transport: Transport) -> Any:
@@ -426,7 +448,7 @@ def build_with_transport(mode: Literal["live", "replay"], transport: Transport) 
                  "advocate": WONDER, "vision": SPARK, "reasoner_spark": SPARK,
                  "reasoner_wonder": WONDER}
     if mode == "live":
-        open_asr, asr_file = _asr(model_ids)
+        open_asr, asr_file = live_asr()
     else:
         from api.muse import mock
 
@@ -446,4 +468,4 @@ def build_with_transport(mode: Literal["live", "replay"], transport: Transport) 
 
 def build_providers() -> Any:
     """MUSE_MODE=live provider bundle (api.muse.interfaces.get_providers)."""
-    return build_with_transport("live", LiveTransport())
+    return build_with_transport("live", DailyCappedTransport(LiveTransport()))

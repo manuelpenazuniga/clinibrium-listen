@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Clinibrium Listen gate (SPECS §0.6: Done = ./check.sh green). Exits 0 on green.
-# Python: ruff, mypy, pytest, generated-file freshness. Web: typecheck, lint.
+# Python: ruff, mypy, pytest, generated-file freshness. Web: typecheck, lint, unit tests.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
@@ -33,5 +33,8 @@ step "web: typecheck"
 
 step "web: lint"
 (cd web && pnpm lint)
+
+step "web: test"
+(cd web && pnpm test)
 
 printf '\n✓ check.sh green\n'

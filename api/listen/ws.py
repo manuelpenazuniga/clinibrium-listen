@@ -15,6 +15,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from api.listen import registry
 from api.listen.session import Session
+from api.muse.daily_cap import DailyCapExceeded
 from api.muse.interfaces import AsrStream
 
 router = APIRouter()
@@ -62,7 +63,12 @@ async def _sender(ws: WebSocket, q: asyncio.Queue[dict[str, Any]]) -> None:
 @router.websocket("/ws/session/{session_id}")
 async def ws_session(ws: WebSocket, session_id: str) -> None:
     await ws.accept()
-    session = registry.get_or_create(session_id, ws.query_params.get("access_code"))
+    try:
+        session = registry.get_or_create(session_id, ws.query_params.get("access_code"))
+    except (registry.LiveNotAllowed, DailyCapExceeded) as exc:
+        await ws.send_json({"type": "error", "code": "session_refused", "message": str(exc)})
+        await ws.close(code=1008)
+        return
     out = session.subscribe()
     sender = asyncio.create_task(_sender(ws, out))
     asr: AsrBridge | None = None
@@ -87,6 +93,8 @@ async def ws_session(ws: WebSocket, session_id: str) -> None:
                         out.put_nowait({"type": "error", "code": "live_audio_not_allowed",
                                         "message": "live audio is disabled for this session"})
                     continue
+                if session.closed:
+                    break
                 if asr is None:
                     asr = AsrBridge(session)
                 await asr.feed(msg["bytes"])
@@ -104,6 +112,10 @@ async def ws_session(ws: WebSocket, session_id: str) -> None:
                 continue
             if data["type"] == "stop_audio" or (data["type"] == "kill_switch" and data.get("on")):
                 await stop_asr()
+            if session.closed:  # evicted from the registry: its tasks are cancelled
+                await ws.send_json({"type": "error", "code": "session_evicted",
+                                    "message": "session expired; start a new case"})
+                break
             await session.client(data)
     except WebSocketDisconnect:
         pass

@@ -107,12 +107,15 @@ class Session:
         self._listeners: set[asyncio.Queue[dict[str, Any]]] = set()
         self._tasks: list[asyncio.Task[None]] = []
         self._final_task: asyncio.Task[None] | None = None
+        self.closed = False
         self._extracting = 0
         self._refresh(bump=False)
 
     # ------------------------------------------------------------ plumbing
 
     def _ensure_started(self) -> None:
+        if self.closed:
+            raise RuntimeError(f"session {self.state.session_id} is closed (evicted)")
         if not self._tasks:
             self._tasks = [asyncio.create_task(self._worker()),
                            asyncio.create_task(self._model_lane())]
@@ -141,10 +144,18 @@ class Session:
             if self._q.empty() and self._model_q.empty():
                 return
 
-    async def close(self) -> None:
+    def cancel_tasks(self) -> None:
+        """Cancel the worker, the model lane and any finalize pass (sync, so the
+        registry can call it on eviction). In-flight results are never applied."""
         for t in [*self._tasks, *([self._final_task] if self._final_task else [])]:
-            t.cancel()
+            if not t.done():
+                t.cancel()
         self._tasks = []
+        self._final_task = None
+        self.closed = True
+
+    async def close(self) -> None:
+        self.cancel_tasks()
 
     def subscribe(self) -> asyncio.Queue[dict[str, Any]]:
         q: asyncio.Queue[dict[str, Any]] = asyncio.Queue()
@@ -333,7 +344,11 @@ class Session:
             policy.merge(self.state.fields, policy.new_field(acc.key, acc.value, ev))
 
     def _dispatch_advocate(self) -> None:
-        ctx = egress.advocate_ctx(self.state.turns, policy.current_values(self.state.fields),
+        # The advocate sees only CONFIRMED values: its job is to surface alerts the
+        # clinician has not confirmed yet, including buried ones that are only an
+        # unconfirmed proposal (e.g. a sticky "vio doble"). `_advocate_requests`
+        # then drops requests that match a confirmed value.
+        ctx = egress.advocate_ctx(self.state.turns, policy.confirmed_values(self.state.fields),
                                   self.state.result)
         advocate = self.providers.advocate
         self._dispatch("advocate", lambda: advocate.review(ctx))
@@ -441,7 +456,21 @@ class Session:
         except (policy.PolicyError, KeyError, ValueError, TypeError) as exc:
             self._error("bad_request", str(exc))
             return
+        self._settle_confirmations(snap)
         self._refresh()
+
+    def _settle_confirmations(self, snap: int) -> None:
+        """A pending advocate request is answered when the clinician confirms the
+        same key with the same value (confirm / confirm_all / edit / resolve_conflict).
+        A different confirmed value leaves it pending: only an explicit dismiss
+        removes the advocate floor (SPECS §6.2)."""
+        for req in self.state.confirmations:
+            fs = self.state.fields.get(req.key)
+            if (req.status == "pending" and fs is not None and fs.status == "confirmed"
+                    and fs.value == req.value):
+                req.status = "confirmed"
+                self.clinician.record("resolve_confirmation", snap, id=req.id, key=req.key,
+                                      decision="confirmed_by_field")
 
     def _resolve_confirmation(self, cid: str, decision: str) -> None:
         req = next((c for c in self.state.confirmations if c.id == cid), None)
@@ -514,8 +543,8 @@ class Session:
         reasoner = (self.providers.reasoner_wonder if result.red_flags
                     else self.providers.reasoner_spark)
         rctx = egress.reasoner_ctx(policy.confirmed_values(self.state.fields), result, grounding)
-        actx = egress.advocate_ctx(self.state.turns, policy.current_values(self.state.fields),
-                                   result)
+        actx = egress.advocate_ctx(self.state.turns,
+                                   policy.confirmed_values(self.state.fields), result)
         r_out, a_out = await asyncio.gather(
             asyncio.wait_for(reasoner.explain(rctx), self.timeout),
             asyncio.wait_for(self.providers.advocate.review(actx), self.timeout),

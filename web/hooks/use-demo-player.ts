@@ -1,17 +1,20 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import type { SessionState } from "@/lib/contracts"
 import type { DemoCase } from "@/lib/demo-cases"
+import { nextDemoStep } from "@/lib/demo-script"
 import type { ClientMsg } from "@/lib/protocol"
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 /**
  * "Play demo case": sends the scripted turns as `text_turn`s with their original
- * pacing (capped), then answers each planner question whose key has a scripted
- * answer. Works the same against the mock and a replay-mode server.
+ * pacing (capped), answers each planner question whose key has a scripted
+ * answer, then stops at the clinician-confirm step (lib/demo-script.ts). The
+ * confirmation is the clinician's tap (`confirmAll`), never automatic. Works the
+ * same against the mock and a replay-mode server.
  */
 export function useDemoPlayer(
   demo: DemoCase | null,
@@ -20,7 +23,8 @@ export function useDemoPlayer(
 ) {
   const [playing, setPlaying] = useState(false)
   const [armed, setArmed] = useState(false)
-  const answered = useRef(new Set<string>())
+  const [confirmed, setConfirmed] = useState(false)
+  const [answered, setAnswered] = useState<ReadonlySet<string>>(() => new Set())
   const turnCount = useRef(0)
 
   useEffect(() => {
@@ -35,7 +39,8 @@ export function useDemoPlayer(
     }
     setPlaying(true)
     setArmed(true)
-    answered.current.clear()
+    setConfirmed(false)
+    setAnswered(new Set())
     let prevEnd = 0
     for (const turn of demo.turns) {
       await sleep(Math.min(Math.max(turn.start_ms - prevEnd, 600), 1500))
@@ -48,18 +53,28 @@ export function useDemoPlayer(
     setPlaying(false)
   }, [demo, playing, send])
 
-  // Answer pending questions from the script (after dictation finishes).
-  const pending = state?.questions.find((q) => q.status === "pending")
-  const pendingId = pending?.id
-  const answer = pending && demo ? demo.answers[pending.key] : undefined
+  const step = useMemo(
+    () => nextDemoStep(demo, state, { armed, playing, answered, confirmed }),
+    [demo, state, armed, playing, answered, confirmed]
+  )
+
+  // Scripted answers to pending questions (after dictation finishes).
+  const answerId = step.kind === "answer" ? step.questionId : null
+  const answerText = step.kind === "answer" ? step.text : null
   useEffect(() => {
-    if (!armed || playing || !pendingId || !answer || answered.current.has(pendingId)) return
+    if (!answerId || answerText === null) return
     const t = setTimeout(() => {
-      answered.current.add(pendingId)
-      send({ type: "text_turn", text: answer })
+      setAnswered((prev) => new Set(prev).add(answerId))
+      send({ type: "text_turn", text: answerText })
     }, 2500)
     return () => clearTimeout(t)
-  }, [armed, playing, pendingId, answer, send])
+  }, [answerId, answerText, send])
 
-  return { playing, play, canPlay: !!demo }
+  /** The clinician's explicit confirm step (button click). */
+  const confirmAll = useCallback(() => {
+    setConfirmed(true)
+    send({ type: "confirm_all" })
+  }, [send])
+
+  return { playing, play, canPlay: !!demo, step, confirmAll }
 }

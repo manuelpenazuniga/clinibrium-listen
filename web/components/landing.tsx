@@ -8,8 +8,9 @@ import { ListeningOrb } from "@/components/listening-orb"
 import { SiteHeader } from "@/components/site-header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { createSession, getDemoCases } from "@/lib/api"
-import type { DemoCase } from "@/lib/demo-cases"
+import { playableDemoCases, type DemoCase } from "@/lib/demo-cases"
 import { useLang } from "@/lib/i18n"
 
 export function Landing() {
@@ -18,18 +19,23 @@ export function Landing() {
   const [cases, setCases] = useState<DemoCase[] | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [accessCode, setAccessCode] = useState("")
 
   useEffect(() => {
     getDemoCases()
-      .then(setCases)
+      .then((all) => setCases(playableDemoCases(all)))
       .catch((e) => setError(String(e)))
   }, [])
 
   const open = async (demoCase?: string) => {
     setBusy(demoCase ?? "new")
     setError(null)
+    const code = accessCode.trim()
     try {
-      const id = await createSession(demoCase ? { demo_case: demoCase } : {})
+      // Live only with an access code; the server enforces LIVE_AUDIO=1 + the code.
+      const id = await createSession(
+        demoCase ? { demo_case: demoCase } : code ? { mode: "live", access_code: code } : {}
+      )
       router.push(`/case/${encodeURIComponent(id)}${demoCase ? `?demo=${encodeURIComponent(demoCase)}` : ""}`)
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
@@ -64,10 +70,20 @@ export function Landing() {
             </Card>
           ))}
         </section>
-        <Button variant="outline" disabled={busy != null} onClick={() => void open()}>
-          <MicIcon />
-          {t("new_case")}
-        </Button>
+        <div className="flex w-full max-w-md flex-col gap-2 sm:flex-row">
+          <Input
+            type="password"
+            autoComplete="off"
+            value={accessCode}
+            onChange={(e) => setAccessCode(e.target.value)}
+            placeholder={t("access_code")}
+            aria-label={t("access_code")}
+          />
+          <Button variant="outline" disabled={busy != null} onClick={() => void open()}>
+            <MicIcon />
+            {accessCode.trim() ? t("start_live") : t("new_case")}
+          </Button>
+        </div>
         {error && <p className="text-sm text-destructive">{error}</p>}
       </main>
     </>
