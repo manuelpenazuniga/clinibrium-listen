@@ -1,35 +1,35 @@
 {
-  "mode": "mock",
-  "generated_at": "2026-11-04T05:46:23Z",
+  "mode": "live",
+  "generated_at": "2026-11-04T11:36:16Z",
   "n_cases": 12,
   "systems": {
     "baseline": "keyword baseline",
-    "muse": "mock-extractor"
+    "muse": "muse-spark-1.3"
   },
   "summary": [
     {
       "metric": "key_accuracy",
       "label": "Per-key accuracy",
       "baseline": 0.938,
-      "muse": 0.956
+      "muse": 0.973
     },
     {
       "metric": "key_precision",
       "label": "Key precision",
       "baseline": 0.955,
-      "muse": 0.973
+      "muse": 0.902
     },
     {
       "metric": "red_flag_recall",
       "label": "Red-flag recall",
       "baseline": 0.8,
-      "muse": 0.8
+      "muse": 1.0
     },
     {
       "metric": "negation_accuracy",
       "label": "Negation accuracy",
       "baseline": 0.972,
-      "muse": 0.972
+      "muse": 1.0
     },
     {
       "metric": "negation_flips",
@@ -41,13 +41,13 @@
       "metric": "urgency_agreement",
       "label": "Urgency agreement vs gold",
       "baseline": 0.917,
-      "muse": 0.917
+      "muse": 1.0
     },
     {
       "metric": "under_triage",
       "label": "Under-triaged cases",
       "baseline": 1,
-      "muse": 1
+      "muse": 0
     },
     {
       "metric": "top1_agreement",
@@ -64,20 +64,20 @@
     {
       "metric": "latency_ms_mean",
       "label": "Latency per call, mean (ms)",
-      "baseline": 3.86,
-      "muse": 5.98
+      "baseline": 3.95,
+      "muse": 3872.78
     },
     {
       "metric": "latency_ms_p95",
       "label": "Latency per call, p95 (ms)",
-      "baseline": 5.55,
-      "muse": 8.56
+      "baseline": 6.83,
+      "muse": 5752.37
     },
     {
       "metric": "cost_usd",
       "label": "Cost estimate (USD)",
       "baseline": 0.0,
-      "muse": 0.0
+      "muse": null
     }
   ],
   "cases": [
@@ -126,7 +126,7 @@
       "baseline_urgency": "ambulatoria",
       "baseline_n_correct": 11,
       "muse_urgency": "ambulatoria",
-      "muse_n_correct": 11,
+      "muse_n_correct": 10,
       "n_gold_keys": 12,
       "gold_red_flags": [],
       "baseline_red_flags": [],
@@ -140,7 +140,7 @@
       "baseline_urgency": "ambulatoria",
       "baseline_n_correct": 8,
       "muse_urgency": "ambulatoria",
-      "muse_n_correct": 8,
+      "muse_n_correct": 9,
       "n_gold_keys": 9,
       "gold_red_flags": [],
       "baseline_red_flags": [],
@@ -167,14 +167,16 @@
       "gold_urgency": "inmediata",
       "baseline_urgency": "ambulatoria",
       "baseline_n_correct": 6,
-      "muse_urgency": "ambulatoria",
-      "muse_n_correct": 6,
+      "muse_urgency": "inmediata",
+      "muse_n_correct": 7,
       "n_gold_keys": 7,
       "gold_red_flags": [
         "A5"
       ],
       "baseline_red_flags": [],
-      "muse_red_flags": []
+      "muse_red_flags": [
+        "A5"
+      ]
     },
     {
       "id": "G",
@@ -184,7 +186,7 @@
       "baseline_urgency": "ambulatoria",
       "baseline_n_correct": 18,
       "muse_urgency": "ambulatoria",
-      "muse_n_correct": 18,
+      "muse_n_correct": 19,
       "n_gold_keys": 19,
       "gold_red_flags": [],
       "baseline_red_flags": [],
@@ -232,7 +234,7 @@
       "baseline_urgency": "prioritaria",
       "baseline_n_correct": 6,
       "muse_urgency": "prioritaria",
-      "muse_n_correct": 6,
+      "muse_n_correct": 7,
       "n_gold_keys": 7,
       "gold_red_flags": [
         "B3"
@@ -252,7 +254,7 @@
       "baseline_urgency": "prioritaria",
       "baseline_n_correct": 2,
       "muse_urgency": "prioritaria",
-      "muse_n_correct": 2,
+      "muse_n_correct": 1,
       "n_gold_keys": 2,
       "gold_red_flags": [],
       "baseline_red_flags": [],

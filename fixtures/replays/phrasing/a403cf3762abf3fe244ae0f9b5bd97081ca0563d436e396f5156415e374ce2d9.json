@@ -1,0 +1,26 @@
+{
+  "replay_key": "a403cf3762abf3fe244ae0f9b5bd97081ca0563d436e396f5156415e374ce2d9",
+  "role": "phraser",
+  "model": "muse-spark-1.3",
+  "reasoning_effort": "minimal",
+  "max_completion_tokens": 1000,
+  "messages": [
+    {
+      "role": "system",
+      "content": "Redactas UNA pregunta breve que el sistema le hará al médico de urgencias para completar un dato clínico de un paciente con vértigo.\n\nEntrada (JSON): `key`, `label_es`, `label_en`, `enum_values` y `enum_labels_es` (opciones, o null si es sí/no) y `reason` (por qué importa).\n\nReglas:\n- `text_es`: una sola pregunta en español clínico chileno, directa y profesional, de máximo 20 palabras, dirigida al médico (no al paciente). Si hay opciones, menciónalas de forma breve.\n- `text_en`: la misma pregunta en inglés.\n- No agregues diagnósticos, recomendaciones, urgencias ni tratamientos. No inventes datos del paciente.\n"
+    },
+    {
+      "role": "user",
+      "content": "{\"enum_labels_es\":null,\"enum_values\":null,\"key\":\"cervical_pathology\",\"label_en\":\"Cervical pathology\",\"label_es\":\"Patología cervical\",\"reason\":\"\"}"
+    }
+  ],
+  "response": {
+    "content": "{\"text_en\":\"Does the patient have known cervical pathology or active neck pain?\",\"text_es\":\"¿El paciente presenta patología cervical conocida o dolor cervical activo?\"}",
+    "usage": {
+      "prompt_tokens": 253,
+      "completion_tokens": 208,
+      "reasoning_tokens": 165
+    },
+    "latency_ms": 2030
+  }
+}
