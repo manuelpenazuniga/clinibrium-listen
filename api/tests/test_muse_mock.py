@@ -124,7 +124,6 @@ def test_get_providers() -> None:
     assert isinstance(p, Providers) and p.mode == "mock"
     assert isinstance(p.open_asr(), AsrStream) and isinstance(p.asr_file, AsrFile)
     for mode in ("replay", "live"):
-        with pytest.raises(NotImplementedError):
-            get_providers(mode)  # type: ignore[arg-type]
+        assert get_providers(mode).mode == mode  # type: ignore[arg-type]
     with pytest.raises(ValueError):
         get_providers("other")  # type: ignore[arg-type]
