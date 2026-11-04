@@ -57,9 +57,11 @@ const STRINGS = {
   forced_actions: { es: "Acciones forzadas", en: "Forced actions" },
   blocked_actions: { es: "Acciones bloqueadas", en: "Blocked actions" },
   rails: { es: "Rieles aplicados", en: "Applied rails" },
+  impact: { es: "impacto", en: "impact" },
+  engine_version: { es: "Versión del motor determinístico", en: "Deterministic engine version" },
   advocate_floor: {
-    es: "Piso del abogado activo (confirmación pendiente)",
-    en: "Advocate floor active (confirmation pending)",
+    es: "Hay una alerta del modelo sin revisar: la urgencia no baja hasta que usted la confirme o descarte.",
+    en: "A model alert is awaiting review: urgency cannot drop until you confirm or dismiss it.",
   },
   none: { es: "Ninguna", en: "None" },
   no_result: { es: "Sin evaluación todavía.", en: "No evaluation yet." },

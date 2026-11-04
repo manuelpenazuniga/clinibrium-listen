@@ -77,7 +77,7 @@ export function WindowClock({ onset, frozen }: { onset: OnsetInfo; frozen: boole
               </div>
               <div className="h-2 rounded-full bg-muted">
                 <div
-                  className={cn("h-full rounded-full", expired ? "bg-muted-foreground/40" : "bg-sky-600")}
+                  className={cn("h-full rounded-full", expired ? "bg-muted-foreground/40" : "bg-listen")}
                   style={{ width: `${pct}%` }}
                 />
               </div>

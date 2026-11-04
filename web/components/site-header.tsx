@@ -11,8 +11,8 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
   return (
     <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur print:hidden">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4">
-        <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
-          <span className="inline-block size-3 rounded-full bg-gradient-to-br from-[#C9DDF4] to-[#7FA7C9]" />
+        <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight whitespace-nowrap">
+          <span className="inline-block size-3 rounded-full bg-listen" />
           Clinibrium Listen
         </Link>
         {USE_MOCK && (
@@ -20,11 +20,11 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
             {t("mock_mode")}
           </span>
         )}
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2 sm:gap-3">
           {children}
           <Link
             href="/bench"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="text-sm whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground"
           >
             {t("bench")}
           </Link>

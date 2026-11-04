@@ -23,7 +23,7 @@ export function ConfirmationsCard({
 }) {
   const { lang, t } = useLang()
   return (
-    <Card className={cn(items.some((c) => c.status === "pending") && "ring-2 ring-amber-500/50")}>
+    <Card className={cn(items.some((c) => c.status === "pending") && "ring-2 ring-priority/50")}>
       <CardHeader>
         <CardTitle>{t("confirmations")}</CardTitle>
       </CardHeader>
