@@ -1,0 +1,46 @@
+{
+  "id": "C",
+  "title_es": "Caso C — VPPB posterior izquierdo, adulta mayor",
+  "title_en": "Case C — left posterior BPPV, older woman",
+  "turns": [
+    {
+      "turn_id": 1,
+      "start_ms": 0,
+      "end_ms": 7600,
+      "text": "Paciente de 72 años, consulta por vértigo rotatorio al acostarse y al mirar hacia arriba, desde hace tres días."
+    },
+    {
+      "turn_id": 2,
+      "start_ms": 8400,
+      "end_ms": 14800,
+      "text": "Son crisis posicionales, cada una dura unos segundos. Niega hipoacusia, sin tinnitus, sin disartria ni diplopía."
+    },
+    {
+      "turn_id": 3,
+      "start_ms": 15600,
+      "end_ms": 21600,
+      "text": "Dix-Hallpike positivo a la izquierda, con componente torsional, latencia de unos segundos, y se agota."
+    }
+  ],
+  "answers": {},
+  "documents": [],
+  "gold": {
+    "fields": {
+      "age_years": 72,
+      "trigger": "positional_head",
+      "timing_pattern": "episodic_triggered",
+      "duration": "seconds",
+      "hearing_loss": "none",
+      "tinnitus": false,
+      "focal_signs.dysarthria": false,
+      "focal_signs.diplopia": false,
+      "dix_hallpike": "left_positive",
+      "torsion_confirmed_by_clinician": true,
+      "nystagmus_fatigable": true,
+      "context.last_known_well_minutes_ago": 4320
+    },
+    "urgency": "ambulatoria",
+    "top1_dx": "bppv_posterior",
+    "first_question_key": null
+  }
+}

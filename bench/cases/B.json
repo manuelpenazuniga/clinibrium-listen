@@ -1,0 +1,50 @@
+{
+  "id": "B",
+  "title_es": "Caso B — síndrome vestibular agudo con diplopía enterrada",
+  "title_en": "Case B — acute vestibular syndrome with buried diplopia",
+  "turns": [
+    {
+      "turn_id": 1,
+      "start_ms": 0,
+      "end_ms": 8000,
+      "text": "Paciente de 68 años, hipertenso y diabético, consulta por vértigo continuo hace 12 horas."
+    },
+    {
+      "turn_id": 2,
+      "start_ms": 8800,
+      "end_ms": 16000,
+      "text": "Inicio súbito, con náuseas y vómitos, sin cefalea. Ayer vio doble un rato, ahora no."
+    },
+    {
+      "turn_id": 3,
+      "start_ms": 16800,
+      "end_ms": 22000,
+      "text": "Al examen nistagmo horizontal, sin hipoacusia."
+    }
+  ],
+  "answers": {},
+  "documents": [
+    {
+      "id": "B-meds",
+      "kind": "medication_list",
+      "text": "Losartán 50 mg cada 12 horas. Metformina 850 mg. Acenocumarol según control de TACO."
+    }
+  ],
+  "gold": {
+    "fields": {
+      "age_years": 68,
+      "vascular_risk_factors.hypertension": true,
+      "vascular_risk_factors.diabetes": true,
+      "timing_pattern": "acute_continuous",
+      "duration": "hours",
+      "onset": "sudden",
+      "focal_signs.diplopia": true,
+      "nystagmus_direction": "horizontal",
+      "hearing_loss": "none",
+      "context.last_known_well_minutes_ago": 720
+    },
+    "urgency": "inmediata",
+    "top1_dx": null,
+    "first_question_key": null
+  }
+}

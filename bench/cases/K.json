@@ -1,0 +1,36 @@
+{
+  "id": "K",
+  "title_es": "Caso K — mareo inespecífico, dictado ambiguo",
+  "title_en": "Case K — nonspecific dizziness, ambiguous dictation",
+  "turns": [
+    {
+      "turn_id": 1,
+      "start_ms": 0,
+      "end_ms": 8400,
+      "text": "Paciente de 58 años, refiere mareo hace una semana, más como inestabilidad, no sabe bien si gira. No precisa el inicio."
+    },
+    {
+      "turn_id": 2,
+      "start_ms": 9200,
+      "end_ms": 14000,
+      "text": "A ratos mejora y a ratos vuelve. Examen neurológico sin hallazgos claros."
+    },
+    {
+      "turn_id": 3,
+      "start_ms": 14800,
+      "end_ms": 17600,
+      "text": "No se realizó Dix-Hallpike, no lo tolera."
+    }
+  ],
+  "answers": {},
+  "documents": [],
+  "gold": {
+    "fields": {
+      "age_years": 58,
+      "onset": "unknown"
+    },
+    "urgency": "prioritaria",
+    "top1_dx": null,
+    "first_question_key": null
+  }
+}

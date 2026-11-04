@@ -43,8 +43,8 @@ python_version = "3.12"
 ignore_missing_imports = true
 mypy_path = "engine:."
 explicit_package_bases = true
-files = ["engine/clinibrium", "engine/adapter.py", "api", "scripts"]
-exclude = ["api/tests/"]
+files = ["engine/clinibrium", "engine/adapter.py", "api", "scripts", "bench"]
+exclude = ["api/tests/", "bench/tests/"]
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
@@ -54,7 +54,7 @@ disallow_untyped_defs = true
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
-testpaths = ["engine/tests", "api/tests"]
+testpaths = ["engine/tests", "api/tests", "bench/tests"]
 pythonpath = ["engine", "."]
 # Inherited from the source engine: an invariant test must never disappear
 # into a silent skip because its parametrize() argvalues came out empty.

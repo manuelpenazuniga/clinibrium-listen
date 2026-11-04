@@ -1,0 +1,40 @@
+{
+  "id": "L",
+  "title_es": "Caso L — neuritis vestibular con respuestas cortas",
+  "title_en": "Case L — vestibular neuritis with short answers",
+  "turns": [
+    {
+      "turn_id": 1,
+      "start_ms": 0,
+      "end_ms": 6400,
+      "text": "Hombre de 29 años, vértigo continuo desde ayer, espontáneo, con vómitos, posterior a un cuadro viral."
+    },
+    {
+      "turn_id": 2,
+      "start_ms": 7200,
+      "end_ms": 14400,
+      "text": "Al examen nistagmo horizontal que se suprime con la fijación, sacada correctiva a derecha. Sin hipoacusia ni tinnitus."
+    }
+  ],
+  "answers": {
+    "focal_signs.diplopia": "No.",
+    "skew_deviation": "No lo evalué."
+  },
+  "documents": [],
+  "gold": {
+    "fields": {
+      "age_years": 29,
+      "timing_pattern": "acute_continuous",
+      "trigger": "spontaneous",
+      "nystagmus_direction": "horizontal",
+      "nystagmus_suppressed_by_fixation": true,
+      "head_impulse": "abnormal_corrective_saccade",
+      "hearing_loss": "none",
+      "tinnitus": false,
+      "focal_signs.diplopia": false
+    },
+    "urgency": "ambulatoria",
+    "top1_dx": "vestibular_neuritis",
+    "first_question_key": null
+  }
+}
