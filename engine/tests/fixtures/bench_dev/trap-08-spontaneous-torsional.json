@@ -1,0 +1,13 @@
+{
+  "id": "trap-08-spontaneous-torsional",
+  "title": "Nistagmo torsional puro espontáneo",
+  "tags": [
+    "trap",
+    "trap:spontaneous-torsional"
+  ],
+  "features": {
+    "nystagmus_direction": "torsional_pure",
+    "trigger": "spontaneous"
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

@@ -1,0 +1,12 @@
+{
+  "id": "trap-07-isolated-hearing-loss",
+  "title": "Hipoacusia súbita unilateral aislada",
+  "tags": [
+    "trap",
+    "trap:isolated-hearing-loss"
+  ],
+  "features": {
+    "hearing_loss": "sudden_unilateral"
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

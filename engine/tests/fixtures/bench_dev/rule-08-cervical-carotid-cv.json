@@ -1,0 +1,13 @@
+{
+  "id": "rule-08-cervical-carotid-cv",
+  "title": "Patología cervical, enfermedad carotídea e inestabilidad CV",
+  "tags": [
+    "rules"
+  ],
+  "features": {
+    "cervical_pathology": true,
+    "known_carotid_vertebrobasilar_disease": true,
+    "cardiovascular_instability": true
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

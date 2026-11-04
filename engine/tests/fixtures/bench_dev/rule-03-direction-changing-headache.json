@@ -1,0 +1,12 @@
+{
+  "id": "rule-03-direction-changing-headache",
+  "title": "Nistagmo que cambia con la mirada y cefalea súbita",
+  "tags": [
+    "rules"
+  ],
+  "features": {
+    "nystagmus_direction_changing_gaze": true,
+    "headache_neck_pain_sudden_severe": true
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

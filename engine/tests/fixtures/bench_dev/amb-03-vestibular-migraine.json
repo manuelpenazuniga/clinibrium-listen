@@ -1,0 +1,14 @@
+{
+  "id": "amb-03-vestibular-migraine",
+  "title": "Migraña vestibular",
+  "tags": [
+    "ambulatory"
+  ],
+  "features": {
+    "timing_pattern": "episodic_spontaneous",
+    "episode_duration": "hours",
+    "migrainous_features": true,
+    "hearing_loss": "none"
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

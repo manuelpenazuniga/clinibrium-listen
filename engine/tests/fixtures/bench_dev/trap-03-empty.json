@@ -1,0 +1,10 @@
+{
+  "id": "trap-03-empty",
+  "title": "Caso vacío",
+  "tags": [
+    "trap",
+    "trap:empty"
+  ],
+  "features": {},
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

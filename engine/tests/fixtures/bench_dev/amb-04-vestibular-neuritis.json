@@ -1,0 +1,16 @@
+{
+  "id": "amb-04-vestibular-neuritis",
+  "title": "Neuritis vestibular",
+  "tags": [
+    "ambulatory"
+  ],
+  "features": {
+    "timing_pattern": "acute_continuous",
+    "head_impulse": "abnormal_corrective_saccade",
+    "nystagmus_direction": "horizontal",
+    "nystagmus_suppressed_by_fixation": true,
+    "hearing_loss": "none",
+    "trigger": "spontaneous"
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

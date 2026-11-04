@@ -1,0 +1,20 @@
+{
+  "_doc": "Window clock configuration (SPECS §7 onset.py). Defaults only — configure per local stroke protocol. Labels intentionally carry NO treatment text.",
+  "configure_note_es": "Configurar según el protocolo ACV local",
+  "configure_note_en": "Configure per local stroke protocol",
+  "visible_when": ["red_flag_shown", "confirmation_pending"],
+  "windows": [
+    {
+      "id": "window_1",
+      "label_es": "Ventana 1 del protocolo local",
+      "label_en": "Local protocol window 1",
+      "minutes": 270
+    },
+    {
+      "id": "window_2",
+      "label_es": "Ventana 2 del protocolo local",
+      "label_en": "Local protocol window 2",
+      "minutes": 1440
+    }
+  ]
+}

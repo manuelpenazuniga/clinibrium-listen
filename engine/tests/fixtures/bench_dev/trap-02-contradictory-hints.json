@@ -1,0 +1,14 @@
+{
+  "id": "trap-02-contradictory-hints",
+  "title": "HINTS periférico con nistagmo vertical puro",
+  "tags": [
+    "trap",
+    "trap:contradictory"
+  ],
+  "features": {
+    "timing_pattern": "acute_continuous",
+    "head_impulse": "abnormal_corrective_saccade",
+    "nystagmus_direction": "vertical_pure"
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

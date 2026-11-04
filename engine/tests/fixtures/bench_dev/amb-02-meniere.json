@@ -1,0 +1,15 @@
+{
+  "id": "amb-02-meniere",
+  "title": "Ménière episódico",
+  "tags": [
+    "ambulatory"
+  ],
+  "features": {
+    "timing_pattern": "episodic_spontaneous",
+    "episode_duration": "hours",
+    "hearing_loss": "fluctuating",
+    "tinnitus": true,
+    "aural_fullness": true
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

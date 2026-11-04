@@ -1,0 +1,25 @@
+{
+  "id": "trap-05-confident-b3",
+  "title": "VPPB típico con síncope",
+  "tags": [
+    "trap",
+    "trap:confident-b3"
+  ],
+  "features": {
+    "duration": "under_1min",
+    "onset": "sudden",
+    "trigger": "positional_head",
+    "timing_pattern": "episodic_triggered",
+    "nystagmus_direction": "mixed",
+    "nystagmus_latency_s": 2.0,
+    "nystagmus_duration_s": 20.0,
+    "nystagmus_fatigable": true,
+    "nystagmus_suppressed_by_fixation": true,
+    "dix_hallpike": "right_positive",
+    "torsion_confirmed_by_clinician": true,
+    "episode_count": 3,
+    "episode_duration": "under_1min",
+    "presyncope_syncope": true
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

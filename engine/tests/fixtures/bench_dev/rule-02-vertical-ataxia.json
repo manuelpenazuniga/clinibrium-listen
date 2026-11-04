@@ -1,0 +1,12 @@
+{
+  "id": "rule-02-vertical-ataxia",
+  "title": "Nistagmo vertical puro con ataxia truncal severa",
+  "tags": [
+    "rules"
+  ],
+  "features": {
+    "nystagmus_direction": "vertical_pure",
+    "truncal_ataxia_severe": true
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

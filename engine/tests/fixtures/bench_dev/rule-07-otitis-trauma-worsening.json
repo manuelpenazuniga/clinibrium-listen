@@ -1,0 +1,13 @@
+{
+  "id": "rule-07-otitis-trauma-worsening",
+  "title": "Otitis, trauma reciente y empeoramiento",
+  "tags": [
+    "rules"
+  ],
+  "features": {
+    "otitis_mastoiditis": true,
+    "recent_head_neck_trauma": true,
+    "worsening_during_flow": true
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

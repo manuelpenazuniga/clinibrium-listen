@@ -1,0 +1,25 @@
+Clinibrium Listen
+Copyright 2026 Manuel Peña and Clinibrium contributors
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+--------------------------------------------------------------------------------
+Ported components (see PROVENANCE.md)
+--------------------------------------------------------------------------------
+
+Clinibrium — Engine (engine/clinibrium/, .claude/)
+  Copyright 2026 Manuel Peña and Clinibrium contributors.
+  Licensed under the Apache License, Version 2.0.
+  The ICVD (International Classification of Vestibular Disorders, Bárány
+  Society) criteria are used ONLY in the team's own paraphrase and are NEVER
+  reproduced verbatim; the ICVD text itself is licensed CC BY-NC and is not
+  distributed in this repository.
+
+Visual components (web/components/ui/orb.tsx, web/components/ui/waveform.tsx)
+  Adapted from https://github.com/elevenlabs/ui — MIT License,
+  Copyright (c) 2025 Eleven Labs Inc. See web/THIRD_PARTY_NOTICES.md.
+
+--------------------------------------------------------------------------------
+NOT FOR CLINICAL USE — research prototype only; not clinically validated; not
+approved by any regulatory authority. The physician decides.
+--------------------------------------------------------------------------------

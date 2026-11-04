@@ -1,0 +1,54 @@
+{
+  "_doc": "Demo/tutorial presets copied verbatim from Clinibrium-private frontend/lib/presets.ts (CASE_PRESETS).",
+  "cases": [
+    {
+      "id": "bppv-benign",
+      "source": "frontend/lib/presets.ts",
+      "features": {
+        "duration": "under_1min",
+        "trigger": "positional_head",
+        "timing_pattern": "episodic_triggered",
+        "onset": "sudden",
+        "dix_hallpike": "right_positive",
+        "nystagmus_fatigable": true,
+        "nystagmus_latency_s": 5
+      }
+    },
+    {
+      "id": "stroke-hints",
+      "source": "frontend/lib/presets.ts",
+      "features": {
+        "duration": "over_24h_continuous",
+        "trigger": "spontaneous",
+        "timing_pattern": "acute_continuous",
+        "onset": "sudden",
+        "head_impulse": "normal",
+        "nystagmus_direction": "direction_changing",
+        "skew_deviation": true,
+        "focal_signs": [
+          "dysarthria"
+        ],
+        "truncal_ataxia_severe": true,
+        "age_years": 68,
+        "vascular_risk_factors": [
+          "hypertension",
+          "atrial_fibrillation"
+        ]
+      }
+    },
+    {
+      "id": "meniere-episodic",
+      "source": "frontend/lib/presets.ts",
+      "features": {
+        "duration": "hours",
+        "trigger": "spontaneous",
+        "timing_pattern": "episodic_spontaneous",
+        "onset": "gradual",
+        "hearing_loss": "fluctuating",
+        "tinnitus": true,
+        "aural_fullness": true,
+        "episode_duration": "hours"
+      }
+    }
+  ]
+}

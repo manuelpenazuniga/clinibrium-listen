@@ -1,0 +1,18 @@
+{
+  "id": "trap-04-central-hints-peripheral-dx",
+  "title": "Neuritis aparente con skew deviation",
+  "tags": [
+    "trap",
+    "trap:central-hints-peripheral-dx"
+  ],
+  "features": {
+    "timing_pattern": "acute_continuous",
+    "head_impulse": "abnormal_corrective_saccade",
+    "nystagmus_direction": "horizontal",
+    "nystagmus_suppressed_by_fixation": true,
+    "hearing_loss": "none",
+    "trigger": "spontaneous",
+    "skew_deviation": true
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

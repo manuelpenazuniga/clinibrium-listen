@@ -1,0 +1,15 @@
+{
+  "_doc": "Keyword bias list for muse-voice-transcribe-1.0 (SPECS §3.1 `keywords`). Clinical terms a general Spanish ASR tends to mis-hear.",
+  "language": "es",
+  "keywords": [
+    "vértigo", "mareo", "nistagmo", "nistagmus", "Dix-Hallpike", "Hallpike", "Epley",
+    "HINTS", "head impulse", "impulso cefálico", "sacada correctiva", "skew",
+    "desviación oblicua", "torsional", "fatigable", "se agota", "diplopía", "visión doble",
+    "disartria", "disfagia", "hemiparesia", "paresia facial", "parestesias", "Horner",
+    "ataxia troncal", "hipoacusia", "tinnitus", "acúfeno", "plenitud ótica", "Ménière",
+    "migraña vestibular", "neuritis vestibular", "laberintitis", "VPPB", "cefalea en trueno",
+    "síncope", "presíncope", "palpitaciones", "hipertenso", "diabético",
+    "fibrilación auricular", "ACV", "TIA", "anticoagulado", "TACO", "acenocumarol",
+    "apixabán", "rivaroxabán", "warfarina", "rigidez de nuca", "mastoiditis"
+  ]
+}

@@ -1,0 +1,61 @@
+[project]
+name = "clinibrium-listen"
+version = "0.1.0"
+description = "Clinibrium Listen — voice-first clinical decision support for vertigo (research prototype)."
+readme = "SPECS.md"
+license = "Apache-2.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+  "pydantic>=2.8",
+  "pydantic-settings>=2.4",
+  "httpx>=0.27",
+  "openai>=1.50",
+  "python-multipart>=0.0.9",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0",
+  "pytest-asyncio>=0.23",
+  "hypothesis>=6.100",
+  "ruff>=0.6",
+  "mypy>=1.11",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["web", "fixtures", "engine/tests/fixtures"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["clinibrium", "adapter", "api", "tests"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+mypy_path = "engine:."
+explicit_package_bases = true
+files = ["engine/clinibrium", "engine/adapter.py", "api", "scripts"]
+exclude = ["api/tests/"]
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["api.*", "adapter", "engine.adapter"]
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["engine/tests", "api/tests"]
+pythonpath = ["engine", "."]
+# Inherited from the source engine: an invariant test must never disappear
+# into a silent skip because its parametrize() argvalues came out empty.
+empty_parameter_set_mark = "fail_at_collect"

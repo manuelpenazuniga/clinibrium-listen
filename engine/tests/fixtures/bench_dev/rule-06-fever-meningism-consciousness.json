@@ -1,0 +1,13 @@
+{
+  "id": "rule-06-fever-meningism-consciousness",
+  "title": "Fiebre, rigidez de nuca y compromiso de conciencia",
+  "tags": [
+    "rules"
+  ],
+  "features": {
+    "fever": true,
+    "neck_stiffness": true,
+    "altered_consciousness": true
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

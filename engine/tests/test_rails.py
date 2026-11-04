@@ -1,0 +1,1130 @@
+"""Tests for the RAILS layer (the deterministic heart of Clinibrium).
+
+Covers:
+  - Unit: ordering (urgency_max), thresholds, each individual rail.
+  - Integration: apply_rails with realistic clinical cases.
+  - ADVERSARIAL TEST INV-1 (the demo): even if everything says benign BPPV,
+    red_flag_activa=True forces immediate.
+  - INV-7: monotonicity, idempotence, totality, traceability.
+  - Purity: apply_rails does not mutate its arguments.
+  - INV-5: rails does not import forbidden modules (AST).
+"""
+from __future__ import annotations
+
+import ast
+from pathlib import Path
+
+import pytest
+
+from clinibrium.contracts import (
+    CaseFeatures,
+    Diagnosis,
+    DifferentialCandidate,
+    DifferentialResult,
+    ForcedAction,
+    NystagmusDirection,
+    PipelineResult,
+    PredictResponse,
+    ReasonerOutput,
+    RedFlagHit,
+    RedFlagResult,
+    Urgency,
+)
+from clinibrium.rails import (
+    AMBIGUITY_EPSILON,
+    BPPV_EPLEY_CONFIDENCE_FLOOR,
+    DIFFERENTIAL_UNCERTAINTY_FLOOR,
+    apply_rails,
+    urgency_max,
+)
+from clinibrium.rails.engine import (
+    _URGENCY_RANK,
+    _compute_urgency,
+    _rail_divergencia,
+    _rail_e2,
+    _rail_epley_d,
+    _rail_inv1,
+)
+
+# =========================================================================
+# Helpers
+# =========================================================================
+
+
+def _make_features(**overrides: object) -> CaseFeatures:
+    defaults: dict[str, object] = {
+        "nystagmus_direction": NystagmusDirection.none,
+    }
+    defaults.update(overrides)
+    return CaseFeatures(**defaults)  # type: ignore[arg-type]
+
+
+def _make_result(
+    *,
+    case_id: str = "test-1",
+    red_flag_activa: bool = False,
+    red_flag_actions: set[ForcedAction] | None = None,
+    red_flag_hits: list[RedFlagHit] | None = None,
+    candidates: list[DifferentialCandidate] | None = None,
+    forced_actions: set[ForcedAction] | None = None,
+    applied_rails: list[str] | None = None,
+    urgency: Urgency = Urgency.ambulatoria,
+    reasoning: ReasonerOutput | None = None,
+    ml: PredictResponse | None = None,
+) -> PipelineResult:
+    rf_actions = red_flag_actions or set()
+    if bool(rf_actions) and not red_flag_activa:
+        red_flag_activa = True
+    return PipelineResult(
+        case_id=case_id,
+        urgency=urgency,
+        red_flag=RedFlagResult(
+            red_flag_activa=red_flag_activa,
+            hits=red_flag_hits or [],
+            forced_actions=rf_actions,
+        ),
+        differential=DifferentialResult(candidates=candidates or []),
+        forced_actions=forced_actions or set(),
+        applied_rails=applied_rails or [],
+        reasoning=reasoning,
+        ml=ml,
+    )
+
+
+# =========================================================================
+# ordering.py
+# =========================================================================
+
+
+class TestUrgencyOrdering:
+    def test_rank_values(self) -> None:
+        assert _URGENCY_RANK[Urgency.inmediata] == 0
+        assert _URGENCY_RANK[Urgency.prioritaria] == 1
+        assert _URGENCY_RANK[Urgency.ambulatoria] == 2
+
+    def test_max_inmediata_over_prioritaria(self) -> None:
+        assert urgency_max(Urgency.inmediata, Urgency.prioritaria) == Urgency.inmediata
+
+    def test_max_inmediata_over_ambulatoria(self) -> None:
+        assert urgency_max(Urgency.inmediata, Urgency.ambulatoria) == Urgency.inmediata
+
+    def test_max_prioritaria_over_ambulatoria(self) -> None:
+        assert urgency_max(Urgency.prioritaria, Urgency.ambulatoria) == Urgency.prioritaria
+
+    def test_max_same(self) -> None:
+        assert urgency_max(Urgency.ambulatoria, Urgency.ambulatoria) == Urgency.ambulatoria
+        assert urgency_max(Urgency.inmediata, Urgency.inmediata) == Urgency.inmediata
+
+    def test_max_commutative(self) -> None:
+        assert urgency_max(Urgency.ambulatoria, Urgency.inmediata) == Urgency.inmediata
+        assert urgency_max(Urgency.prioritaria, Urgency.inmediata) == Urgency.inmediata
+        assert urgency_max(Urgency.ambulatoria, Urgency.prioritaria) == Urgency.prioritaria
+
+
+# =========================================================================
+# thresholds.py
+# =========================================================================
+
+
+class TestThresholds:
+    def test_constants_exist_and_values(self) -> None:
+        assert isinstance(BPPV_EPLEY_CONFIDENCE_FLOOR, float)
+        assert BPPV_EPLEY_CONFIDENCE_FLOOR == 0.6
+
+        assert isinstance(DIFFERENTIAL_UNCERTAINTY_FLOOR, float)
+        assert DIFFERENTIAL_UNCERTAINTY_FLOOR == 0.4
+
+        assert isinstance(AMBIGUITY_EPSILON, float)
+        assert AMBIGUITY_EPSILON == 0.1
+
+    def test_constants_fail_safe_direction(self) -> None:
+        """The thresholds push toward MORE safety (escalate/block)."""
+        assert BPPV_EPLEY_CONFIDENCE_FLOOR > 0.5, (
+            "A low floor would allow Epley with little confidence — unsafe"
+        )
+        assert DIFFERENTIAL_UNCERTAINTY_FLOOR > 0.3, (
+            "A low floor would not escalate uncertain cases — unsafe"
+        )
+        assert AMBIGUITY_EPSILON > 0.05, (
+            "A small epsilon would ignore ambiguities — unsafe"
+        )
+
+
+# =========================================================================
+# Individual rail functions
+# =========================================================================
+
+
+class TestRailInv1:
+    def test_red_flag_activa_fires(self) -> None:
+        result = _make_result(red_flag_activa=True, red_flag_actions={ForcedAction.DERIVAR_URGENTE})
+        actions, rail_id = _rail_inv1(result, _make_features())
+        assert rail_id == "R-INV1"
+        assert ForcedAction.DERIVAR_URGENTE in actions
+
+    def test_red_flag_inactiva_does_not_fire(self) -> None:
+        result = _make_result(red_flag_activa=False)
+        actions, rail_id = _rail_inv1(result, _make_features())
+        assert rail_id is None
+        assert actions == set()
+
+    def test_propagates_all_red_flag_forced_actions(self) -> None:
+        rf_actions = {
+            ForcedAction.DERIVAR_URGENTE, ForcedAction.NO_BENIGNO, ForcedAction.PRECAUCION_EXAMEN,
+        }
+        result = _make_result(red_flag_activa=True, red_flag_actions=rf_actions)
+        actions, rail_id = _rail_inv1(result, _make_features())
+        assert actions == rf_actions
+
+
+class TestRailEpleyD:
+    def test_red_flag_activa_blocks_epley(self) -> None:
+        result = _make_result(red_flag_activa=True, red_flag_actions={ForcedAction.DERIVAR_URGENTE},
+                              candidates=[
+                                  DifferentialCandidate(  # noqa: E501
+                                      diagnosis=Diagnosis.bppv_posterior, score=0.95)
+                              ])
+        actions, rail_id = _rail_epley_d(result, _make_features(), set())
+        assert rail_id == "R-EPLEY-D"
+        assert ForcedAction.BLOQUEAR_EPLEY in actions
+
+    def test_precaucion_examen_in_accumulated_blocks_epley(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+        ])
+        accumulated = {ForcedAction.PRECAUCION_EXAMEN}
+        actions, rail_id = _rail_epley_d(result, _make_features(), accumulated)
+        assert rail_id == "R-EPLEY-D"
+        assert ForcedAction.BLOQUEAR_EPLEY in actions
+
+    def test_top_not_bppv_posterior_blocks_epley(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.8),
+        ])
+        actions, rail_id = _rail_epley_d(result, _make_features(), set())
+        assert rail_id == "R-EPLEY-D"
+        assert ForcedAction.BLOQUEAR_EPLEY in actions
+
+    def test_top_bppv_posterior_below_confidence_floor_blocks_epley(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.5),
+        ])
+        actions, rail_id = _rail_epley_d(result, _make_features(), set())
+        assert rail_id == "R-EPLEY-D"
+        assert ForcedAction.BLOQUEAR_EPLEY in actions
+
+    def test_bppv_horizontal_top_blocks_epley_and_escalar(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_horizontal, score=0.9),
+        ])
+        actions, rail_id = _rail_epley_d(result, _make_features(), set())
+        assert rail_id == "R-EPLEY-D"
+        assert ForcedAction.BLOQUEAR_EPLEY in actions
+        assert ForcedAction.ESCALAR in actions
+
+    def test_atypical_nystagmus_duration_blocks_epley_and_no_benigno(self) -> None:
+        features = _make_features(nystagmus_duration_s=90.0)
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+        ])
+        actions, rail_id = _rail_epley_d(result, features, set())
+        assert rail_id == "R-EPLEY-D"
+        assert ForcedAction.BLOQUEAR_EPLEY in actions
+        assert ForcedAction.NO_BENIGNO in actions
+
+    def test_atypical_nystagmus_not_fatigable_blocks_epley_and_no_benigno(self) -> None:
+        features = _make_features(nystagmus_fatigable=False)
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+        ])
+        actions, rail_id = _rail_epley_d(result, features, set())
+        assert rail_id == "R-EPLEY-D"
+        assert ForcedAction.BLOQUEAR_EPLEY in actions
+        assert ForcedAction.NO_BENIGNO in actions
+
+    def test_atypical_nystagmus_direction_blocks_epley_and_no_benigno(self) -> None:
+        for direction in (NystagmusDirection.vertical_pure, NystagmusDirection.torsional_pure):
+            features = _make_features(nystagmus_direction=direction)
+            result = _make_result(red_flag_activa=False, candidates=[
+                DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+            ])
+            actions, rail_id = _rail_epley_d(result, features, set())
+            assert rail_id == "R-EPLEY-D", f"failed for direction={direction}"
+            assert ForcedAction.BLOQUEAR_EPLEY in actions
+            assert ForcedAction.NO_BENIGNO in actions
+
+    def test_no_epley_block_when_benign_bppv_posterior_high_confidence(self) -> None:
+        features = _make_features(
+            nystagmus_duration_s=20.0,
+            nystagmus_fatigable=True,
+            nystagmus_direction=NystagmusDirection.mixed,
+        )
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+        ])
+        actions, rail_id = _rail_epley_d(result, features, set())
+        assert rail_id is None
+        assert actions == set()
+
+    def test_nystagmus_fatigable_none_does_not_trigger(self) -> None:
+        """nystagmus_fatigable=None is not explicitly False, does not fire."""
+        features = _make_features(nystagmus_fatigable=None)
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+        ])
+        actions, rail_id = _rail_epley_d(result, features, set())
+        assert rail_id is None
+
+    def test_nystagmus_duration_none_does_not_trigger(self) -> None:
+        features = _make_features(nystagmus_duration_s=None)
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+        ])
+        actions, rail_id = _rail_epley_d(result, features, set())
+        assert rail_id is None
+
+    def test_empty_differential_blocks_epley(self) -> None:
+        """Audit fix (D1): with no candidates there is NO reliable BPPV ⇒ BLOQUEAR_EPLEY.
+        (Previously let through — false negative caught by the Gemini audit.)"""
+        result = _make_result(red_flag_activa=False, candidates=[])
+        actions, rail_id = _rail_epley_d(result, _make_features(), set())
+        assert ForcedAction.BLOQUEAR_EPLEY in actions
+        assert rail_id == "R-EPLEY-D"
+
+
+class TestRailE2:
+    def test_empty_differential_escalar(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[])
+        actions, rail_id = _rail_e2(result, _make_features())
+        assert rail_id == "R-E2"
+        assert actions == {ForcedAction.ESCALAR}
+
+    def test_top_below_uncertainty_floor_escalar(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.undetermined, score=0.3),
+        ])
+        actions, rail_id = _rail_e2(result, _make_features())
+        assert rail_id == "R-E2"
+        assert actions == {ForcedAction.ESCALAR}
+
+    def test_ambiguity_escalar(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.65),
+            DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.56),
+        ])
+        # diff = 0.09 < 0.1
+        actions, rail_id = _rail_e2(result, _make_features())
+        assert rail_id == "R-E2"
+        assert actions == {ForcedAction.ESCALAR}
+
+    def test_single_candidate_no_ambiguity_trigger(self) -> None:
+        """With a single candidate there is no top2 to compare against."""
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.7),
+        ])
+        actions, rail_id = _rail_e2(result, _make_features())
+        # score=0.7 > 0.4 floor, single candidate → no ambiguity
+        assert rail_id is None
+        assert actions == set()
+
+    def test_no_escalar_when_confident(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.9),
+            DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.2),
+        ])
+        actions, rail_id = _rail_e2(result, _make_features())
+        assert rail_id is None
+        assert actions == set()
+
+
+class TestRailDivergencia:
+    def test_reasoning_none_no_effect(self) -> None:
+        result = _make_result(red_flag_activa=False, reasoning=None)
+        actions, rail_id = _rail_divergencia(result, _make_features(), Urgency.ambulatoria)
+        assert rail_id is None
+        assert actions == set()
+
+    def test_suggested_urgency_none_no_effect(self) -> None:
+        reasoning = ReasonerOutput(
+            model_used="test-model",
+            explanation="test",
+            reconciliation="test",
+            reasoner_suggested_urgency=None,
+        )
+        result = _make_result(red_flag_activa=False, reasoning=reasoning)
+        actions, rail_id = _rail_divergencia(result, _make_features(), Urgency.ambulatoria)
+        assert rail_id is None
+        assert actions == set()
+
+    def test_suggested_higher_than_deterministic_adds_escalar(self) -> None:
+        reasoning = ReasonerOutput(
+            model_used="test-model",
+            explanation="test",
+            reconciliation="test",
+            reasoner_suggested_urgency=Urgency.inmediata,
+        )
+        result = _make_result(red_flag_activa=False, reasoning=reasoning)
+        actions, rail_id = _rail_divergencia(result, _make_features(), Urgency.ambulatoria)
+        assert rail_id == "R-DIVERGENCIA"
+        assert actions == {ForcedAction.ESCALAR}
+
+    def test_suggested_lower_than_deterministic_ignored(self) -> None:
+        reasoning = ReasonerOutput(
+            model_used="test-model",
+            explanation="test",
+            reconciliation="test",
+            reasoner_suggested_urgency=Urgency.ambulatoria,
+        )
+        result = _make_result(red_flag_activa=False, reasoning=reasoning)
+        actions, rail_id = _rail_divergencia(result, _make_features(), Urgency.prioritaria)
+        assert rail_id is None
+        assert actions == set()
+
+    def test_suggested_equal_to_deterministic_ignored(self) -> None:
+        reasoning = ReasonerOutput(
+            model_used="test-model",
+            explanation="test",
+            reconciliation="test",
+            reasoner_suggested_urgency=Urgency.prioritaria,
+        )
+        result = _make_result(red_flag_activa=False, reasoning=reasoning)
+        actions, rail_id = _rail_divergencia(result, _make_features(), Urgency.prioritaria)
+        assert rail_id is None
+        assert actions == set()
+
+    def test_suggested_higher_but_deterministic_already_inmediata_ignored(self) -> None:
+        """If deterministic is already immediate, the reasoner cannot suggest anything higher."""
+        reasoning = ReasonerOutput(
+            model_used="test-model",
+            explanation="test",
+            reconciliation="test",
+            reasoner_suggested_urgency=Urgency.inmediata,
+        )
+        result = _make_result(red_flag_activa=True, red_flag_actions={ForcedAction.DERIVAR_URGENTE},
+                              reasoning=reasoning)
+        actions, rail_id = _rail_divergencia(result, _make_features(), Urgency.inmediata)
+        # inmediata rank 0, inmediata rank 0 → equal → ignored
+        assert rail_id is None
+        assert actions == set()
+
+
+class TestComputeUrgency:
+    def test_no_forced_actions_defaults_ambulatoria(self) -> None:
+        urgencia = _compute_urgency(False, set(), Urgency.ambulatoria)
+        assert urgencia == Urgency.ambulatoria
+
+    def test_escalar_drives_prioritaria(self) -> None:
+        urgencia = _compute_urgency(False, {ForcedAction.ESCALAR}, Urgency.ambulatoria)
+        assert urgencia == Urgency.prioritaria
+
+    def test_derivar_urgente_drives_inmediata(self) -> None:
+        urgencia = _compute_urgency(False, {ForcedAction.DERIVAR_URGENTE}, Urgency.ambulatoria)
+        assert urgencia == Urgency.inmediata
+
+    def test_red_flag_activa_drives_inmediata(self) -> None:
+        urgencia = _compute_urgency(True, set(), Urgency.ambulatoria)
+        assert urgencia == Urgency.inmediata
+
+    def test_bloquear_epley_no_drives_urgency(self) -> None:
+        urgencia = _compute_urgency(False, {ForcedAction.BLOQUEAR_EPLEY}, Urgency.ambulatoria)
+        assert urgencia == Urgency.ambulatoria
+
+    def test_precaucion_examen_no_drives_urgency(self) -> None:
+        urgencia = _compute_urgency(False, {ForcedAction.PRECAUCION_EXAMEN}, Urgency.ambulatoria)
+        assert urgencia == Urgency.ambulatoria
+
+    def test_no_benigno_no_drives_urgency(self) -> None:
+        urgencia = _compute_urgency(False, {ForcedAction.NO_BENIGNO}, Urgency.ambulatoria)
+        assert urgencia == Urgency.ambulatoria
+
+    def test_monotonia_respects_input_urgency(self) -> None:
+        """Never goes below current_urgency."""
+        urgencia = _compute_urgency(False, set(), Urgency.prioritaria)
+        assert urgencia == Urgency.prioritaria
+
+    def test_inmediata_wins_over_prioritaria(self) -> None:
+        urgencia = _compute_urgency(True, {ForcedAction.ESCALAR}, Urgency.ambulatoria)
+        assert urgencia == Urgency.inmediata
+
+
+# =========================================================================
+# apply_rails — integration
+# =========================================================================
+
+
+class TestApplyRailsAdversarialInv1:
+    """ADVERSARIAL TEST INV-1 — the one that IS the demo.
+
+    PipelineResult with red_flag_activa=True BUT differential top=bppv_posterior
+    score 0.95, ml probabilities bppv 0.95, reasoning with
+    reasoner_suggested_urgency=ambulatoria →
+    apply_rails(...).urgency == inmediata.
+
+    'Even if everything says benign BPPV, the rail forces immediate.'
+    """
+
+    def test_adversarial_red_flag_trumps_all(self) -> None:
+        features = _make_features(
+            nystagmus_duration_s=20.0,
+            nystagmus_fatigable=True,
+            nystagmus_direction=NystagmusDirection.mixed,
+        )
+        result = _make_result(
+            red_flag_activa=True,
+            red_flag_actions={ForcedAction.DERIVAR_URGENTE, ForcedAction.NO_BENIGNO},
+            candidates=[
+                DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+            ],
+            ml=PredictResponse(
+                probabilities={"bppv_posterior": 0.95},
+                model_version="catboost-v0.1",
+            ),
+            reasoning=ReasonerOutput(
+            model_used="test-model",
+                explanation="Caso benigno clásico de VPPB posterior.",
+                reconciliation="Concuerda con hallazgos típicos.",
+                reasoner_suggested_urgency=Urgency.ambulatoria,
+            ),
+            urgency=Urgency.ambulatoria,
+        )
+        output = apply_rails(result, features)
+        assert output.urgency == Urgency.inmediata, (
+            "INV-1 violated: red_flag_activa=True should force immediate"
+        )
+        assert "R-INV1" in output.applied_rails
+        assert ForcedAction.DERIVAR_URGENTE in output.forced_actions
+        assert ForcedAction.BLOQUEAR_EPLEY in output.forced_actions  # red flag blocks Epley
+        assert ForcedAction.NO_BENIGNO in output.forced_actions
+
+
+def _benign_bppv_candidates() -> list[DifferentialCandidate]:
+    """Confident, unambiguous benign BPPV: fires NO escalating rail.
+
+    top1 = 0.95 (≥ DIFFERENTIAL_UNCERTAINTY_FLOOR and ≥ BPPV_EPLEY_CONFIDENCE_FLOOR),
+    top1 − top2 = 0.75 (≫ AMBIGUITY_EPSILON) ⇒ R-E2 stays silent, R-EPLEY-D adds
+    nothing that raises urgency, and there is no red flag. Any urgency in the
+    output can therefore ONLY come from `result_input.urgency` being honoured.
+    """
+    return [
+        DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+        DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.2),
+    ]
+
+
+# (id, input result, features, EXACT expected output urgency)
+_MonotoniaCase = tuple[str, PipelineResult, CaseFeatures, Urgency]
+
+# Case ids whose ONLY route to their expected urgency is preservation of the
+# input urgency (no red flag, no escalating rail). They are what makes this
+# suite able to detect a dropped urgency at all — see the guard test below.
+_PRESERVATION_CASE_IDS = frozenset({
+    "preserva_prioritaria_sin_riel_escalador",
+    "preserva_inmediata_sin_riel_escalador",
+})
+
+
+def _monotonia_cases() -> list[_MonotoniaCase]:
+    """INV-7 cases, built at COLLECTION time.
+
+    They used to live in a ``setup_class`` that appended to a class attribute
+    referenced by ``@pytest.mark.parametrize``. Parametrize expands its
+    argvalues during collection, when the list was still empty, so pytest
+    reported "got empty parameter set" and SKIPPED the test: the only
+    INV-7-specific test never ran. Building them here (module scope, executed
+    at import) is what makes the parametrization non-empty.
+
+    ``empty_parameter_set_mark = fail_at_collect`` in ``pyproject.toml`` now
+    turns that failure mode into a collection error instead of a silent skip.
+
+    Each case pins the EXACT expected urgency, not just the ``>=`` inequality.
+    Rationale (external audit): with inequality-only assertions, every case
+    that ENTERS at `ambulatoria` is vacuous (nothing can be lower), and the two
+    that entered elevated regenerated their urgency through a red flag or an
+    ESCALAR rail rather than through preservation of the input. A regression in
+    which `apply_rails` ignored `result_input.urgency` altogether would have
+    passed all of them. The two `preserva_*` cases close exactly that hole.
+    """
+    feats = _make_features()
+    return [
+        # --- Cases that RAISE (rails add urgency on top of ambulatory) -------
+        (
+            "red_flag_sube_a_inmediata",
+            _make_result(red_flag_activa=True, red_flag_actions={ForcedAction.DERIVAR_URGENTE},
+                         urgency=Urgency.ambulatoria),
+            feats,
+            Urgency.inmediata,
+        ),
+        (
+            "escalar_sube_a_prioritaria",
+            _make_result(red_flag_activa=False, candidates=[
+                DifferentialCandidate(diagnosis=Diagnosis.undetermined, score=0.3),
+            ], urgency=Urgency.ambulatoria),
+            feats,
+            Urgency.prioritaria,
+        ),
+        # --- Cases that HOLD via a rail re-deriving the same urgency ---------
+        (
+            "prioritaria_se_mantiene",
+            _make_result(red_flag_activa=False, candidates=[
+                DifferentialCandidate(diagnosis=Diagnosis.undetermined, score=0.3),
+            ], urgency=Urgency.prioritaria),
+            feats,
+            Urgency.prioritaria,
+        ),
+        (
+            "inmediata_se_mantiene",
+            _make_result(red_flag_activa=True, red_flag_actions={ForcedAction.DERIVAR_URGENTE},
+                         urgency=Urgency.inmediata),
+            feats,
+            Urgency.inmediata,
+        ),
+        (
+            "bppv_benigno_se_mantiene_ambulatoria",
+            _make_result(red_flag_activa=False, candidates=_benign_bppv_candidates(),
+                         urgency=Urgency.ambulatoria),
+            feats,
+            Urgency.ambulatoria,
+        ),
+        # --- Cases that HOLD ONLY by preserving the input urgency ------------
+        # No red flag, no escalating rail: if `apply_rails` stopped honouring
+        # `result_input.urgency`, these — and only these — would drop and fail.
+        (
+            "preserva_prioritaria_sin_riel_escalador",
+            _make_result(red_flag_activa=False, candidates=_benign_bppv_candidates(),
+                         urgency=Urgency.prioritaria),
+            feats,
+            Urgency.prioritaria,
+        ),
+        (
+            "preserva_inmediata_sin_riel_escalador",
+            _make_result(red_flag_activa=False, candidates=_benign_bppv_candidates(),
+                         urgency=Urgency.inmediata),
+            feats,
+            Urgency.inmediata,
+        ),
+    ]
+
+
+_MONOTONIA_CASES = _monotonia_cases()
+
+
+class TestApplyRailsMonotoniaInv7:
+    """INV-7: apply_rails only RAISES urgency, never lowers it."""
+
+    def test_case_set_is_populated_and_can_detect_a_drop(self) -> None:
+        """Guard: an empty argvalues list is what silently killed this suite.
+
+        Belt-and-braces alongside ``empty_parameter_set_mark``: if a future
+        refactor empties the case list, this fails LOUDLY instead of the
+        parametrized test vanishing into a skip.
+
+        It also asserts the presence of the `preserva_*` cases rather than a
+        magic count (adding a legitimate 8th case must not break the suite):
+        without them the parametrization cannot detect a dropped urgency at
+        all, and INV-7 would be "green" while unprotected.
+        """
+        assert _MONOTONIA_CASES, (
+            "INV-7 monotonicity cases must be built at collection time, not in "
+            "setup_class — an empty argvalues list is silently skipped."
+        )
+        present = {case_id for case_id, _, _, _ in _MONOTONIA_CASES}
+        assert _PRESERVATION_CASE_IDS <= present, (
+            f"INV-7 needs the input-urgency-preservation cases to be able to "
+            f"detect a drop; missing: {sorted(_PRESERVATION_CASE_IDS - present)}"
+        )
+
+    @pytest.mark.parametrize(
+        "result,features,expected_urgency",
+        [(result, features, expected) for _, result, features, expected in _MONOTONIA_CASES],
+        ids=[case_id for case_id, _, _, _ in _MONOTONIA_CASES],
+    )
+    def test_urgency_never_decreases(
+        self,
+        result: PipelineResult,
+        features: CaseFeatures,
+        expected_urgency: Urgency,
+    ) -> None:
+        input_urgency = result.urgency
+        output = apply_rails(result, features)
+        # (a) the INV-7 inequality proper: never less urgent than the input.
+        assert _URGENCY_RANK[output.urgency] <= _URGENCY_RANK[input_urgency], (
+            f"Urgency dropped: {input_urgency} → {output.urgency}"
+        )
+        # (b) the exact seal: guards against a no-op `apply_rails`, which would
+        # satisfy (a) trivially while performing no mandatory escalation.
+        assert output.urgency == expected_urgency, (
+            f"Urgency seal changed: expected {expected_urgency}, got {output.urgency} "
+            f"(input was {input_urgency})"
+        )
+
+
+class TestApplyRailsIdempotencia:
+    """A second pass does not change urgency/forced_actions/applied_rails."""
+
+    def test_idempotent_red_flag_case(self) -> None:
+        result = _make_result(red_flag_activa=True, red_flag_actions={ForcedAction.DERIVAR_URGENTE})
+        features = _make_features()
+        first = apply_rails(result, features)
+        second = apply_rails(first, features)
+        assert second.urgency == first.urgency
+        assert second.forced_actions == first.forced_actions
+        assert second.applied_rails == first.applied_rails
+
+    def test_idempotent_epistemic_escalar_case(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.undetermined, score=0.3),
+        ])
+        features = _make_features()
+        first = apply_rails(result, features)
+        second = apply_rails(first, features)
+        assert second.urgency == first.urgency
+        assert second.forced_actions == first.forced_actions
+        assert second.applied_rails == first.applied_rails
+
+    def test_idempotent_benign_case(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+            DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.2),
+        ])
+        features = _make_features(
+            nystagmus_duration_s=20.0,
+            nystagmus_fatigable=True,
+            nystagmus_direction=NystagmusDirection.mixed,
+        )
+        first = apply_rails(result, features)
+        second = apply_rails(first, features)
+        assert second.urgency == first.urgency
+        assert second.forced_actions == first.forced_actions
+        assert second.applied_rails == first.applied_rails
+
+
+class TestApplyRailsTotalidad:
+    """A minimal PipelineResult always gets an urgency (never None)."""
+
+    def test_minimal_result_gets_urgency(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[])
+        output = apply_rails(result, _make_features())
+        assert output.urgency is not None
+        assert isinstance(output.urgency, Urgency)
+
+    def test_empty_differential_escalar(self) -> None:
+        """Empty differential ⇒ R-E2 fires ESCALAR."""
+        result = _make_result(red_flag_activa=False, candidates=[])
+        output = apply_rails(result, _make_features())
+        assert output.urgency == Urgency.prioritaria  # ESCALAR raises to priority
+        assert ForcedAction.ESCALAR in output.forced_actions
+        assert "R-E2" in output.applied_rails
+
+    def test_default_ambulatoria_when_all_clear(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+            DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.2),
+        ])
+        features = _make_features(
+            nystagmus_duration_s=20.0,
+            nystagmus_fatigable=True,
+            nystagmus_direction=NystagmusDirection.mixed,
+        )
+        output = apply_rails(result, features)
+        assert output.urgency == Urgency.ambulatoria
+
+
+class TestApplyRailsBloqueD:
+    """Block D scenarios (when NOT to Epley)."""
+
+    def test_red_flag_blocks_epley(self) -> None:
+        result = _make_result(red_flag_activa=True, red_flag_actions={ForcedAction.DERIVAR_URGENTE},
+                              candidates=[
+                                  DifferentialCandidate(  # noqa: E501
+                                      diagnosis=Diagnosis.bppv_posterior, score=0.95),
+                              ])
+        output = apply_rails(result, _make_features())
+        assert ForcedAction.BLOQUEAR_EPLEY in output.forced_actions
+        assert "R-EPLEY-D" in output.applied_rails
+
+    def test_top_non_bppv_posterior_blocks_epley(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.8),
+        ])
+        output = apply_rails(result, _make_features())
+        assert ForcedAction.BLOQUEAR_EPLEY in output.forced_actions
+
+    def test_top_score_below_floor_blocks_epley(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.5),
+        ])
+        output = apply_rails(result, _make_features())
+        assert ForcedAction.BLOQUEAR_EPLEY in output.forced_actions
+
+    def test_bppv_horizontal_top_blocks_epley_and_escalar(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_horizontal, score=0.9),
+        ])
+        output = apply_rails(result, _make_features())
+        assert ForcedAction.BLOQUEAR_EPLEY in output.forced_actions
+        assert ForcedAction.ESCALAR in output.forced_actions
+
+    def test_atypical_nystagmus_duration_blocks_epley_and_no_benigno(self) -> None:
+        features = _make_features(nystagmus_duration_s=90.0)
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+        ])
+        output = apply_rails(result, features)
+        assert ForcedAction.BLOQUEAR_EPLEY in output.forced_actions
+        assert ForcedAction.NO_BENIGNO in output.forced_actions
+
+    def test_atypical_nystagmus_not_fatigable_blocks_epley_and_no_benigno(self) -> None:
+        features = _make_features(nystagmus_fatigable=False)
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+        ])
+        output = apply_rails(result, features)
+        assert ForcedAction.BLOQUEAR_EPLEY in output.forced_actions
+        assert ForcedAction.NO_BENIGNO in output.forced_actions
+
+    def test_atypical_nystagmus_direction_blocks_epley_and_no_benigno(self) -> None:
+        for direction in (NystagmusDirection.vertical_pure, NystagmusDirection.torsional_pure):
+            features = _make_features(nystagmus_direction=direction)
+            result = _make_result(red_flag_activa=False, candidates=[
+                DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+            ])
+            output = apply_rails(result, features)
+            assert ForcedAction.BLOQUEAR_EPLEY in output.forced_actions, f"direction={direction}"
+            assert ForcedAction.NO_BENIGNO in output.forced_actions, f"direction={direction}"
+
+    def test_benign_bppv_posterior_no_epley_block(self) -> None:
+        features = _make_features(
+            nystagmus_duration_s=20.0,
+            nystagmus_fatigable=True,
+            nystagmus_direction=NystagmusDirection.mixed,
+        )
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+            DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.2),
+        ])
+        output = apply_rails(result, features)
+        assert ForcedAction.BLOQUEAR_EPLEY not in output.forced_actions
+
+
+class TestApplyRailsDivergencia:
+    """R-DIVERGENCIA: reasoner suggests higher urgency ⇒ ESCALAR, LLM value not adopted."""
+
+    def test_reasoner_suggests_inmediata_deterministic_ambulatoria_becomes_prioritaria(  # noqa: E501
+        self,
+    ) -> None:
+        """INV-3: the LLM's urgency is not adopted; it is translated to ESCALAR."""
+        reasoning = ReasonerOutput(
+            model_used="test-model",
+            explanation="Algo no cuadra.",
+            reconciliation="Podría ser central.",
+            reasoner_suggested_urgency=Urgency.inmediata,
+        )
+        result = _make_result(
+            red_flag_activa=False,
+            candidates=[
+                DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.9),
+                DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.2),
+            ],
+            reasoning=reasoning,
+        )
+        features = _make_features(
+            nystagmus_duration_s=20.0,
+            nystagmus_fatigable=True,
+            nystagmus_direction=NystagmusDirection.mixed,
+        )
+        output = apply_rails(result, features)
+        assert output.urgency == Urgency.prioritaria, (
+            "Must raise to prioritaria (via ESCALAR), NOT to inmediata"
+        )
+        assert output.urgency != Urgency.inmediata, (
+            "INV-3 violated: the LLM's inmediata value must NOT be adopted"
+        )
+        assert ForcedAction.ESCALAR in output.forced_actions
+        assert "R-DIVERGENCIA" in output.applied_rails
+
+    def test_reasoner_suggests_lower_urgency_ignored(self) -> None:
+        reasoning = ReasonerOutput(
+            model_used="test-model",
+            explanation="Todo ok.",
+            reconciliation="BPPV típico.",
+            reasoner_suggested_urgency=Urgency.ambulatoria,
+        )
+        result = _make_result(
+            red_flag_activa=True,
+            red_flag_actions={ForcedAction.DERIVAR_URGENTE},
+            candidates=[
+                DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+            ],
+            reasoning=reasoning,
+        )
+        output = apply_rails(result, _make_features())
+        assert output.urgency == Urgency.inmediata  # red flag wins
+        assert "R-DIVERGENCIA" not in output.applied_rails
+
+    def test_no_reasoning_no_divergencia(self) -> None:
+        result = _make_result(red_flag_activa=False, reasoning=None, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+            DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.2),
+        ])
+        features = _make_features(
+            nystagmus_duration_s=20.0,
+            nystagmus_fatigable=True,
+            nystagmus_direction=NystagmusDirection.mixed,
+        )
+        output = apply_rails(result, features)
+        assert "R-DIVERGENCIA" not in output.applied_rails
+
+
+class TestApplyRailsTrazabilidad:
+    """Every output forced_action has its rail in applied_rails."""
+
+    def _all_forced_actions_traced(self, output: PipelineResult) -> None:
+        """Verifies that each forced_action in the output is produced by some rail."""
+        # Reconstruct which actions each rail can produce
+        # This is a structural sanity check: if there are forced_actions, there
+        # must be at least one applied rail.
+        if output.forced_actions:
+            assert output.applied_rails, (
+                f"forced_actions={output.forced_actions} without applied_rails"
+            )
+
+    def test_actions_from_inv1_have_rail_id(self) -> None:
+        result = _make_result(red_flag_activa=True, red_flag_actions={ForcedAction.DERIVAR_URGENTE})
+        output = apply_rails(result, _make_features())
+        self._all_forced_actions_traced(output)
+        assert "R-INV1" in output.applied_rails
+
+    def test_actions_from_epley_d_have_rail_id(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.8),
+        ])
+        output = apply_rails(result, _make_features())
+        self._all_forced_actions_traced(output)
+        assert "R-EPLEY-D" in output.applied_rails
+        assert ForcedAction.BLOQUEAR_EPLEY in output.forced_actions
+
+    def test_actions_from_e2_have_rail_id(self) -> None:
+        result = _make_result(red_flag_activa=False, candidates=[])
+        output = apply_rails(result, _make_features())
+        self._all_forced_actions_traced(output)
+        assert "R-E2" in output.applied_rails
+        assert ForcedAction.ESCALAR in output.forced_actions
+
+    def test_actions_from_divergencia_have_rail_id(self) -> None:
+        reasoning = ReasonerOutput(
+            model_used="test-model",
+            explanation="test",
+            reconciliation="test",
+            reasoner_suggested_urgency=Urgency.inmediata,
+        )
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.9),
+            DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.2),
+        ], reasoning=reasoning)
+        features = _make_features(
+            nystagmus_duration_s=20.0,
+            nystagmus_fatigable=True,
+            nystagmus_direction=NystagmusDirection.mixed,
+        )
+        output = apply_rails(result, features)
+        self._all_forced_actions_traced(output)
+        assert "R-DIVERGENCIA" in output.applied_rails
+        assert ForcedAction.ESCALAR in output.forced_actions
+
+
+class TestApplyRailsPureza:
+    """apply_rails does NOT mutate its arguments (neither result nor features)."""
+
+    def test_pipeline_result_not_mutated(self) -> None:
+        features = _make_features()
+        result = _make_result(red_flag_activa=True, red_flag_actions={ForcedAction.DERIVAR_URGENTE})
+        orig_forced = set(result.forced_actions)
+        orig_applied = list(result.applied_rails)
+        orig_urgency = result.urgency
+
+        output = apply_rails(result, features)
+
+        # The input did NOT change
+        assert result.forced_actions == orig_forced
+        assert result.applied_rails == orig_applied
+        assert result.urgency == orig_urgency
+
+        # The output is different (new object)
+        assert output is not result
+        assert output is not result
+
+    def test_case_features_not_mutated(self) -> None:
+        features = _make_features(nystagmus_duration_s=90.0)
+        orig = features.model_copy(deep=True)
+        result = _make_result(red_flag_activa=False, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+        ])
+        apply_rails(result, features)
+        assert features == orig
+
+    def test_precaucion_examen_propagation_preserves_precaucion(self) -> None:
+        """When R-INV1 propagates PRECAUCION_EXAMEN from red_flag, R-EPLEY-D sees it."""
+        result = _make_result(
+            red_flag_activa=True,
+            red_flag_actions={ForcedAction.DERIVAR_URGENTE, ForcedAction.PRECAUCION_EXAMEN},
+            candidates=[
+                DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+            ],
+        )
+        output = apply_rails(result, _make_features(
+            nystagmus_duration_s=20.0,
+            nystagmus_fatigable=True,
+            nystagmus_direction=NystagmusDirection.mixed,
+        ))
+        assert ForcedAction.PRECAUCION_EXAMEN in output.forced_actions
+        assert ForcedAction.BLOQUEAR_EPLEY in output.forced_actions
+
+    def test_input_reasoning_preserved_after_apply(self) -> None:
+        reasoning = ReasonerOutput(
+            model_used="test-model",
+            explanation="Caso benigno.",
+            reconciliation="BPPV típico.",
+            reasoner_suggested_urgency=Urgency.ambulatoria,
+        )
+        result = _make_result(red_flag_activa=False, reasoning=reasoning, candidates=[
+            DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95),
+            DifferentialCandidate(diagnosis=Diagnosis.vestibular_neuritis, score=0.2),
+        ])
+        features = _make_features(
+            nystagmus_duration_s=20.0,
+            nystagmus_fatigable=True,
+            nystagmus_direction=NystagmusDirection.mixed,
+        )
+        apply_rails(result, features)
+        assert result.reasoning is reasoning
+        assert result.reasoning.reasoner_suggested_urgency == Urgency.ambulatoria
+
+
+# =========================================================================
+# INV-5 — rails only imports contracts
+# =========================================================================
+
+
+_RAILS_FORBIDDEN_IMPORTS = {
+    "clinibrium.reasoner",
+    "clinibrium.redflag_engine",
+    "clinibrium.differential_engine",
+    "clinibrium.ml_client",
+    "clinibrium.orchestrator",
+    "clinibrium.api",
+}
+
+
+def _iter_imports(py_file: Path) -> list[tuple[int, str]]:
+    """Returns (line_no, module) for every `clinibrium.*` import found."""
+    tree = ast.parse(py_file.read_text(encoding="utf-8"))
+    out: list[tuple[int, str]] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                out.append((node.lineno, alias.name))
+        elif isinstance(node, ast.ImportFrom):
+            if node.module is not None:
+                out.append((node.lineno, node.module))
+    return out
+
+
+def test_rails_does_not_import_forbidden_modules() -> None:
+    """INV-5: rails must NOT import reasoner/engines/ml_client/orchestrator/api."""
+    pkg_root = Path(__file__).resolve().parents[1] / "clinibrium" / "rails"
+    offenders: list[str] = []
+    for py in sorted(pkg_root.glob("*.py")):
+        for lineno, mod in _iter_imports(py):
+            for forbidden in _RAILS_FORBIDDEN_IMPORTS:
+                if mod == forbidden or mod.startswith(forbidden + "."):
+                    offenders.append(f"{py.name}:{lineno} → {mod}")
+    assert not offenders, (
+        "INV-5 violated — forbidden imports from rails:\n  "
+        + "\n  ".join(offenders)
+    )
+
+
+def test_rails_only_imports_from_contracts_and_self() -> None:
+    """Reinforcement: only `clinibrium.contracts` and `clinibrium.rails` are allowed."""
+    pkg_root = Path(__file__).resolve().parents[1] / "clinibrium" / "rails"
+    allowed_roots = {"clinibrium.contracts", "clinibrium.rails"}
+    offenders: list[str] = []
+    for py in sorted(pkg_root.glob("*.py")):
+        for lineno, mod in _iter_imports(py):
+            if not mod.startswith("clinibrium."):
+                continue
+            if not any(mod == a or mod.startswith(a + ".") for a in allowed_roots):
+                offenders.append(f"{py.name}:{lineno} → {mod}")
+    assert not offenders, (
+        "Disallowed cross-module import from rails:\n  "
+        + "\n  ".join(offenders)
+    )
+
+
+# =========================================================================
+# Sanity: internally used _URGENCY_RANK is accessible to tests
+# =========================================================================
+
+
+def test_urgency_rank_has_three_entries() -> None:
+    assert len(_URGENCY_RANK) == 3
+    for u in Urgency:
+        assert u in _URGENCY_RANK
+
+
+# ---------------------------------------------------------------------------
+# Gemini T8 audit fixes (more conservative Block D + R-INV1 traceability)
+# ---------------------------------------------------------------------------
+class TestAuditFixesT8:
+    def test_rinv1_traceable_even_if_forced_actions_empty(self) -> None:
+        """Traceability fix: red_flag_activa with empty forced_actions still
+        records R-INV1 and guarantees DERIVAR_URGENTE + immediate urgency."""
+        result = _make_result(red_flag_activa=True, red_flag_actions=set())
+        sealed = apply_rails(result, _make_features())
+        assert sealed.urgency == Urgency.inmediata
+        assert "R-INV1" in sealed.applied_rails
+        assert ForcedAction.DERIVAR_URGENTE in sealed.forced_actions
+
+    def test_empty_differential_blocks_epley(self) -> None:
+        """Fix D1: empty differential (no reliable BPPV) ⇒ BLOQUEAR_EPLEY."""
+        result = _make_result(candidates=[])
+        sealed = apply_rails(result, _make_features())
+        assert ForcedAction.BLOQUEAR_EPLEY in sealed.forced_actions
+
+    def test_cervical_feature_blocks_epley(self) -> None:
+        """Fix D4: direct cervical contraindication in features ⇒ BLOQUEAR_EPLEY,
+        even when the top candidate is a high-score bppv_posterior."""
+        result = _make_result(
+            candidates=[
+                DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95)
+            ]
+        )
+        sealed = apply_rails(result, _make_features(cervical_pathology=True))
+        assert ForcedAction.BLOQUEAR_EPLEY in sealed.forced_actions
+
+    def test_direction_changing_nystagmus_blocks_epley_and_no_benigno(self) -> None:
+        """Fix D2/central: direction-changing nystagmus ⇒ BLOQUEAR_EPLEY + NO_BENIGNO."""
+        result = _make_result(
+            candidates=[
+                DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95)
+            ]
+        )
+        sealed = apply_rails(
+            result,
+            _make_features(nystagmus_direction=NystagmusDirection.direction_changing),
+        )
+        assert ForcedAction.BLOQUEAR_EPLEY in sealed.forced_actions
+        assert ForcedAction.NO_BENIGNO in sealed.forced_actions
+
+    def test_direction_changing_gaze_bool_blocks_epley(self) -> None:
+        """Central fix: the nystagmus_direction_changing_gaze bool also counts as atypical."""
+        result = _make_result(
+            candidates=[
+                DifferentialCandidate(diagnosis=Diagnosis.bppv_posterior, score=0.95)
+            ]
+        )
+        sealed = apply_rails(
+            result, _make_features(nystagmus_direction_changing_gaze=True)
+        )
+        assert ForcedAction.BLOQUEAR_EPLEY in sealed.forced_actions
+        assert ForcedAction.NO_BENIGNO in sealed.forced_actions

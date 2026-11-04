@@ -1,0 +1,12 @@
+{
+  "id": "rule-05-avs-sudden-hearing",
+  "title": "AVS con hipoacusia súbita unilateral",
+  "tags": [
+    "rules"
+  ],
+  "features": {
+    "timing_pattern": "acute_continuous",
+    "hearing_loss": "sudden_unilateral"
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

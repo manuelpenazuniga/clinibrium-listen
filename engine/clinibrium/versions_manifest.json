@@ -1,0 +1,15 @@
+{
+  "_doc": "Approved (semantic version -> fingerprint) pairs. APPEND ONLY: a clinical change needs a NEW version entry; never edit or reuse an existing one. Checked by tests/test_versions.py.",
+  "ruleset": {
+    "0.2.0-pre-S1": "4f4fcd0477d3",
+    "0.2.0-S1": "94194f9250df",
+    "0.2.0-S1-P": "6b99864626e1"
+  },
+  "features_schema": {
+    "1": "fa9bc9b1a3e2",
+    "2": "5c2b5a02e656"
+  },
+  "grounding": {
+    "1": "ffbe2e6828bc"
+  }
+}

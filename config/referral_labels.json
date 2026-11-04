@@ -1,0 +1,15 @@
+{
+  "_doc": "Urgency → referral label (SPECS §4). Presentation only; urgency itself comes from the engine.",
+  "inmediata": {
+    "label_es": "Derivación inmediata — evaluar activación de protocolo ACV local",
+    "label_en": "Immediate referral — consider activating the local stroke protocol"
+  },
+  "prioritaria": {
+    "label_es": "Evaluación prioritaria por especialista",
+    "label_en": "Priority specialist evaluation"
+  },
+  "ambulatoria": {
+    "label_es": "Manejo ambulatorio / control en APS",
+    "label_en": "Outpatient management / primary-care follow-up"
+  }
+}

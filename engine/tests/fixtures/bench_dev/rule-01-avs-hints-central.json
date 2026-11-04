@@ -1,0 +1,13 @@
+{
+  "id": "rule-01-avs-hints-central",
+  "title": "AVS con impulso cefálico normal y nistagmo no suprimido",
+  "tags": [
+    "rules"
+  ],
+  "features": {
+    "timing_pattern": "acute_continuous",
+    "head_impulse": "normal",
+    "nystagmus_suppressed_by_fixation": false
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

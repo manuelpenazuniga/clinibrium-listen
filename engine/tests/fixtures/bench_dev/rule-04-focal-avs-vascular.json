@@ -1,0 +1,18 @@
+{
+  "id": "rule-04-focal-avs-vascular",
+  "title": "AVS en mayor con riesgo vascular y disartria",
+  "tags": [
+    "rules"
+  ],
+  "features": {
+    "timing_pattern": "acute_continuous",
+    "age_years": 72,
+    "vascular_risk_factors": [
+      "hypertension"
+    ],
+    "focal_signs": [
+      "dysarthria"
+    ]
+  },
+  "notes": "Sintético, sin PII. Set de desarrollo (plan C)."
+}

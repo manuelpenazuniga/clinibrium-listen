@@ -1,0 +1,1795 @@
+{
+ "amb-01-bppv-posterior": {
+  "base_urgency": "ambulatoria",
+  "counterfactuals": [
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nuevo signo focal: diplopía",
+    "change_key": "focal_signs.diplopia",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nuevo signo focal: disartria",
+    "change_key": "focal_signs.dysarthria",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Ataxia troncal severa (no puede caminar)",
+    "change_key": "truncal_ataxia_severe",
+    "escalates": true,
+    "feature": "truncal_ataxia_severe",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nistagmo que cambia de dirección con la mirada",
+    "change_key": "nystagmus_direction.direction_changing",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nistagmo espontáneo puro torsional",
+    "change_key": "nystagmus_direction.torsional_pure",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Cefalea/cervicalgia súbita e intensa",
+    "change_key": "headache_neck_pain_sudden_severe",
+    "escalates": true,
+    "feature": "headache_neck_pain_sudden_severe",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Compromiso de conciencia",
+    "change_key": "altered_consciousness",
+    "escalates": true,
+    "feature": "altered_consciousness",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Hipoacusia súbita unilateral",
+    "change_key": "hearing_loss.sudden_unilateral",
+    "escalates": true,
+    "feature": "hearing_loss",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Presíncope o síncope",
+    "change_key": "presyncope_syncope",
+    "escalates": true,
+    "feature": "presyncope_syncope",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": true,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "ESCALAR",
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   }
+  ]
+ },
+ "amb-02-meniere": {
+  "base_urgency": "ambulatoria",
+  "counterfactuals": [
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nuevo signo focal: diplopía",
+    "change_key": "focal_signs.diplopia",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nuevo signo focal: disartria",
+    "change_key": "focal_signs.dysarthria",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Ataxia troncal severa (no puede caminar)",
+    "change_key": "truncal_ataxia_severe",
+    "escalates": true,
+    "feature": "truncal_ataxia_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nistagmo que cambia de dirección con la mirada",
+    "change_key": "nystagmus_direction.direction_changing",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nistagmo espontáneo puro torsional",
+    "change_key": "nystagmus_direction.torsional_pure",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Cefalea/cervicalgia súbita e intensa",
+    "change_key": "headache_neck_pain_sudden_severe",
+    "escalates": true,
+    "feature": "headache_neck_pain_sudden_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Compromiso de conciencia",
+    "change_key": "altered_consciousness",
+    "escalates": true,
+    "feature": "altered_consciousness",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Hipoacusia súbita unilateral",
+    "change_key": "hearing_loss.sudden_unilateral",
+    "escalates": true,
+    "feature": "hearing_loss",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Presíncope o síncope",
+    "change_key": "presyncope_syncope",
+    "escalates": true,
+    "feature": "presyncope_syncope",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": true,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "ESCALAR",
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   }
+  ]
+ },
+ "amb-03-vestibular-migraine": {
+  "base_urgency": "ambulatoria",
+  "counterfactuals": [
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nuevo signo focal: diplopía",
+    "change_key": "focal_signs.diplopia",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nuevo signo focal: disartria",
+    "change_key": "focal_signs.dysarthria",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Ataxia troncal severa (no puede caminar)",
+    "change_key": "truncal_ataxia_severe",
+    "escalates": true,
+    "feature": "truncal_ataxia_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nistagmo que cambia de dirección con la mirada",
+    "change_key": "nystagmus_direction.direction_changing",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nistagmo espontáneo puro torsional",
+    "change_key": "nystagmus_direction.torsional_pure",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Cefalea/cervicalgia súbita e intensa",
+    "change_key": "headache_neck_pain_sudden_severe",
+    "escalates": true,
+    "feature": "headache_neck_pain_sudden_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Compromiso de conciencia",
+    "change_key": "altered_consciousness",
+    "escalates": true,
+    "feature": "altered_consciousness",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Hipoacusia súbita unilateral",
+    "change_key": "hearing_loss.sudden_unilateral",
+    "escalates": true,
+    "feature": "hearing_loss",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Presíncope o síncope",
+    "change_key": "presyncope_syncope",
+    "escalates": true,
+    "feature": "presyncope_syncope",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": true,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "ESCALAR",
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   }
+  ]
+ },
+ "amb-04-vestibular-neuritis": {
+  "base_urgency": "ambulatoria",
+  "counterfactuals": [
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nuevo signo focal: diplopía",
+    "change_key": "focal_signs.diplopia",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nuevo signo focal: disartria",
+    "change_key": "focal_signs.dysarthria",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Skew deviation presente",
+    "change_key": "skew_deviation",
+    "escalates": true,
+    "feature": "skew_deviation",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Ataxia troncal severa (no puede caminar)",
+    "change_key": "truncal_ataxia_severe",
+    "escalates": true,
+    "feature": "truncal_ataxia_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nistagmo que cambia de dirección con la mirada",
+    "change_key": "nystagmus_direction.direction_changing",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Nistagmo espontáneo puro torsional",
+    "change_key": "nystagmus_direction.torsional_pure",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Cefalea/cervicalgia súbita e intensa",
+    "change_key": "headache_neck_pain_sudden_severe",
+    "escalates": true,
+    "feature": "headache_neck_pain_sudden_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Hipoacusia súbita unilateral",
+    "change_key": "hearing_loss.sudden_unilateral",
+    "escalates": true,
+    "feature": "hearing_loss",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "ESCALAR",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Compromiso de conciencia",
+    "change_key": "altered_consciousness",
+    "escalates": true,
+    "feature": "altered_consciousness",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Presíncope o síncope",
+    "change_key": "presyncope_syncope",
+    "escalates": true,
+    "feature": "presyncope_syncope",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "ambulatoria",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": true,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "ESCALAR",
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   }
+  ]
+ },
+ "rule-01-avs-hints-central": {
+  "base_urgency": "inmediata",
+  "counterfactuals": [
+   {
+    "base_urgency": "inmediata",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "rule-02-vertical-ataxia": {
+  "base_urgency": "inmediata",
+  "counterfactuals": [
+   {
+    "base_urgency": "inmediata",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "rule-03-direction-changing-headache": {
+  "base_urgency": "inmediata",
+  "counterfactuals": [
+   {
+    "base_urgency": "inmediata",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "rule-04-focal-avs-vascular": {
+  "base_urgency": "inmediata",
+  "counterfactuals": [
+   {
+    "base_urgency": "inmediata",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "rule-05-avs-sudden-hearing": {
+  "base_urgency": "inmediata",
+  "counterfactuals": [
+   {
+    "base_urgency": "inmediata",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "rule-06-fever-meningism-consciousness": {
+  "base_urgency": "inmediata",
+  "counterfactuals": [
+   {
+    "base_urgency": "inmediata",
+    "change": "Nistagmo que cambia de dirección con la mirada",
+    "change_key": "nystagmus_direction.direction_changing",
+    "escalates": false,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   },
+   {
+    "base_urgency": "inmediata",
+    "change": "Nistagmo espontáneo puro torsional",
+    "change_key": "nystagmus_direction.torsional_pure",
+    "escalates": false,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   },
+   {
+    "base_urgency": "inmediata",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "rule-07-otitis-trauma-worsening": {
+  "base_urgency": "inmediata",
+  "counterfactuals": [
+   {
+    "base_urgency": "inmediata",
+    "change": "Nistagmo que cambia de dirección con la mirada",
+    "change_key": "nystagmus_direction.direction_changing",
+    "escalates": false,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   },
+   {
+    "base_urgency": "inmediata",
+    "change": "Nistagmo espontáneo puro torsional",
+    "change_key": "nystagmus_direction.torsional_pure",
+    "escalates": false,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "rule-08-cervical-carotid-cv": {
+  "base_urgency": "prioritaria",
+  "counterfactuals": [
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nuevo signo focal: diplopía",
+    "change_key": "focal_signs.diplopia",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nuevo signo focal: disartria",
+    "change_key": "focal_signs.dysarthria",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Ataxia troncal severa (no puede caminar)",
+    "change_key": "truncal_ataxia_severe",
+    "escalates": true,
+    "feature": "truncal_ataxia_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nistagmo que cambia de dirección con la mirada",
+    "change_key": "nystagmus_direction.direction_changing",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nistagmo espontáneo puro torsional",
+    "change_key": "nystagmus_direction.torsional_pure",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Cefalea/cervicalgia súbita e intensa",
+    "change_key": "headache_neck_pain_sudden_severe",
+    "escalates": true,
+    "feature": "headache_neck_pain_sudden_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Compromiso de conciencia",
+    "change_key": "altered_consciousness",
+    "escalates": true,
+    "feature": "altered_consciousness",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   }
+  ]
+ },
+ "trap-01-diplopia-bppv": {
+  "base_urgency": "inmediata",
+  "counterfactuals": [
+   {
+    "base_urgency": "inmediata",
+    "change": "Nistagmo que cambia de dirección con la mirada",
+    "change_key": "nystagmus_direction.direction_changing",
+    "escalates": false,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": false
+   },
+   {
+    "base_urgency": "inmediata",
+    "change": "Nistagmo espontáneo puro torsional",
+    "change_key": "nystagmus_direction.torsional_pure",
+    "escalates": false,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": false
+   },
+   {
+    "base_urgency": "inmediata",
+    "change": "Hipoacusia súbita unilateral",
+    "change_key": "hearing_loss.sudden_unilateral",
+    "escalates": false,
+    "feature": "hearing_loss",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": false
+   },
+   {
+    "base_urgency": "inmediata",
+    "change": "Presíncope o síncope",
+    "change_key": "presyncope_syncope",
+    "escalates": false,
+    "feature": "presyncope_syncope",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": false
+   },
+   {
+    "base_urgency": "inmediata",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "ESCALAR",
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "trap-02-contradictory-hints": {
+  "base_urgency": "inmediata",
+  "counterfactuals": [
+   {
+    "base_urgency": "inmediata",
+    "change": "Hipoacusia súbita unilateral",
+    "change_key": "hearing_loss.sudden_unilateral",
+    "escalates": false,
+    "feature": "hearing_loss",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": false
+   },
+   {
+    "base_urgency": "inmediata",
+    "change": "Presíncope o síncope",
+    "change_key": "presyncope_syncope",
+    "escalates": false,
+    "feature": "presyncope_syncope",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": false
+   },
+   {
+    "base_urgency": "inmediata",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "ESCALAR",
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "trap-03-empty": {
+  "base_urgency": "prioritaria",
+  "counterfactuals": [
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nuevo signo focal: diplopía",
+    "change_key": "focal_signs.diplopia",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nuevo signo focal: disartria",
+    "change_key": "focal_signs.dysarthria",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Ataxia troncal severa (no puede caminar)",
+    "change_key": "truncal_ataxia_severe",
+    "escalates": true,
+    "feature": "truncal_ataxia_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nistagmo que cambia de dirección con la mirada",
+    "change_key": "nystagmus_direction.direction_changing",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nistagmo espontáneo puro torsional",
+    "change_key": "nystagmus_direction.torsional_pure",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Cefalea/cervicalgia súbita e intensa",
+    "change_key": "headache_neck_pain_sudden_severe",
+    "escalates": true,
+    "feature": "headache_neck_pain_sudden_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Compromiso de conciencia",
+    "change_key": "altered_consciousness",
+    "escalates": true,
+    "feature": "altered_consciousness",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "trap-04-central-hints-peripheral-dx": {
+  "base_urgency": "inmediata",
+  "counterfactuals": [
+   {
+    "base_urgency": "inmediata",
+    "change": "Hipoacusia súbita unilateral",
+    "change_key": "hearing_loss.sudden_unilateral",
+    "escalates": false,
+    "feature": "hearing_loss",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   },
+   {
+    "base_urgency": "inmediata",
+    "change": "Presíncope o síncope",
+    "change_key": "presyncope_syncope",
+    "escalates": false,
+    "feature": "presyncope_syncope",
+    "forced_actions_added": [
+     "ESCALAR"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": false
+   },
+   {
+    "base_urgency": "inmediata",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "ESCALAR",
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "trap-05-confident-b3": {
+  "base_urgency": "prioritaria",
+  "counterfactuals": [
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nuevo signo focal: diplopía",
+    "change_key": "focal_signs.diplopia",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nuevo signo focal: disartria",
+    "change_key": "focal_signs.dysarthria",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Ataxia troncal severa (no puede caminar)",
+    "change_key": "truncal_ataxia_severe",
+    "escalates": true,
+    "feature": "truncal_ataxia_severe",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nistagmo que cambia de dirección con la mirada",
+    "change_key": "nystagmus_direction.direction_changing",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nistagmo espontáneo puro torsional",
+    "change_key": "nystagmus_direction.torsional_pure",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Cefalea/cervicalgia súbita e intensa",
+    "change_key": "headache_neck_pain_sudden_severe",
+    "escalates": true,
+    "feature": "headache_neck_pain_sudden_severe",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Compromiso de conciencia",
+    "change_key": "altered_consciousness",
+    "escalates": true,
+    "feature": "altered_consciousness",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "BLOQUEAR_EPLEY",
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "trap-06-trauma-bppv": {
+  "base_urgency": "prioritaria",
+  "counterfactuals": [
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nuevo signo focal: diplopía",
+    "change_key": "focal_signs.diplopia",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nuevo signo focal: disartria",
+    "change_key": "focal_signs.dysarthria",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Ataxia troncal severa (no puede caminar)",
+    "change_key": "truncal_ataxia_severe",
+    "escalates": true,
+    "feature": "truncal_ataxia_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nistagmo que cambia de dirección con la mirada",
+    "change_key": "nystagmus_direction.direction_changing",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nistagmo espontáneo puro torsional",
+    "change_key": "nystagmus_direction.torsional_pure",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Cefalea/cervicalgia súbita e intensa",
+    "change_key": "headache_neck_pain_sudden_severe",
+    "escalates": true,
+    "feature": "headache_neck_pain_sudden_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Compromiso de conciencia",
+    "change_key": "altered_consciousness",
+    "escalates": true,
+    "feature": "altered_consciousness",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D"
+    ],
+    "urgency_changed": true
+   }
+  ]
+ },
+ "trap-07-isolated-hearing-loss": {
+  "base_urgency": "prioritaria",
+  "counterfactuals": [
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nuevo signo focal: diplopía",
+    "change_key": "focal_signs.diplopia",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nuevo signo focal: disartria",
+    "change_key": "focal_signs.dysarthria",
+    "escalates": true,
+    "feature": "focal_signs",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Ataxia troncal severa (no puede caminar)",
+    "change_key": "truncal_ataxia_severe",
+    "escalates": true,
+    "feature": "truncal_ataxia_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nistagmo que cambia de dirección con la mirada",
+    "change_key": "nystagmus_direction.direction_changing",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Nistagmo espontáneo puro torsional",
+    "change_key": "nystagmus_direction.torsional_pure",
+    "escalates": true,
+    "feature": "nystagmus_direction",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE",
+     "NO_BENIGNO"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Cefalea/cervicalgia súbita e intensa",
+    "change_key": "headache_neck_pain_sudden_severe",
+    "escalates": true,
+    "feature": "headache_neck_pain_sudden_severe",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Compromiso de conciencia",
+    "change_key": "altered_consciousness",
+    "escalates": true,
+    "feature": "altered_consciousness",
+    "forced_actions_added": [
+     "DERIVAR_URGENTE"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": true
+   },
+   {
+    "base_urgency": "prioritaria",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "prioritaria",
+    "rails_fired": [
+     "R-ACCIONES",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ },
+ "trap-08-spontaneous-torsional": {
+  "base_urgency": "inmediata",
+  "counterfactuals": [
+   {
+    "base_urgency": "inmediata",
+    "change": "Trauma craneal/cervical reciente",
+    "change_key": "recent_head_neck_trauma",
+    "escalates": false,
+    "feature": "recent_head_neck_trauma",
+    "forced_actions_added": [
+     "PRECAUCION_EXAMEN"
+    ],
+    "new_urgency": "inmediata",
+    "rails_fired": [
+     "R-INV1",
+     "R-EPLEY-D",
+     "R-E2"
+    ],
+    "urgency_changed": false
+   }
+  ]
+ }
+}
