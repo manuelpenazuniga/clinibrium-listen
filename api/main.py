@@ -1,7 +1,8 @@
-"""Clinibrium Listen API — Phase 0 skeleton (SPECS §5.4).
+"""Clinibrium Listen API (SPECS §5.4).
 
-Endpoints now: `GET /api/health`, `GET /api/demo-cases`, `WS /ws/session/{id}` (echo).
-Workstream 1A replaces the WS echo with `api/listen/ws.py` + `routes.py`.
+Endpoints: `GET /api/health`, `GET /api/demo-cases`, `POST /api/session`,
+`POST /api/session/{id}/document`, `GET /api/session/{id}/receipt`,
+`WS /ws/session/{id}` (api/listen/routes.py + api/listen/ws.py).
 
 Run:  uv run uvicorn api.main:app --reload --port 8000
 """
@@ -18,12 +19,13 @@ _ENGINE = str(Path(__file__).resolve().parents[1] / "engine")
 if _ENGINE not in sys.path:
     sys.path.insert(0, _ENGINE)
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect  # noqa: E402
+from fastapi import FastAPI  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 
 from adapter import engine_version  # noqa: E402
 from api.catalog import load_catalog  # noqa: E402
 from api.demo_cases import load_demo_cases  # noqa: E402
+from api.listen import routes, ws  # noqa: E402
 
 DISCLAIMER = "Research prototype · Not for clinical use · The physician decides."
 
@@ -56,25 +58,8 @@ def create_app() -> FastAPI:
     def demo_cases() -> list[dict[str, Any]]:
         return load_demo_cases()
 
-    @app.websocket("/ws/session/{session_id}")
-    async def ws_session(ws: WebSocket, session_id: str) -> None:
-        """Phase 0 echo: JSON frames come back as `{"type":"echo",...}`,
-        binary frames as `{"type":"echo_bytes","n":<len>}`."""
-        await ws.accept()
-        try:
-            while True:
-                msg = await ws.receive()
-                if msg["type"] == "websocket.disconnect":
-                    break
-                if msg.get("bytes") is not None:
-                    await ws.send_json({"type": "echo_bytes", "session_id": session_id,
-                                        "n": len(msg["bytes"])})
-                elif msg.get("text") is not None:
-                    await ws.send_json({"type": "echo", "session_id": session_id,
-                                        "text": msg["text"]})
-        except WebSocketDisconnect:
-            pass
-
+    app.include_router(routes.router)
+    app.include_router(ws.router)
     return app
 
 
