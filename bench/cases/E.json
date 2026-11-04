@@ -1,0 +1,42 @@
+{
+  "id": "E",
+  "title_es": "Caso E — migraña vestibular",
+  "title_en": "Case E — vestibular migraine",
+  "turns": [
+    {
+      "turn_id": 1,
+      "start_ms": 0,
+      "end_ms": 5200,
+      "text": "Paciente de 34 años, con antecedente de migraña con aura desde la adolescencia."
+    },
+    {
+      "turn_id": 2,
+      "start_ms": 6000,
+      "end_ms": 12000,
+      "text": "Consulta por episodios espontáneos de vértigo, que duran minutos, acompañados de fotofobia y cefalea pulsátil."
+    },
+    {
+      "turn_id": 3,
+      "start_ms": 12800,
+      "end_ms": 18000,
+      "text": "Sin hipoacusia ni tinnitus. Al examen sin nistagmo, impulso cefálico normal, sin focalidad."
+    }
+  ],
+  "answers": {},
+  "documents": [],
+  "gold": {
+    "fields": {
+      "age_years": 34,
+      "migrainous_features": true,
+      "timing_pattern": "episodic_spontaneous",
+      "episode_duration": "minutes",
+      "hearing_loss": "none",
+      "tinnitus": false,
+      "nystagmus_direction": "none",
+      "head_impulse": "normal"
+    },
+    "urgency": "ambulatoria",
+    "top1_dx": "vestibular_migraine",
+    "first_question_key": null
+  }
+}

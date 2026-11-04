@@ -1,0 +1,41 @@
+{
+  "id": "A",
+  "title_es": "Caso A — VPPB posterior derecho",
+  "title_en": "Case A — right posterior BPPV",
+  "turns": [
+    {
+      "turn_id": 1,
+      "start_ms": 0,
+      "end_ms": 7000,
+      "text": "Paciente de 45 años, vértigo de segundos al girarse en la cama, sin síntomas neurológicos."
+    },
+    {
+      "turn_id": 2,
+      "start_ms": 7800,
+      "end_ms": 13000,
+      "text": "Episodios gatillados desde anteayer. Sin hipoacusia ni tinnitus, sin diplopía, sin disartria."
+    }
+  ],
+  "answers": {
+    "dix_hallpike": "Positivo derecho, torsional, se agota."
+  },
+  "documents": [],
+  "gold": {
+    "fields": {
+      "age_years": 45,
+      "duration": "seconds",
+      "trigger": "positional_head",
+      "timing_pattern": "episodic_triggered",
+      "hearing_loss": "none",
+      "tinnitus": false,
+      "focal_signs.diplopia": false,
+      "focal_signs.dysarthria": false,
+      "dix_hallpike": "right_positive",
+      "torsion_confirmed_by_clinician": true,
+      "nystagmus_fatigable": true
+    },
+    "urgency": "ambulatoria",
+    "top1_dx": "bppv_posterior",
+    "first_question_key": "dix_hallpike"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "id": "D",
+  "title_es": "Caso D — crisis tipo Ménière",
+  "title_en": "Case D — Ménière-like attacks",
+  "turns": [
+    {
+      "turn_id": 1,
+      "start_ms": 0,
+      "end_ms": 8400,
+      "text": "Mujer de 52 años, consulta por crisis espontáneas de vértigo que duran horas, lleva cuatro episodios en los últimos dos meses."
+    },
+    {
+      "turn_id": 2,
+      "start_ms": 9200,
+      "end_ms": 16400,
+      "text": "Durante las crisis siente el oído derecho tapado, con zumbido, y nota la audición fluctuante de ese lado."
+    },
+    {
+      "turn_id": 3,
+      "start_ms": 17200,
+      "end_ms": 22400,
+      "text": "Entre crisis queda bien. Sin cefalea, sin diplopía ni disartria, examen neurológico normal."
+    }
+  ],
+  "answers": {},
+  "documents": [],
+  "gold": {
+    "fields": {
+      "age_years": 52,
+      "timing_pattern": "episodic_spontaneous",
+      "episode_duration": "hours",
+      "episode_count": 4,
+      "aural_fullness": true,
+      "tinnitus": true,
+      "hearing_loss": "fluctuating",
+      "focal_signs.diplopia": false,
+      "focal_signs.dysarthria": false
+    },
+    "urgency": "ambulatoria",
+    "top1_dx": "meniere",
+    "first_question_key": null
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "G",
+  "title_es": "Caso G — neuritis vestibular con muchas negaciones",
+  "title_en": "Case G — vestibular neuritis, negation-heavy",
+  "turns": [
+    {
+      "turn_id": 1,
+      "start_ms": 0,
+      "end_ms": 6000,
+      "text": "Mujer de 41 años, vértigo continuo desde hace 6 horas, de inicio gradual, con náuseas."
+    },
+    {
+      "turn_id": 2,
+      "start_ms": 6800,
+      "end_ms": 12000,
+      "text": "Niega diplopía, niega disartria, no hay disfagia, sin debilidad de extremidades, sin hormigueo."
+    },
+    {
+      "turn_id": 3,
+      "start_ms": 12800,
+      "end_ms": 18000,
+      "text": "Sin cefalea súbita, sin hipoacusia ni tinnitus, afebril. No impresiona compromiso de conciencia."
+    },
+    {
+      "turn_id": 4,
+      "start_ms": 18800,
+      "end_ms": 24800,
+      "text": "Nistagmo horizontal que se suprime con la fijación, impulso cefálico alterado a izquierda, sin skew."
+    }
+  ],
+  "answers": {},
+  "documents": [],
+  "gold": {
+    "fields": {
+      "age_years": 41,
+      "timing_pattern": "acute_continuous",
+      "duration": "hours",
+      "onset": "gradual",
+      "context.last_known_well_minutes_ago": 360,
+      "focal_signs.diplopia": false,
+      "focal_signs.dysarthria": false,
+      "focal_signs.dysphagia": false,
+      "focal_signs.limb_weakness": false,
+      "focal_signs.numbness": false,
+      "headache_neck_pain_sudden_severe": false,
+      "hearing_loss": "none",
+      "tinnitus": false,
+      "fever": false,
+      "altered_consciousness": false,
+      "nystagmus_direction": "horizontal",
+      "nystagmus_suppressed_by_fixation": true,
+      "head_impulse": "abnormal_corrective_saccade",
+      "skew_deviation": false
+    },
+    "urgency": "ambulatoria",
+    "top1_dx": "vestibular_neuritis",
+    "first_question_key": null
+  }
+}

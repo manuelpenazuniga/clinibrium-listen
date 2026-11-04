@@ -1,0 +1,43 @@
+{
+  "id": "I",
+  "title_es": "Caso I — SVA con dolor cervical súbito enterrado",
+  "title_en": "Case I — AVS with buried sudden neck pain",
+  "turns": [
+    {
+      "turn_id": 1,
+      "start_ms": 0,
+      "end_ms": 6400,
+      "text": "Paciente de 47 años, consulta por vértigo continuo de inicio súbito hace cuatro horas, con náuseas."
+    },
+    {
+      "turn_id": 2,
+      "start_ms": 7200,
+      "end_ms": 16800,
+      "text": "Estaba en el gimnasio levantando pesas. Comenta, casi al pasar, que antes del vértigo tuvo un dolor de cuello súbito en el lado izquierdo."
+    },
+    {
+      "turn_id": 3,
+      "start_ms": 17600,
+      "end_ms": 20800,
+      "text": "Al examen nistagmo horizontal, sin hipoacusia, sin diplopía."
+    }
+  ],
+  "answers": {},
+  "documents": [],
+  "gold": {
+    "fields": {
+      "age_years": 47,
+      "timing_pattern": "acute_continuous",
+      "onset": "sudden",
+      "duration": "hours",
+      "context.last_known_well_minutes_ago": 240,
+      "headache_neck_pain_sudden_severe": true,
+      "nystagmus_direction": "horizontal",
+      "hearing_loss": "none",
+      "focal_signs.diplopia": false
+    },
+    "urgency": "inmediata",
+    "top1_dx": null,
+    "first_question_key": null
+  }
+}

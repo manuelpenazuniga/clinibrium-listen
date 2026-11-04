@@ -1,0 +1,41 @@
+{
+  "id": "J",
+  "title_es": "Caso J — presíncope consultado como “mareo”",
+  "title_en": "Case J — presyncope presenting as “dizziness”",
+  "turns": [
+    {
+      "turn_id": 1,
+      "start_ms": 0,
+      "end_ms": 8400,
+      "text": "Paciente de 74 años, consulta por mareo al ponerse de pie, siente que se va a desmayar, sin sensación de giro."
+    },
+    {
+      "turn_id": 2,
+      "start_ms": 9200,
+      "end_ms": 13200,
+      "text": "Refiere palpitaciones antes de los episodios. Toma atenolol y amlodipino."
+    },
+    {
+      "turn_id": 3,
+      "start_ms": 14000,
+      "end_ms": 16400,
+      "text": "Al examen sin nistagmo, Dix-Hallpike negativo."
+    }
+  ],
+  "answers": {},
+  "documents": [],
+  "gold": {
+    "fields": {
+      "age_years": 74,
+      "trigger": "orthostatic",
+      "presyncope_syncope": true,
+      "palpitations": true,
+      "context.medications": "atenolol y amlodipino",
+      "nystagmus_direction": "none",
+      "dix_hallpike": "negative"
+    },
+    "urgency": "prioritaria",
+    "top1_dx": "cardiogenic_suspected",
+    "first_question_key": null
+  }
+}
