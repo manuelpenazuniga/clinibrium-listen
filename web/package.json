@@ -6,9 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
+    "lint": "node scripts/sync-catalog.mjs --check && eslint .",
     "typecheck": "next typegen && tsc --noEmit",
-    "gen:contracts": "bash ../scripts/gen_contracts.sh"
+    "gen:contracts": "bash ../scripts/gen_contracts.sh",
+    "sync:catalog": "node scripts/sync-catalog.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
