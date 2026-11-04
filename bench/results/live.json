@@ -1,0 +1,1575 @@
+{
+  "mode": "live",
+  "generated_at": "2026-11-04T11:36:16Z",
+  "engine_version": "0.2.0-S1-P+6b99864626e1",
+  "muse_model": "muse-spark-1.3",
+  "n_cases": 12,
+  "planned_calls": 37,
+  "planner": "available-not-wired",
+  "systems": {
+    "baseline": {
+      "key_accuracy": 0.938,
+      "key_precision": 0.955,
+      "red_flag_recall": 0.8,
+      "negation_accuracy": 0.972,
+      "negation_flips": 0,
+      "urgency_agreement": 0.917,
+      "under_triage": 1,
+      "top1_agreement": 1.0,
+      "questions_asked": null,
+      "calls": 37,
+      "latency_ms_mean": 3.95,
+      "latency_ms_p95": 6.83,
+      "est_tokens_in": 0,
+      "est_tokens_out": 0,
+      "cost_usd": 0.0,
+      "dropped_deltas": 0
+    },
+    "muse": {
+      "key_accuracy": 0.973,
+      "key_precision": 0.902,
+      "red_flag_recall": 1.0,
+      "negation_accuracy": 1.0,
+      "negation_flips": 0,
+      "urgency_agreement": 1.0,
+      "under_triage": 0,
+      "top1_agreement": 1.0,
+      "questions_asked": null,
+      "calls": 37,
+      "latency_ms_mean": 3872.78,
+      "latency_ms_p95": 5752.37,
+      "est_tokens_in": 15797,
+      "est_tokens_out": 5519,
+      "cost_usd": null,
+      "dropped_deltas": 0
+    }
+  },
+  "per_key": {
+    "baseline": {
+      "age_years": {
+        "n": 12,
+        "correct": 12
+      },
+      "altered_consciousness": {
+        "n": 1,
+        "correct": 1
+      },
+      "aural_fullness": {
+        "n": 1,
+        "correct": 0
+      },
+      "context.last_known_well_minutes_ago": {
+        "n": 4,
+        "correct": 4
+      },
+      "context.medications": {
+        "n": 1,
+        "correct": 1
+      },
+      "dix_hallpike": {
+        "n": 4,
+        "correct": 3
+      },
+      "duration": {
+        "n": 6,
+        "correct": 6
+      },
+      "episode_count": {
+        "n": 2,
+        "correct": 1
+      },
+      "episode_duration": {
+        "n": 2,
+        "correct": 2
+      },
+      "fever": {
+        "n": 1,
+        "correct": 1
+      },
+      "focal_signs.diplopia": {
+        "n": 8,
+        "correct": 8
+      },
+      "focal_signs.dysarthria": {
+        "n": 5,
+        "correct": 4
+      },
+      "focal_signs.dysphagia": {
+        "n": 1,
+        "correct": 1
+      },
+      "focal_signs.limb_weakness": {
+        "n": 1,
+        "correct": 1
+      },
+      "focal_signs.numbness": {
+        "n": 1,
+        "correct": 1
+      },
+      "head_impulse": {
+        "n": 4,
+        "correct": 4
+      },
+      "headache_neck_pain_sudden_severe": {
+        "n": 2,
+        "correct": 2
+      },
+      "hearing_loss": {
+        "n": 10,
+        "correct": 9
+      },
+      "migrainous_features": {
+        "n": 1,
+        "correct": 1
+      },
+      "nystagmus_direction": {
+        "n": 7,
+        "correct": 7
+      },
+      "nystagmus_fatigable": {
+        "n": 3,
+        "correct": 3
+      },
+      "nystagmus_suppressed_by_fixation": {
+        "n": 3,
+        "correct": 3
+      },
+      "onset": {
+        "n": 4,
+        "correct": 3
+      },
+      "palpitations": {
+        "n": 1,
+        "correct": 1
+      },
+      "presyncope_syncope": {
+        "n": 1,
+        "correct": 0
+      },
+      "skew_deviation": {
+        "n": 1,
+        "correct": 1
+      },
+      "timing_pattern": {
+        "n": 9,
+        "correct": 9
+      },
+      "tinnitus": {
+        "n": 7,
+        "correct": 7
+      },
+      "torsion_confirmed_by_clinician": {
+        "n": 3,
+        "correct": 3
+      },
+      "trigger": {
+        "n": 5,
+        "correct": 5
+      },
+      "vascular_risk_factors.diabetes": {
+        "n": 1,
+        "correct": 1
+      },
+      "vascular_risk_factors.hypertension": {
+        "n": 1,
+        "correct": 1
+      }
+    },
+    "muse": {
+      "age_years": {
+        "n": 12,
+        "correct": 12
+      },
+      "altered_consciousness": {
+        "n": 1,
+        "correct": 1
+      },
+      "aural_fullness": {
+        "n": 1,
+        "correct": 1
+      },
+      "context.last_known_well_minutes_ago": {
+        "n": 4,
+        "correct": 3
+      },
+      "context.medications": {
+        "n": 1,
+        "correct": 1
+      },
+      "dix_hallpike": {
+        "n": 4,
+        "correct": 4
+      },
+      "duration": {
+        "n": 6,
+        "correct": 5
+      },
+      "episode_count": {
+        "n": 2,
+        "correct": 2
+      },
+      "episode_duration": {
+        "n": 2,
+        "correct": 2
+      },
+      "fever": {
+        "n": 1,
+        "correct": 1
+      },
+      "focal_signs.diplopia": {
+        "n": 8,
+        "correct": 8
+      },
+      "focal_signs.dysarthria": {
+        "n": 5,
+        "correct": 5
+      },
+      "focal_signs.dysphagia": {
+        "n": 1,
+        "correct": 1
+      },
+      "focal_signs.limb_weakness": {
+        "n": 1,
+        "correct": 1
+      },
+      "focal_signs.numbness": {
+        "n": 1,
+        "correct": 1
+      },
+      "head_impulse": {
+        "n": 4,
+        "correct": 4
+      },
+      "headache_neck_pain_sudden_severe": {
+        "n": 2,
+        "correct": 2
+      },
+      "hearing_loss": {
+        "n": 10,
+        "correct": 10
+      },
+      "migrainous_features": {
+        "n": 1,
+        "correct": 1
+      },
+      "nystagmus_direction": {
+        "n": 7,
+        "correct": 7
+      },
+      "nystagmus_fatigable": {
+        "n": 3,
+        "correct": 3
+      },
+      "nystagmus_suppressed_by_fixation": {
+        "n": 3,
+        "correct": 3
+      },
+      "onset": {
+        "n": 4,
+        "correct": 3
+      },
+      "palpitations": {
+        "n": 1,
+        "correct": 1
+      },
+      "presyncope_syncope": {
+        "n": 1,
+        "correct": 1
+      },
+      "skew_deviation": {
+        "n": 1,
+        "correct": 1
+      },
+      "timing_pattern": {
+        "n": 9,
+        "correct": 9
+      },
+      "tinnitus": {
+        "n": 7,
+        "correct": 7
+      },
+      "torsion_confirmed_by_clinician": {
+        "n": 3,
+        "correct": 3
+      },
+      "trigger": {
+        "n": 5,
+        "correct": 5
+      },
+      "vascular_risk_factors.diabetes": {
+        "n": 1,
+        "correct": 1
+      },
+      "vascular_risk_factors.hypertension": {
+        "n": 1,
+        "correct": 1
+      }
+    }
+  },
+  "dropped_deltas": {
+    "baseline": [],
+    "muse": []
+  },
+  "cases": [
+    {
+      "id": "A",
+      "title_es": "Caso A — VPPB posterior derecho",
+      "title_en": "Case A — right posterior BPPV",
+      "gold_urgency": "ambulatoria",
+      "systems": {
+        "baseline": {
+          "predicted_fields": {
+            "duration": "seconds",
+            "trigger": "positional_head",
+            "age_years": 45,
+            "timing_pattern": "episodic_triggered",
+            "hearing_loss": "none",
+            "tinnitus": false,
+            "focal_signs.dysarthria": false,
+            "focal_signs.diplopia": false,
+            "nystagmus_fatigable": true,
+            "dix_hallpike": "right_positive",
+            "torsion_confirmed_by_clinician": true
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "duration": true,
+            "trigger": true,
+            "timing_pattern": true,
+            "hearing_loss": true,
+            "tinnitus": true,
+            "focal_signs.diplopia": true,
+            "focal_signs.dysarthria": true,
+            "dix_hallpike": true,
+            "torsion_confirmed_by_clinician": true,
+            "nystagmus_fatigable": true
+          },
+          "n_gold_keys": 11,
+          "n_correct": 11,
+          "n_predicted_keys": 11,
+          "missing": [],
+          "wrong": [],
+          "extra": [],
+          "n_gold_negatives": 4,
+          "n_negatives_correct": 4,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "bppv_posterior",
+          "top1_agrees": true,
+          "blocked_actions": []
+        },
+        "muse": {
+          "predicted_fields": {
+            "age_years": 45,
+            "duration": "seconds",
+            "episode_duration": "seconds",
+            "trigger": "positional_head",
+            "timing_pattern": "episodic_triggered",
+            "hearing_loss": "none",
+            "tinnitus": false,
+            "focal_signs.diplopia": false,
+            "focal_signs.dysarthria": false,
+            "dix_hallpike": "right_positive",
+            "torsion_confirmed_by_clinician": true,
+            "nystagmus_fatigable": true
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "duration": true,
+            "trigger": true,
+            "timing_pattern": true,
+            "hearing_loss": true,
+            "tinnitus": true,
+            "focal_signs.diplopia": true,
+            "focal_signs.dysarthria": true,
+            "dix_hallpike": true,
+            "torsion_confirmed_by_clinician": true,
+            "nystagmus_fatigable": true
+          },
+          "n_gold_keys": 11,
+          "n_correct": 11,
+          "n_predicted_keys": 12,
+          "missing": [],
+          "wrong": [],
+          "extra": [
+            "episode_duration"
+          ],
+          "n_gold_negatives": 4,
+          "n_negatives_correct": 4,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "bppv_posterior",
+          "top1_agrees": true,
+          "blocked_actions": []
+        }
+      }
+    },
+    {
+      "id": "B",
+      "title_es": "Caso B — síndrome vestibular agudo con diplopía enterrada",
+      "title_en": "Case B — acute vestibular syndrome with buried diplopia",
+      "gold_urgency": "inmediata",
+      "systems": {
+        "baseline": {
+          "predicted_fields": {
+            "duration": "hours",
+            "timing_pattern": "acute_continuous",
+            "context.last_known_well_minutes_ago": 720,
+            "age_years": 68,
+            "vascular_risk_factors.hypertension": true,
+            "vascular_risk_factors.diabetes": true,
+            "onset": "sudden",
+            "focal_signs.diplopia": true,
+            "hearing_loss": "none",
+            "nystagmus_direction": "horizontal"
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "vascular_risk_factors.hypertension": true,
+            "vascular_risk_factors.diabetes": true,
+            "timing_pattern": true,
+            "duration": true,
+            "onset": true,
+            "focal_signs.diplopia": true,
+            "nystagmus_direction": true,
+            "hearing_loss": true,
+            "context.last_known_well_minutes_ago": true
+          },
+          "n_gold_keys": 10,
+          "n_correct": 10,
+          "n_predicted_keys": 10,
+          "missing": [],
+          "wrong": [],
+          "extra": [],
+          "n_gold_negatives": 1,
+          "n_negatives_correct": 1,
+          "negation_flips": [],
+          "gold_red_flags": [
+            "A5",
+            "A7"
+          ],
+          "red_flags": [
+            "A5",
+            "A7"
+          ],
+          "red_flags_found": [
+            "A5",
+            "A7"
+          ],
+          "urgency": "inmediata",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_neuritis",
+          "top1_agrees": null,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        },
+        "muse": {
+          "predicted_fields": {
+            "age_years": 68,
+            "vascular_risk_factors.hypertension": true,
+            "vascular_risk_factors.diabetes": true,
+            "duration": "hours",
+            "timing_pattern": "acute_continuous",
+            "context.last_known_well_minutes_ago": 720,
+            "onset": "sudden",
+            "headache_neck_pain_sudden_severe": false,
+            "focal_signs.diplopia": true,
+            "nystagmus_direction": "horizontal",
+            "hearing_loss": "none"
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "vascular_risk_factors.hypertension": true,
+            "vascular_risk_factors.diabetes": true,
+            "timing_pattern": true,
+            "duration": true,
+            "onset": true,
+            "focal_signs.diplopia": true,
+            "nystagmus_direction": true,
+            "hearing_loss": true,
+            "context.last_known_well_minutes_ago": true
+          },
+          "n_gold_keys": 10,
+          "n_correct": 10,
+          "n_predicted_keys": 11,
+          "missing": [],
+          "wrong": [],
+          "extra": [
+            "headache_neck_pain_sudden_severe"
+          ],
+          "n_gold_negatives": 1,
+          "n_negatives_correct": 1,
+          "negation_flips": [],
+          "gold_red_flags": [
+            "A5",
+            "A7"
+          ],
+          "red_flags": [
+            "A5",
+            "A7"
+          ],
+          "red_flags_found": [
+            "A5",
+            "A7"
+          ],
+          "urgency": "inmediata",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_neuritis",
+          "top1_agrees": null,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C",
+      "title_es": "Caso C — VPPB posterior izquierdo, adulta mayor",
+      "title_en": "Case C — left posterior BPPV, older woman",
+      "gold_urgency": "ambulatoria",
+      "systems": {
+        "baseline": {
+          "predicted_fields": {
+            "duration": "seconds",
+            "trigger": "positional_head",
+            "context.last_known_well_minutes_ago": 4320,
+            "age_years": 72,
+            "torsion_confirmed_by_clinician": true,
+            "timing_pattern": "episodic_triggered",
+            "tinnitus": false,
+            "focal_signs.dysarthria": false,
+            "focal_signs.diplopia": false,
+            "nystagmus_fatigable": true,
+            "dix_hallpike": "left_positive"
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "trigger": true,
+            "timing_pattern": true,
+            "duration": true,
+            "hearing_loss": false,
+            "tinnitus": true,
+            "focal_signs.dysarthria": true,
+            "focal_signs.diplopia": true,
+            "dix_hallpike": true,
+            "torsion_confirmed_by_clinician": true,
+            "nystagmus_fatigable": true,
+            "context.last_known_well_minutes_ago": true
+          },
+          "n_gold_keys": 12,
+          "n_correct": 11,
+          "n_predicted_keys": 11,
+          "missing": [
+            "hearing_loss"
+          ],
+          "wrong": [],
+          "extra": [],
+          "n_gold_negatives": 4,
+          "n_negatives_correct": 3,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "bppv_posterior",
+          "top1_agrees": true,
+          "blocked_actions": []
+        },
+        "muse": {
+          "predicted_fields": {
+            "age_years": 72,
+            "duration": "days",
+            "trigger": "positional_head",
+            "timing_pattern": "episodic_triggered",
+            "episode_duration": "seconds",
+            "hearing_loss": "none",
+            "tinnitus": false,
+            "focal_signs.dysarthria": false,
+            "focal_signs.diplopia": false,
+            "dix_hallpike": "left_positive",
+            "torsion_confirmed_by_clinician": true,
+            "nystagmus_fatigable": true
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "trigger": true,
+            "timing_pattern": true,
+            "duration": false,
+            "hearing_loss": true,
+            "tinnitus": true,
+            "focal_signs.dysarthria": true,
+            "focal_signs.diplopia": true,
+            "dix_hallpike": true,
+            "torsion_confirmed_by_clinician": true,
+            "nystagmus_fatigable": true,
+            "context.last_known_well_minutes_ago": false
+          },
+          "n_gold_keys": 12,
+          "n_correct": 10,
+          "n_predicted_keys": 12,
+          "missing": [
+            "context.last_known_well_minutes_ago"
+          ],
+          "wrong": [
+            "duration"
+          ],
+          "extra": [
+            "episode_duration"
+          ],
+          "n_gold_negatives": 4,
+          "n_negatives_correct": 4,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "bppv_posterior",
+          "top1_agrees": true,
+          "blocked_actions": []
+        }
+      }
+    },
+    {
+      "id": "D",
+      "title_es": "Caso D — crisis tipo Ménière",
+      "title_en": "Case D — Ménière-like attacks",
+      "gold_urgency": "ambulatoria",
+      "systems": {
+        "baseline": {
+          "predicted_fields": {
+            "duration": "hours",
+            "timing_pattern": "episodic_spontaneous",
+            "episode_count": 4,
+            "episode_duration": "hours",
+            "age_years": 52,
+            "hearing_loss": "fluctuating",
+            "tinnitus": true,
+            "focal_signs.dysarthria": false,
+            "focal_signs.diplopia": false
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "timing_pattern": true,
+            "episode_duration": true,
+            "episode_count": true,
+            "aural_fullness": false,
+            "tinnitus": true,
+            "hearing_loss": true,
+            "focal_signs.diplopia": true,
+            "focal_signs.dysarthria": true
+          },
+          "n_gold_keys": 9,
+          "n_correct": 8,
+          "n_predicted_keys": 9,
+          "missing": [
+            "aural_fullness"
+          ],
+          "wrong": [],
+          "extra": [
+            "duration"
+          ],
+          "n_gold_negatives": 2,
+          "n_negatives_correct": 2,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "meniere",
+          "top1_agrees": true,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        },
+        "muse": {
+          "predicted_fields": {
+            "age_years": 52,
+            "trigger": "spontaneous",
+            "episode_duration": "hours",
+            "episode_count": 4,
+            "timing_pattern": "episodic_spontaneous",
+            "aural_fullness": true,
+            "tinnitus": true,
+            "hearing_loss": "fluctuating",
+            "headache_neck_pain_sudden_severe": false,
+            "focal_signs.diplopia": false,
+            "focal_signs.dysarthria": false
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "timing_pattern": true,
+            "episode_duration": true,
+            "episode_count": true,
+            "aural_fullness": true,
+            "tinnitus": true,
+            "hearing_loss": true,
+            "focal_signs.diplopia": true,
+            "focal_signs.dysarthria": true
+          },
+          "n_gold_keys": 9,
+          "n_correct": 9,
+          "n_predicted_keys": 11,
+          "missing": [],
+          "wrong": [],
+          "extra": [
+            "headache_neck_pain_sudden_severe",
+            "trigger"
+          ],
+          "n_gold_negatives": 2,
+          "n_negatives_correct": 2,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "meniere",
+          "top1_agrees": true,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        }
+      }
+    },
+    {
+      "id": "E",
+      "title_es": "Caso E — migraña vestibular",
+      "title_en": "Case E — vestibular migraine",
+      "gold_urgency": "ambulatoria",
+      "systems": {
+        "baseline": {
+          "predicted_fields": {
+            "age_years": 34,
+            "migrainous_features": true,
+            "duration": "minutes",
+            "timing_pattern": "episodic_spontaneous",
+            "episode_duration": "minutes",
+            "hearing_loss": "none",
+            "tinnitus": false,
+            "head_impulse": "normal",
+            "nystagmus_direction": "none"
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "migrainous_features": true,
+            "timing_pattern": true,
+            "episode_duration": true,
+            "hearing_loss": true,
+            "tinnitus": true,
+            "nystagmus_direction": true,
+            "head_impulse": true
+          },
+          "n_gold_keys": 8,
+          "n_correct": 8,
+          "n_predicted_keys": 9,
+          "missing": [],
+          "wrong": [],
+          "extra": [
+            "duration"
+          ],
+          "n_gold_negatives": 3,
+          "n_negatives_correct": 3,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_migraine",
+          "top1_agrees": true,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        },
+        "muse": {
+          "predicted_fields": {
+            "age_years": 34,
+            "migrainous_features": true,
+            "trigger": "spontaneous",
+            "episode_duration": "minutes",
+            "timing_pattern": "episodic_spontaneous",
+            "hearing_loss": "none",
+            "tinnitus": false,
+            "nystagmus_direction": "none",
+            "head_impulse": "normal"
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "migrainous_features": true,
+            "timing_pattern": true,
+            "episode_duration": true,
+            "hearing_loss": true,
+            "tinnitus": true,
+            "nystagmus_direction": true,
+            "head_impulse": true
+          },
+          "n_gold_keys": 8,
+          "n_correct": 8,
+          "n_predicted_keys": 9,
+          "missing": [],
+          "wrong": [],
+          "extra": [
+            "trigger"
+          ],
+          "n_gold_negatives": 3,
+          "n_negatives_correct": 3,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_migraine",
+          "top1_agrees": true,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        }
+      }
+    },
+    {
+      "id": "F",
+      "title_es": "Caso F — SVA con disartria transitoria referida por la familia",
+      "title_en": "Case F — AVS with transient dysarthria reported by family",
+      "gold_urgency": "inmediata",
+      "systems": {
+        "baseline": {
+          "predicted_fields": {
+            "timing_pattern": "acute_continuous",
+            "age_years": 55,
+            "head_impulse": "abnormal_corrective_saccade",
+            "nystagmus_direction": "horizontal",
+            "nystagmus_suppressed_by_fixation": true,
+            "hearing_loss": "none"
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "timing_pattern": true,
+            "nystagmus_direction": true,
+            "nystagmus_suppressed_by_fixation": true,
+            "head_impulse": true,
+            "focal_signs.dysarthria": false,
+            "hearing_loss": true
+          },
+          "n_gold_keys": 7,
+          "n_correct": 6,
+          "n_predicted_keys": 6,
+          "missing": [
+            "focal_signs.dysarthria"
+          ],
+          "wrong": [],
+          "extra": [],
+          "n_gold_negatives": 1,
+          "n_negatives_correct": 1,
+          "negation_flips": [],
+          "gold_red_flags": [
+            "A5"
+          ],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": false,
+          "under_triage": true,
+          "top1_dx": "vestibular_neuritis",
+          "top1_agrees": null,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        },
+        "muse": {
+          "predicted_fields": {
+            "age_years": 55,
+            "timing_pattern": "acute_continuous",
+            "nystagmus_direction": "horizontal",
+            "nystagmus_suppressed_by_fixation": true,
+            "head_impulse": "abnormal_corrective_saccade",
+            "focal_signs.dysarthria": true,
+            "hearing_loss": "none"
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "timing_pattern": true,
+            "nystagmus_direction": true,
+            "nystagmus_suppressed_by_fixation": true,
+            "head_impulse": true,
+            "focal_signs.dysarthria": true,
+            "hearing_loss": true
+          },
+          "n_gold_keys": 7,
+          "n_correct": 7,
+          "n_predicted_keys": 7,
+          "missing": [],
+          "wrong": [],
+          "extra": [],
+          "n_gold_negatives": 1,
+          "n_negatives_correct": 1,
+          "negation_flips": [],
+          "gold_red_flags": [
+            "A5"
+          ],
+          "red_flags": [
+            "A5"
+          ],
+          "red_flags_found": [
+            "A5"
+          ],
+          "urgency": "inmediata",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_neuritis",
+          "top1_agrees": null,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        }
+      }
+    },
+    {
+      "id": "G",
+      "title_es": "Caso G — neuritis vestibular con muchas negaciones",
+      "title_en": "Case G — vestibular neuritis, negation-heavy",
+      "gold_urgency": "ambulatoria",
+      "systems": {
+        "baseline": {
+          "predicted_fields": {
+            "duration": "hours",
+            "onset": "sudden",
+            "timing_pattern": "acute_continuous",
+            "context.last_known_well_minutes_ago": 360,
+            "age_years": 41,
+            "focal_signs.dysarthria": false,
+            "focal_signs.dysphagia": false,
+            "focal_signs.diplopia": false,
+            "focal_signs.limb_weakness": false,
+            "focal_signs.numbness": false,
+            "hearing_loss": "none",
+            "tinnitus": false,
+            "headache_neck_pain_sudden_severe": false,
+            "fever": false,
+            "altered_consciousness": false,
+            "head_impulse": "abnormal_corrective_saccade",
+            "nystagmus_direction": "horizontal",
+            "skew_deviation": false,
+            "nystagmus_suppressed_by_fixation": true
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "timing_pattern": true,
+            "duration": true,
+            "onset": false,
+            "context.last_known_well_minutes_ago": true,
+            "focal_signs.diplopia": true,
+            "focal_signs.dysarthria": true,
+            "focal_signs.dysphagia": true,
+            "focal_signs.limb_weakness": true,
+            "focal_signs.numbness": true,
+            "headache_neck_pain_sudden_severe": true,
+            "hearing_loss": true,
+            "tinnitus": true,
+            "fever": true,
+            "altered_consciousness": true,
+            "nystagmus_direction": true,
+            "nystagmus_suppressed_by_fixation": true,
+            "head_impulse": true,
+            "skew_deviation": true
+          },
+          "n_gold_keys": 19,
+          "n_correct": 18,
+          "n_predicted_keys": 19,
+          "missing": [],
+          "wrong": [
+            "onset"
+          ],
+          "extra": [],
+          "n_gold_negatives": 11,
+          "n_negatives_correct": 11,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_neuritis",
+          "top1_agrees": true,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        },
+        "muse": {
+          "predicted_fields": {
+            "age_years": 41,
+            "duration": "hours",
+            "onset": "gradual",
+            "timing_pattern": "acute_continuous",
+            "context.last_known_well_minutes_ago": 360,
+            "focal_signs.diplopia": false,
+            "focal_signs.dysarthria": false,
+            "focal_signs.dysphagia": false,
+            "focal_signs.limb_weakness": false,
+            "focal_signs.numbness": false,
+            "headache_neck_pain_sudden_severe": false,
+            "hearing_loss": "none",
+            "tinnitus": false,
+            "fever": false,
+            "altered_consciousness": false,
+            "nystagmus_direction": "horizontal",
+            "nystagmus_suppressed_by_fixation": true,
+            "head_impulse": "abnormal_corrective_saccade",
+            "skew_deviation": false
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "timing_pattern": true,
+            "duration": true,
+            "onset": true,
+            "context.last_known_well_minutes_ago": true,
+            "focal_signs.diplopia": true,
+            "focal_signs.dysarthria": true,
+            "focal_signs.dysphagia": true,
+            "focal_signs.limb_weakness": true,
+            "focal_signs.numbness": true,
+            "headache_neck_pain_sudden_severe": true,
+            "hearing_loss": true,
+            "tinnitus": true,
+            "fever": true,
+            "altered_consciousness": true,
+            "nystagmus_direction": true,
+            "nystagmus_suppressed_by_fixation": true,
+            "head_impulse": true,
+            "skew_deviation": true
+          },
+          "n_gold_keys": 19,
+          "n_correct": 19,
+          "n_predicted_keys": 19,
+          "missing": [],
+          "wrong": [],
+          "extra": [],
+          "n_gold_negatives": 11,
+          "n_negatives_correct": 11,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_neuritis",
+          "top1_agrees": true,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        }
+      }
+    },
+    {
+      "id": "H",
+      "title_es": "Caso H — VPPB con correcciones en el dictado",
+      "title_en": "Case H — BPPV with dictation corrections",
+      "gold_urgency": "ambulatoria",
+      "systems": {
+        "baseline": {
+          "predicted_fields": {
+            "duration": "seconds",
+            "trigger": "positional_head",
+            "episode_count": 3,
+            "age_years": 38,
+            "hearing_loss": "none",
+            "tinnitus": false,
+            "focal_signs.diplopia": false,
+            "nystagmus_fatigable": true,
+            "dix_hallpike": "right_positive",
+            "torsion_confirmed_by_clinician": true
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "duration": true,
+            "trigger": true,
+            "episode_count": false,
+            "hearing_loss": true,
+            "tinnitus": true,
+            "focal_signs.diplopia": true,
+            "dix_hallpike": false,
+            "torsion_confirmed_by_clinician": true,
+            "nystagmus_fatigable": true
+          },
+          "n_gold_keys": 10,
+          "n_correct": 8,
+          "n_predicted_keys": 10,
+          "missing": [],
+          "wrong": [
+            "dix_hallpike",
+            "episode_count"
+          ],
+          "extra": [],
+          "n_gold_negatives": 3,
+          "n_negatives_correct": 3,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "bppv_posterior",
+          "top1_agrees": true,
+          "blocked_actions": []
+        },
+        "muse": {
+          "predicted_fields": {
+            "age_years": 38,
+            "duration": "seconds",
+            "episode_duration": "seconds",
+            "trigger": "positional_head",
+            "episode_count": 5,
+            "hearing_loss": "none",
+            "tinnitus": false,
+            "focal_signs.diplopia": false,
+            "dix_hallpike": "left_positive",
+            "torsion_confirmed_by_clinician": true,
+            "nystagmus_fatigable": true
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "duration": true,
+            "trigger": true,
+            "episode_count": true,
+            "hearing_loss": true,
+            "tinnitus": true,
+            "focal_signs.diplopia": true,
+            "dix_hallpike": true,
+            "torsion_confirmed_by_clinician": true,
+            "nystagmus_fatigable": true
+          },
+          "n_gold_keys": 10,
+          "n_correct": 10,
+          "n_predicted_keys": 11,
+          "missing": [],
+          "wrong": [],
+          "extra": [
+            "episode_duration"
+          ],
+          "n_gold_negatives": 3,
+          "n_negatives_correct": 3,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "bppv_posterior",
+          "top1_agrees": true,
+          "blocked_actions": []
+        }
+      }
+    },
+    {
+      "id": "I",
+      "title_es": "Caso I — SVA con dolor cervical súbito enterrado",
+      "title_en": "Case I — AVS with buried sudden neck pain",
+      "gold_urgency": "inmediata",
+      "systems": {
+        "baseline": {
+          "predicted_fields": {
+            "duration": "hours",
+            "onset": "sudden",
+            "timing_pattern": "acute_continuous",
+            "context.last_known_well_minutes_ago": 240,
+            "age_years": 47,
+            "headache_neck_pain_sudden_severe": true,
+            "hearing_loss": "none",
+            "focal_signs.diplopia": false,
+            "nystagmus_direction": "horizontal"
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "timing_pattern": true,
+            "onset": true,
+            "duration": true,
+            "context.last_known_well_minutes_ago": true,
+            "headache_neck_pain_sudden_severe": true,
+            "nystagmus_direction": true,
+            "hearing_loss": true,
+            "focal_signs.diplopia": true
+          },
+          "n_gold_keys": 9,
+          "n_correct": 9,
+          "n_predicted_keys": 9,
+          "missing": [],
+          "wrong": [],
+          "extra": [],
+          "n_gold_negatives": 2,
+          "n_negatives_correct": 2,
+          "negation_flips": [],
+          "gold_red_flags": [
+            "A6"
+          ],
+          "red_flags": [
+            "A6"
+          ],
+          "red_flags_found": [
+            "A6"
+          ],
+          "urgency": "inmediata",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_neuritis",
+          "top1_agrees": null,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        },
+        "muse": {
+          "predicted_fields": {
+            "age_years": 47,
+            "onset": "sudden",
+            "duration": "hours",
+            "timing_pattern": "acute_continuous",
+            "context.last_known_well_minutes_ago": 240,
+            "headache_neck_pain_sudden_severe": true,
+            "trigger": "valsalva",
+            "nystagmus_direction": "horizontal",
+            "hearing_loss": "none",
+            "focal_signs.diplopia": false
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "timing_pattern": true,
+            "onset": true,
+            "duration": true,
+            "context.last_known_well_minutes_ago": true,
+            "headache_neck_pain_sudden_severe": true,
+            "nystagmus_direction": true,
+            "hearing_loss": true,
+            "focal_signs.diplopia": true
+          },
+          "n_gold_keys": 9,
+          "n_correct": 9,
+          "n_predicted_keys": 10,
+          "missing": [],
+          "wrong": [],
+          "extra": [
+            "trigger"
+          ],
+          "n_gold_negatives": 2,
+          "n_negatives_correct": 2,
+          "negation_flips": [],
+          "gold_red_flags": [
+            "A6"
+          ],
+          "red_flags": [
+            "A6"
+          ],
+          "red_flags_found": [
+            "A6"
+          ],
+          "urgency": "inmediata",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_neuritis",
+          "top1_agrees": null,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        }
+      }
+    },
+    {
+      "id": "J",
+      "title_es": "Caso J — presíncope consultado como “mareo”",
+      "title_en": "Case J — presyncope presenting as “dizziness”",
+      "gold_urgency": "prioritaria",
+      "systems": {
+        "baseline": {
+          "predicted_fields": {
+            "trigger": "orthostatic",
+            "age_years": 74,
+            "palpitations": true,
+            "context.medications": "atenolol y amlodipino",
+            "nystagmus_direction": "none",
+            "dix_hallpike": "negative"
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "trigger": true,
+            "presyncope_syncope": false,
+            "palpitations": true,
+            "context.medications": true,
+            "nystagmus_direction": true,
+            "dix_hallpike": true
+          },
+          "n_gold_keys": 7,
+          "n_correct": 6,
+          "n_predicted_keys": 6,
+          "missing": [
+            "presyncope_syncope"
+          ],
+          "wrong": [],
+          "extra": [],
+          "n_gold_negatives": 2,
+          "n_negatives_correct": 2,
+          "negation_flips": [],
+          "gold_red_flags": [
+            "B3"
+          ],
+          "red_flags": [
+            "B3"
+          ],
+          "red_flags_found": [
+            "B3"
+          ],
+          "urgency": "prioritaria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "cardiogenic_suspected",
+          "top1_agrees": true,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        },
+        "muse": {
+          "predicted_fields": {
+            "age_years": 74,
+            "trigger": "orthostatic",
+            "presyncope_syncope": true,
+            "palpitations": true,
+            "context.medications": "atenolol y amlodipino",
+            "nystagmus_direction": "none",
+            "dix_hallpike": "negative"
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "trigger": true,
+            "presyncope_syncope": true,
+            "palpitations": true,
+            "context.medications": true,
+            "nystagmus_direction": true,
+            "dix_hallpike": true
+          },
+          "n_gold_keys": 7,
+          "n_correct": 7,
+          "n_predicted_keys": 7,
+          "missing": [],
+          "wrong": [],
+          "extra": [],
+          "n_gold_negatives": 2,
+          "n_negatives_correct": 2,
+          "negation_flips": [],
+          "gold_red_flags": [
+            "B3"
+          ],
+          "red_flags": [
+            "B3"
+          ],
+          "red_flags_found": [
+            "B3"
+          ],
+          "urgency": "prioritaria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "cardiogenic_suspected",
+          "top1_agrees": true,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        }
+      }
+    },
+    {
+      "id": "K",
+      "title_es": "Caso K — mareo inespecífico, dictado ambiguo",
+      "title_en": "Case K — nonspecific dizziness, ambiguous dictation",
+      "gold_urgency": "prioritaria",
+      "systems": {
+        "baseline": {
+          "predicted_fields": {
+            "age_years": 58,
+            "onset": "unknown"
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "onset": true
+          },
+          "n_gold_keys": 2,
+          "n_correct": 2,
+          "n_predicted_keys": 2,
+          "missing": [],
+          "wrong": [],
+          "extra": [],
+          "n_gold_negatives": 0,
+          "n_negatives_correct": 0,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "prioritaria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_neuritis",
+          "top1_agrees": null,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        },
+        "muse": {
+          "predicted_fields": {
+            "age_years": 58,
+            "duration": "days",
+            "context.last_known_well_minutes_ago": 10080
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "onset": false
+          },
+          "n_gold_keys": 2,
+          "n_correct": 1,
+          "n_predicted_keys": 3,
+          "missing": [
+            "onset"
+          ],
+          "wrong": [],
+          "extra": [
+            "context.last_known_well_minutes_ago",
+            "duration"
+          ],
+          "n_gold_negatives": 0,
+          "n_negatives_correct": 0,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "prioritaria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_neuritis",
+          "top1_agrees": null,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L",
+      "title_es": "Caso L — neuritis vestibular con respuestas cortas",
+      "title_en": "Case L — vestibular neuritis with short answers",
+      "gold_urgency": "ambulatoria",
+      "systems": {
+        "baseline": {
+          "predicted_fields": {
+            "trigger": "spontaneous",
+            "timing_pattern": "acute_continuous",
+            "age_years": 29,
+            "head_impulse": "abnormal_corrective_saccade",
+            "nystagmus_direction": "horizontal",
+            "nystagmus_suppressed_by_fixation": true,
+            "hearing_loss": "none",
+            "tinnitus": false,
+            "focal_signs.diplopia": false
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "timing_pattern": true,
+            "trigger": true,
+            "nystagmus_direction": true,
+            "nystagmus_suppressed_by_fixation": true,
+            "head_impulse": true,
+            "hearing_loss": true,
+            "tinnitus": true,
+            "focal_signs.diplopia": true
+          },
+          "n_gold_keys": 9,
+          "n_correct": 9,
+          "n_predicted_keys": 9,
+          "missing": [],
+          "wrong": [],
+          "extra": [],
+          "n_gold_negatives": 3,
+          "n_negatives_correct": 3,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_neuritis",
+          "top1_agrees": true,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        },
+        "muse": {
+          "predicted_fields": {
+            "age_years": 29,
+            "timing_pattern": "acute_continuous",
+            "trigger": "spontaneous",
+            "duration": "over_24h_continuous",
+            "nystagmus_direction": "horizontal",
+            "nystagmus_suppressed_by_fixation": true,
+            "head_impulse": "abnormal_corrective_saccade",
+            "hearing_loss": "none",
+            "tinnitus": false,
+            "focal_signs.diplopia": false
+          },
+          "per_key_correct": {
+            "age_years": true,
+            "timing_pattern": true,
+            "trigger": true,
+            "nystagmus_direction": true,
+            "nystagmus_suppressed_by_fixation": true,
+            "head_impulse": true,
+            "hearing_loss": true,
+            "tinnitus": true,
+            "focal_signs.diplopia": true
+          },
+          "n_gold_keys": 9,
+          "n_correct": 9,
+          "n_predicted_keys": 10,
+          "missing": [],
+          "wrong": [],
+          "extra": [
+            "duration"
+          ],
+          "n_gold_negatives": 3,
+          "n_negatives_correct": 3,
+          "negation_flips": [],
+          "gold_red_flags": [],
+          "red_flags": [],
+          "red_flags_found": [],
+          "urgency": "ambulatoria",
+          "urgency_agrees": true,
+          "under_triage": false,
+          "top1_dx": "vestibular_neuritis",
+          "top1_agrees": true,
+          "blocked_actions": [
+            "EPLEY"
+          ]
+        }
+      }
+    }
+  ]
+}

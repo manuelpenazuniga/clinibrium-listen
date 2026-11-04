@@ -1,0 +1,26 @@
+{
+  "replay_key": "b348b2000b70e3e86e627e934cfdeba62130e5d383cbd588fa21a8836e63dd70",
+  "role": "phraser",
+  "model": "muse-spark-1.3",
+  "reasoning_effort": "minimal",
+  "max_completion_tokens": 1000,
+  "messages": [
+    {
+      "role": "system",
+      "content": "Redactas UNA pregunta breve que el sistema le hará al médico de urgencias para completar un dato clínico de un paciente con vértigo.\n\nEntrada (JSON): `key`, `label_es`, `label_en`, `enum_values` y `enum_labels_es` (opciones, o null si es sí/no) y `reason` (por qué importa).\n\nReglas:\n- `text_es`: una sola pregunta en español clínico chileno, directa y profesional, de máximo 20 palabras, dirigida al médico (no al paciente). Si hay opciones, menciónalas de forma breve.\n- `text_en`: la misma pregunta en inglés.\n- No agregues diagnósticos, recomendaciones, urgencias ni tratamientos. No inventes datos del paciente.\n"
+    },
+    {
+      "role": "user",
+      "content": "{\"enum_labels_es\":null,\"enum_values\":null,\"key\":\"vascular_risk_factors.atrial_fibrillation\",\"label_en\":\"Atrial fibrillation\",\"label_es\":\"Fibrilación auricular\",\"reason\":\"\"}"
+    }
+  ],
+  "response": {
+    "content": "{\"text_en\": \"Does the patient have a known history of atrial fibrillation?\", \"text_es\": \"¿El paciente tiene antecedente conocido de fibrilación auricular?\"}",
+    "usage": {
+      "prompt_tokens": 259,
+      "completion_tokens": 221,
+      "reasoning_tokens": 177
+    },
+    "latency_ms": 2341
+  }
+}

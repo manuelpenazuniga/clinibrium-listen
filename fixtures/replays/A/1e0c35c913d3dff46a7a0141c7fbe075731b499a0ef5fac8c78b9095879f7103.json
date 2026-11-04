@@ -1,0 +1,26 @@
+{
+  "replay_key": "1e0c35c913d3dff46a7a0141c7fbe075731b499a0ef5fac8c78b9095879f7103",
+  "role": "advocate",
+  "model": "muse-wonder-1.0",
+  "reasoning_effort": "medium",
+  "max_completion_tokens": 2500,
+  "messages": [
+    {
+      "role": "system",
+      "content": "Eres el \"abogado del ACV\": un revisor de seguridad que lee el dictado completo de un caso de vértigo en urgencias y busca hallazgos de alarma central (accidente cerebrovascular de fosa posterior) que se mencionaron pero que NO están en el formulario.\n\nEntrada (JSON): `keys` (claves de alarma permitidas con su significado), `turns` (dictado completo), `current_values` (lo que ya está en el formulario) y `result` (urgencia y banderas rojas actuales del motor, solo contexto).\n\nReglas obligatorias:\n- Solo puedes AGREGAR solicitudes de confirmación. Nunca quites, contradigas ni rebajes nada, y nunca fijes urgencia ni acciones.\n- Cada solicitud debe apoyarse en una `quote` copiada literalmente del dictado (mismas palabras) que mencione el hallazgo, aunque sea de forma coloquial o transitoria (\"ayer vio doble un rato\").\n- No propongas claves que ya están en `current_values`.\n- No propongas hallazgos negados (\"sin diplopía\" NO es una solicitud).\n- Usa solo claves de `keys`. Pon el valor en una sola ranura (bool → `value_bool`; las otras null).\n- `rationale`: una frase en español explicando por qué conviene que el médico lo confirme.\n- Si no hay nada que agregar, devuelve `{\"requests\": []}`.\n"
+    },
+    {
+      "role": "user",
+      "content": "{\"current_values\":{},\"keys\":[{\"key\":\"focal_signs.diplopia\",\"label\":\"Diplopía\",\"type\":\"bool\"},{\"key\":\"focal_signs.dysarthria\",\"label\":\"Disartria\",\"type\":\"bool\"},{\"key\":\"focal_signs.dysphagia\",\"label\":\"Disfagia\",\"type\":\"bool\"},{\"key\":\"focal_signs.limb_weakness\",\"label\":\"Debilidad de extremidades\",\"type\":\"bool\"},{\"key\":\"focal_signs.facial_droop\",\"label\":\"Paresia facial\",\"type\":\"bool\"},{\"key\":\"focal_signs.numbness\",\"label\":\"Hipoestesia / parestesias\",\"type\":\"bool\"},{\"key\":\"focal_signs.hiccups\",\"label\":\"Hipo persistente\",\"type\":\"bool\"},{\"key\":\"focal_signs.horner\",\"label\":\"Síndrome de Horner\",\"type\":\"bool\"},{\"key\":\"truncal_ataxia_severe\",\"label\":\"Ataxia troncal severa\",\"type\":\"bool\"},{\"key\":\"headache_neck_pain_sudden_severe\",\"label\":\"Cefalea / cervicalgia súbita e intensa\",\"type\":\"bool\"},{\"key\":\"altered_consciousness\",\"label\":\"Compromiso de conciencia\",\"type\":\"bool\"},{\"key\":\"skew_deviation\",\"label\":\"Skew (desviación oblicua)\",\"type\":\"bool\"},{\"key\":\"nystagmus_direction_changing_gaze\",\"label\":\"Nistagmo cambia con la mirada\",\"type\":\"bool\"},{\"key\":\"presyncope_syncope\",\"label\":\"Presíncope / síncope\",\"type\":\"bool\"},{\"key\":\"context.anticoagulated\",\"label\":\"Anticoagulado\",\"type\":\"bool\"}],\"result\":null,\"turns\":[\"Paciente de 45 años, vértigo de segundos al girarse en la cama, sin síntomas neurológicos.\",\"Episodios gatillados desde anteayer. Sin hipoacusia ni tinnitus, sin diplopía, sin disartria.\",\"Positivo derecho, torsional, se agota.\"]}"
+    }
+  ],
+  "response": {
+    "content": "{\"requests\": []}",
+    "usage": {
+      "prompt_tokens": 729,
+      "completion_tokens": 491,
+      "reasoning_tokens": 477
+    },
+    "latency_ms": 3721
+  }
+}
