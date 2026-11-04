@@ -262,3 +262,25 @@ def test_no_secret_in_prompts_or_fixtures() -> None:
               *(root / "fixtures/replays").rglob("*.json")]:
         text = p.read_text(encoding="utf-8")
         assert "Bearer " not in text and "MODEL_API_KEY" not in text, p
+
+
+async def test_cancelled_in_flight_call_still_counts_against_the_caps(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """A caller timeout (asyncio.wait_for) cancels a request Meta may still bill:
+    it must leave a ledger row so the fail-closed caps see it (Phase 2b finding)."""
+    import asyncio
+
+    monkeypatch.setenv("MUSE_MAX_LIVE_CALLS", "1")
+
+    class SlowSDK(FakeSDK):
+        async def _create(self, **kw: Any) -> Any:
+            self.calls.append(kw)
+            await asyncio.sleep(10)
+
+    t = LiveTransport(sdk=SlowSDK([]), sleep=_nosleep)
+    with pytest.raises(asyncio.TimeoutError):
+        await asyncio.wait_for(t.send(_req()), 0.05)
+    rows = [json.loads(x) for x in (tmp_path / "ledger.jsonl").read_text().splitlines()]
+    assert [r["status"] for r in rows] == ["cancelled"]
+    with pytest.raises(BudgetExceeded):
+        BudgetGuard().check(_req())
