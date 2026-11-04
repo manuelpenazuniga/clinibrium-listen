@@ -98,8 +98,13 @@ class LiveExtractor:
         }
         # Output is filtered by the allowlist afterwards, so the key omits it.
         key_inputs = {"new_turn": ctx.new_turn.text, "pending_key": q.key if q else None}
+        # Replay only: a dictated turn spoken while a question is pending may have
+        # been recorded without one; fall back to that recording. The pending
+        # question is still applied by sanitize_deltas below.
+        alt = [{"new_turn": ctx.new_turn.text, "pending_key": None}] if q else None
         out = await self.client.complete(
             role="extractor", model=SPARK, system=load_prompt("extractor"), user=user,
-            out=ExtractorOut, key_inputs=key_inputs, prompt_name="extractor")
+            out=ExtractorOut, key_inputs=key_inputs, prompt_name="extractor",
+            alt_key_inputs=alt)
         return ExtractorOut(deltas=sanitize_deltas(
             out.deltas, ctx.catalog_keys, q.id if q else None, q.key if q else None))

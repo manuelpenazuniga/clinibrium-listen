@@ -23,12 +23,14 @@ from typing import Literal
 
 from api.catalog import Catalog, CatalogField, load_catalog, normalize
 from api.listen.contracts import DeltaOut, FieldValue
+from api.listen.numbers import UNIT_MINUTES, minutes_ago, numbers_in
 
 _TOKEN = re.compile(r"[a-z0-9]+")
 _CLAUSE_SPLIT = re.compile(r"[.;:,¿?¡!\n]+")
 POSTFIX_NEGATIONS = frozenset({"negativo", "negativa", "ausente"})
 # Tokens that end a negation's scope ("sin cefalea y con disartria").
 NEGATION_BREAKERS = frozenset({"con", "pero"})
+LKW_KEY = "context.last_known_well_minutes_ago"
 
 
 def tokens(text: str) -> list[str]:
@@ -109,9 +111,35 @@ def supports(field: CatalogField, value: FieldValue, quote: str,
             return None
         return f"E-support: no lexicon term for {field.key}"
     # int / float / str: a context term of the key must be present
-    if any(_term_hits(c, field.lexicon.get("*", [])) for c in clauses):
+    if not any(_term_hits(c, field.lexicon.get("*", [])) for c in clauses):
+        return f"E-support: no lexicon term for {field.key}"
+    if field.type == "int" and isinstance(value, int):
+        return int_supported(field.key, value, quote)
+    return None
+
+
+def int_supported(key: str, value: int, quote: str) -> str | None:
+    """E-value for ints: when the quote states a number (digits or spoken words,
+    "sesenta y ocho años"), the value must be that number — or, for
+    `context.last_known_well_minutes_ago`, that number in minutes ("hace doce
+    horas" → 720). A quote without any number is left to E-support."""
+    toks = tokens(quote)
+    found = numbers_in(toks)
+    if not found:
         return None
-    return f"E-support: no lexicon term for {field.key}"
+    if key == LKW_KEY:
+        ok = {n * f for n, _, _ in found for f in (1, 60, 1440)}
+        mins = minutes_ago(toks)
+        if mins is not None:
+            ok.add(mins)
+            if "media" in toks or "medio" in toks:  # "hace 1 hora y media"
+                ok |= {mins + f // 2 for _, _, end in found if end < len(toks)
+                       for f in [UNIT_MINUTES.get(toks[end], 0)] if f}
+        if value in ok:
+            return None
+    elif value in {n for n, _, _ in found}:
+        return None
+    return f"E-value: {key}={value} is not the number stated in the quote"
 
 
 # ------------------------------------------------------------- typed values
@@ -219,6 +247,7 @@ __all__ = [
     "ShortAnswer",
     "classify_short_answer",
     "delta_value",
+    "int_supported",
     "negated",
     "quote_in",
     "short_answer_value",

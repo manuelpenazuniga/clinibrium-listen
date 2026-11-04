@@ -22,14 +22,21 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from api.muse.client import (
+# `python -m api.muse.replay record` needs the engine (`adapter`, `clinibrium`)
+# importable without PYTHONPATH=engine:. (same approach as scripts/asr_probe.py).
+_ROOT = Path(__file__).resolve().parents[2]
+for _p in (str(_ROOT), str(_ROOT / "engine")):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
+from api.muse.client import (  # noqa: E402
     REPLAYS_DIR,
     ChatRequest,
     ChatResult,
     ReplayMiss,
     build_with_transport,
 )
-from api.muse.interfaces import Providers
+from api.muse.interfaces import Providers  # noqa: E402
 
 
 def _index(root: str) -> dict[str, Path]:
@@ -51,12 +58,16 @@ class ReplayTransport:
         return data
 
     async def send(self, req: ChatRequest) -> ChatResult:
-        data = self.lookup(req.replay_key)
+        data = None
+        for key in (req.replay_key, *req.alt_replay_keys):
+            data = self.lookup(key)
+            if data is not None:
+                break
         if data is None:
             raise ReplayMiss(f"no replay for role={req.role} model={req.model} "
                              f"key={req.replay_key} under {self.root}")
         if data.get("role") != req.role or data.get("model") != req.model:
-            raise ReplayMiss(f"replay {req.replay_key} is for {data.get('role')}/"
+            raise ReplayMiss(f"replay {data.get('replay_key')} is for {data.get('role')}/"
                              f"{data.get('model')}, not {req.role}/{req.model}")
         resp = data["response"]
         return ChatResult(content=resp["content"], usage=resp.get("usage", {}),

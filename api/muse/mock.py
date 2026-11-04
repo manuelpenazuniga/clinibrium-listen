@@ -30,6 +30,7 @@ from api.listen.contracts import (
     Turn,
     VisionOut,
 )
+from api.listen.numbers import minutes_ago, number_ending_at
 from api.muse.interfaces import (
     AdvocateCtx,
     AsrEvent,
@@ -42,11 +43,6 @@ from api.muse.interfaces import (
 
 MOCK_CONFIDENCE_PCT = 90
 
-_NUMBER_WORDS: dict[str, int] = {
-    "un": 1, "uno": 1, "una": 1, "dos": 2, "tres": 3, "cuatro": 4, "cinco": 5, "seis": 6,
-    "siete": 7, "ocho": 8, "nueve": 9, "diez": 10, "once": 11, "doce": 12, "veinte": 20,
-    "treinta": 30,
-}
 _POSTFIX_NEGATIONS = {"negativo", "negativa", "ausente"}
 _NEGATION_BREAKERS = {"con", "pero"}
 _CLAUSE_SPLIT = re.compile(r"[.;:,¿?¡!\n]+")
@@ -105,24 +101,22 @@ def _negated(tokens: list[str], start: int, end: int, cues: list[list[str]], win
 
 
 def _number_near(tokens: list[str], start: int, end: int) -> int | None:
-    """An integer stated right before the term (`68 años`, `tres episodios`)."""
-    for i in (start - 1, start - 2):
-        if i < 0:
+    """An integer stated right before the term, in digits or words
+    (`68 años`, `sesenta y ocho años`, `tres episodios`); one filler word allowed."""
+    for stop in (start, start - 1):
+        if stop <= 0:
             continue
-        t = tokens[i]
-        if i > 0 and tokens[i - 1] == "hace":
+        hit = number_ending_at(tokens, stop)
+        if hit is None:
+            continue
+        value, first = hit
+        if first > 0 and tokens[first - 1] == "hace":
             return None  # "hace 3 años" is a time, not an age
-        if t.isdigit():
-            return int(t)
-        if t in _NUMBER_WORDS:
-            return _NUMBER_WORDS[t]
+        return value
     return None
 
 
 _DECIMAL = re.compile(r"(\d+(?:[.,]\d+)?)")
-_LKW = re.compile(
-    r"\bhace\s+(\d+|" + "|".join(_NUMBER_WORDS) + r")\s*(horas?|h|minutos?|min|dias?)\b"
-)
 _MEDS = re.compile(r"\b(?:toma|usa|en tratamiento con)\s+(.+)$", re.IGNORECASE)
 
 
@@ -145,13 +139,8 @@ def _match_field(field: CatalogField, clause: str, tokens: list[str], catalog: C
         return _delta(field.key, clause, e=best[1]) if best else None
 
     if field.key == "context.last_known_well_minutes_ago":
-        m = _LKW.search(norm)
-        if not m:
-            return None
-        n = int(m.group(1)) if m.group(1).isdigit() else _NUMBER_WORDS[m.group(1)]
-        unit = m.group(2)
-        factor = 60 if unit.startswith("h") else 1440 if unit.startswith("d") else 1
-        return _delta(field.key, clause, i=n * factor)
+        minutes = minutes_ago(tokens)
+        return _delta(field.key, clause, i=minutes) if minutes is not None else None
 
     if field.type == "str":
         m = _MEDS.search(clause)

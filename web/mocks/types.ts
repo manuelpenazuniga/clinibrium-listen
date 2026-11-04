@@ -28,5 +28,7 @@ export type MockScript = {
   document?: StatePatch
   /** Extra patch applied when the clinician confirms a given key. */
   onConfirm?: Record<string, StatePatch>
+  /** Extra patch applied after `confirm_all` (the clinician's confirm step). */
+  onConfirmAll?: StatePatch
   finalize: { reasoning: ReasonerView; letter: ReferralLetter; receipt: Receipt }
 }

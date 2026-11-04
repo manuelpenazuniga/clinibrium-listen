@@ -12,3 +12,11 @@ export type DemoCase = {
   answers: Record<string, string>
   documents: DemoDocument[]
 }
+
+/** GET /api/demo-cases serves every bench case (A–L); the "Play demo case" picker
+ *  offers only the two scripted demo cases (SPECS §8), in this order. */
+export const PLAYABLE_DEMO_IDS = ["A", "B"] as const
+
+export function playableDemoCases(cases: DemoCase[]): DemoCase[] {
+  return PLAYABLE_DEMO_IDS.flatMap((id) => cases.filter((c) => c.id === id))
+}

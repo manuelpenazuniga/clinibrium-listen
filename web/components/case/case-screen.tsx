@@ -13,6 +13,7 @@ import type { DemoCase } from "@/lib/demo-cases"
 import { useLang } from "@/lib/i18n"
 import type { ClientMsg } from "@/lib/protocol"
 
+import { ClinicianConfirmCard } from "./clinician-confirm-card"
 import { ConfirmationsCard } from "./confirmations-card"
 import { DecisionCard } from "./decision-card"
 import { DocumentCard } from "./document-card"
@@ -130,6 +131,9 @@ export function CaseScreen({ sessionId, demoId }: { sessionId: string; demoId: s
         </div>
         <aside className="flex flex-col gap-4">
           <DecisionCard result={state.result} />
+          {player.step.kind === "clinician_confirm" && !locked && (
+            <ClinicianConfirmCard keys={player.step.keys} onConfirm={player.confirmAll} />
+          )}
           {pendingQ && !locked && (
             <QuestionCard
               question={pendingQ}

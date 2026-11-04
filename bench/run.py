@@ -39,7 +39,9 @@ sys.path[:0] = [str(_ROOT / "engine"), str(_ROOT)]  # as in scripts/gen_catalog.
 
 from adapter import engine_version  # noqa: E402
 from api.catalog import load_catalog, normalize  # noqa: E402
-from api.listen.contracts import DeltaOut, Question, Turn  # noqa: E402
+from api.listen.contracts import DeltaOut, Evidence, FieldState, Question, Turn  # noqa: E402
+from api.listen.planner import plan, procedure_keys, to_question  # noqa: E402
+from api.listen.policy import new_field  # noqa: E402
 from api.muse.interfaces import ExtractCtx, Extractor, MuseMode, get_providers  # noqa: E402
 from bench import baseline  # noqa: E402
 from bench.common import (  # noqa: E402
@@ -193,23 +195,68 @@ def planned_model_calls(cases: list[dict[str, Any]]) -> int:
     return n
 
 
-async def run_case(system: System, case: dict[str, Any], stats: Stats) -> Fields:
+_BENCH_EVIDENCE = Evidence(source="dictated", quote=None, turn_id=None, start_ms=None,
+                           document_id=None, confidence_pct=100)
+
+
+class QuestionTracker:
+    """Runs the 1A planner (`api.listen.planner.plan`) over the extracted fields,
+    the way the session does: plan when no question is pending (also before the
+    first turn), a question closes when its key gets a value or a scripted
+    answer for it arrives. The dictation input itself is unchanged (replay keys
+    stay the same); this only counts what the planner would have asked."""
+
+    def __init__(self) -> None:
+        self.questions: list[Question] = []
+
+    def pending(self) -> Question | None:
+        return next((q for q in self.questions if q.status == "pending"), None)
+
+    def answer(self, key: str, skipped: bool) -> None:
+        q = self.pending()
+        if q is not None and key in procedure_keys(q.key):
+            q.status = "skipped" if skipped else "answered"
+
+    def update(self, state: Fields) -> None:
+        fields: dict[str, FieldState] = {k: new_field(k, v, _BENCH_EVIDENCE)
+                                         for k, v in state.items()}
+        q = self.pending()
+        if q is not None and q.key in fields:
+            q.status = "answered"
+        red_flag = bool(evaluate_fields(state).red_flag_ids)
+        p = plan(fields, self.questions, red_flag)
+        if p is not None:
+            self.questions.append(to_question(p, f"q{len(self.questions) + 1}"))
+
+    @property
+    def asked(self) -> list[str]:
+        return [q.key for q in self.questions]
+
+
+async def run_case(system: System, case: dict[str, Any], stats: Stats,
+                   tracker: QuestionTracker | None = None) -> Fields:
     state: Fields = {}
     history: list[Turn] = []
+    tracker = tracker or QuestionTracker()
+    tracker.update(state)
     for turn, key in _steps(case):
         if key is not None:
             sa = short_answer(turn.text)
+            tracker.answer(key, skipped=sa == "skip")
             if sa == "skip":
                 history.append(turn)
+                tracker.update(state)
                 continue
             if sa is not None and load_catalog().get(key).type == "bool":
                 state[key] = sa == "true"
                 history.append(turn)
+                tracker.update(state)
                 continue
         update = await system.step(history, turn,
                                    state, _question(key) if key else None, stats)
         state.update(update)
         history.append(turn)
+        tracker.update(state)
     return state
 
 
@@ -274,7 +321,8 @@ def summarize(rows: list[dict[str, Any]], stats: Stats, *, billed: bool) -> dict
         "urgency_agreement": _ratio(sum(r["urgency_agrees"] for r in rows), len(rows)),
         "under_triage": sum(r["under_triage"] for r in rows),
         "top1_agreement": _ratio(sum(bool(r["top1_agrees"]) for r in top1_rows), len(top1_rows)),
-        "questions_asked": None,  # filled by the caller when the planner is available
+        "questions_asked": sum(len(r["questions"]) for r in rows),
+        "questions_per_case": _ratio(sum(len(r["questions"]) for r in rows), len(rows)),
         "calls": len(lat),
         "latency_ms_mean": round(statistics.fmean(lat), 2) if lat else None,
         "latency_ms_p95": round(sorted(lat)[max(0, round(0.95 * len(lat)) - 1)], 2) if lat
@@ -315,7 +363,8 @@ _METRICS: list[tuple[str, str]] = [
     ("urgency_agreement", "Urgency agreement vs gold"),
     ("under_triage", "Under-triaged cases"),
     ("top1_agreement", "Top-1 dx agreement"),
-    ("questions_asked", "Questions asked"),
+    ("questions_asked", "Questions asked (planner, total)"),
+    ("questions_per_case", "Questions asked per case (mean)"),
     ("latency_ms_mean", "Latency per call, mean (ms)"),
     ("latency_ms_p95", "Latency per call, p95 (ms)"),
     ("cost_usd", "Cost estimate (USD)"),
@@ -457,8 +506,10 @@ async def run(mode: MuseMode, case_ids: list[str] | None = None,
                                      "title_en": case["title_en"],
                                      "gold_urgency": case["gold"]["urgency"], "systems": {}}
             for name, system in systems.items():
-                pred = await run_case(system, case, stats[name])
+                tracker = QuestionTracker()
+                pred = await run_case(system, case, stats[name], tracker)
                 row = score_case(case, pred)
+                row["questions"] = tracker.asked
                 rows[name].append(row)
                 entry["systems"][name] = row
             case_out.append(entry)
@@ -473,7 +524,7 @@ async def run(mode: MuseMode, case_ids: list[str] | None = None,
         "muse_model": providers.model_ids.get("extractor", "unknown"),
         "n_cases": len(cases),
         "planned_calls": planned,
-        "planner": "available-not-wired" if planner_available() else "unavailable",
+        "planner": "api.listen.planner" if planner_available() else "unavailable",
         "systems": summaries,
         "per_key": {name: per_key_table(rows[name]) for name in SYSTEMS},
         "dropped_deltas": {name: stats[name].dropped for name in SYSTEMS},

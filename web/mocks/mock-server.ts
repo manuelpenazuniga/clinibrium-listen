@@ -5,6 +5,8 @@
  * clinician actions are applied by small reducers that mirror SPECS §6.
  *
  * It does NOT re-run the engine: urgency only changes when the script says so.
+ * The scripts follow the real core's L1 behaviour: proposals can raise urgency
+ * but never lower it, so case A stays Prioritaria until `confirm_all`.
  * Sessions live in a module-level map so client-side navigation to the summary
  * keeps the same session.
  */
@@ -190,7 +192,10 @@ async function handle(s: MockSession, msg: ClientMsg) {
       for (const f of Object.values(fields)) {
         if (f.status === "proposed" && !f.sticky_alert && !f.conflict) fields[f.key] = { ...f, status: "confirmed" }
       }
-      return commit(s, { ...st, fields })
+      // Like the real core (L1): unconfirmed values never lower urgency, so the
+      // script's de-escalation (case A → Ambulatoria) lands only here.
+      const all = s.script?.onConfirmAll
+      return commit(s, all ? applyPatch(s, { ...st, fields }, all) : { ...st, fields })
     }
     case "edit": {
       const f: FieldState = {

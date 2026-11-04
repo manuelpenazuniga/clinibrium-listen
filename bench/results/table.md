@@ -1,6 +1,6 @@
-# Bench results — mode `live`
+# Bench results — mode `replay`
 
-12 scripted cases · generated 2026-11-04T11:36:16Z · Muse extractor: `muse-spark-1.3`
+12 scripted cases · generated 2026-11-04T12:12:41Z · Muse extractor: `muse-spark-1.3`
 
 Synthetic, scripted dictations; not a clinical validation. See bench/README.md.
 
@@ -14,9 +14,10 @@ Synthetic, scripted dictations; not a clinical validation. See bench/README.md.
 | Urgency agreement vs gold | 0.917 | 1.000 |
 | Under-triaged cases | 1 | 0 |
 | Top-1 dx agreement | 1.000 | 1.000 |
-| Questions asked | n/a | n/a |
-| Latency per call, mean (ms) | 4.0 | 3872.8 |
-| Latency per call, p95 (ms) | 6.8 | 5752.4 |
+| Questions asked (planner, total) | 19 | 21 |
+| Questions asked per case (mean) | 1.6 | 1.8 |
+| Latency per call, mean (ms) | 3.4 | 2.2 |
+| Latency per call, p95 (ms) | 4.6 | 2.9 |
 | Cost estimate (USD) | 0.000 | n/a |
 
 | Case | Gold urgency | Baseline | Muse | Keys ✓ baseline | Keys ✓ Muse |

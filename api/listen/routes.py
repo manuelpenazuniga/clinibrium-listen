@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict
 
 from api.listen import registry
 from api.listen.session import Session
+from api.muse.daily_cap import DailyCapExceeded
 
 router = APIRouter()
 
@@ -25,7 +26,7 @@ class CreateSession(BaseModel):
 
 def _session(session_id: str) -> Session:
     s = registry.SESSIONS.get(session_id)
-    if s is None:
+    if s is None or s.closed:
         raise HTTPException(404, "unknown session")
     return s
 
@@ -37,11 +38,16 @@ async def create_session(body: CreateSession | None = None,
     body = body or CreateSession()
     try:
         s = registry.create(body.mode, body.demo_case, body.access_code or x_demo_access_code)
+    except registry.LiveNotAllowed as exc:
+        raise HTTPException(403, str(exc)) from exc
+    except DailyCapExceeded as exc:
+        raise HTTPException(429, str(exc)) from exc
     except (ValueError, KeyError) as exc:
         raise HTTPException(400, f"bad session request: {exc}") from exc
     except NotImplementedError as exc:
         raise HTTPException(501, str(exc)) from exc
-    return {"session_id": s.state.session_id, "state": s.state.model_dump(mode="json")}
+    return {"session_id": s.state.session_id, "mode": s.providers.mode,
+            "state": s.state.model_dump(mode="json")}
 
 
 @router.post("/api/session/{session_id}/document")

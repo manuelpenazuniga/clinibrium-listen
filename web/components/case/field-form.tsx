@@ -112,7 +112,7 @@ function FieldRow({
   }
 
   return (
-    <li className={cn("rounded-lg border px-3 py-2 transition-colors", ROW_STYLE[s])} data-state={s}>
+    <li className={cn("rounded-lg border px-3 py-2 transition-colors", ROW_STYLE[s])} data-state={s} data-key={f.key}>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <span className="min-w-0 flex-1 text-sm">
           <span className="text-muted-foreground">{fieldLabel(f.key, lang)}: </span>

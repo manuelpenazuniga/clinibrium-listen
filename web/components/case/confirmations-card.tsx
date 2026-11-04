@@ -30,7 +30,7 @@ export function ConfirmationsCard({
       <CardContent>
         <ul className="space-y-3">
           {items.map((c) => (
-            <li key={c.id} className="space-y-1.5 rounded-lg border p-3">
+            <li key={c.id} className="space-y-1.5 rounded-lg border p-3" data-testid={`confirmation-${c.id}`}>
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <span className="text-muted-foreground">{fieldLabel(c.key, lang)}:</span>
                 <span className="font-medium">{valueLabel(c.key, c.value, lang)}</span>

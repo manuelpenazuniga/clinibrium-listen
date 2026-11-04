@@ -5,7 +5,7 @@ import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { renderDocumentImage, uploadDocument } from "@/lib/api"
+import { demoDocumentImage, renderDocumentImage, uploadDocument } from "@/lib/api"
 import type { DemoDocument } from "@/lib/demo-cases"
 import { useLang } from "@/lib/i18n"
 
@@ -25,11 +25,11 @@ export function DocumentCard({
   const [status, setStatus] = useState<"idle" | "uploading" | "sent" | "error">("idle")
   const [err, setErr] = useState<string | null>(null)
 
-  const send = async (blob: Blob, name: string) => {
+  const send = async (blob: Blob, name: string, documentId?: string) => {
     setStatus("uploading")
     setErr(null)
     try {
-      await uploadDocument(sessionId, blob, name)
+      await uploadDocument(sessionId, blob, name, documentId)
       setStatus("sent")
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e))
@@ -55,7 +55,9 @@ export function DocumentCard({
                 size="sm"
                 className="h-auto w-full justify-start py-1.5 text-left whitespace-normal"
                 disabled={disabled || status === "uploading"}
-                onClick={async () => send(await renderDocumentImage(d.text), `${d.id}.png`)}
+                onClick={async () =>
+                  send((await demoDocumentImage(d.id)) ?? (await renderDocumentImage(d.text)), `${d.id}.png`, d.id)
+                }
               >
                 <FileTextIcon />
                 <span>

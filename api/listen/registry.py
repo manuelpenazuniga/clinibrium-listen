@@ -48,20 +48,54 @@ def build(mode: MuseMode, demo_case: str | None) -> Providers:
     return get_providers(mode)
 
 
+class LiveNotAllowed(PermissionError):
+    """Live mode was requested without LIVE_AUDIO=1 + a valid DEMO_ACCESS_CODE."""
+
+
+def resolve_mode(requested: str | None, access_ok: bool) -> MuseMode:
+    """Server-side gate for live Meta usage (SPECS §7 ws/routes, §9).
+
+    - `live` only with `access_ok` (LIVE_AUDIO=1 AND a valid DEMO_ACCESS_CODE);
+      explicitly asking for it without access is refused, never granted.
+    - No explicit mode → MUSE_MODE, except that on a `MUSE_MODE=live` server a
+      client without access gets `replay` (the public never spends credits).
+    """
+    if requested is not None:
+        mode = muse_mode(requested)
+        if mode == "live" and not access_ok:
+            raise LiveNotAllowed("live mode requires LIVE_AUDIO=1 and a valid access code")
+        return mode
+    default = muse_mode()
+    return "replay" if default == "live" and not access_ok else default
+
+
 def create(mode: str | None = None, demo_case: str | None = None,
            access_code: str | None = None, session_id: str | None = None) -> Session:
-    if len(SESSIONS) >= MAX_SESSIONS:
-        oldest = next(iter(SESSIONS))
-        SESSIONS.pop(oldest)
+    access_ok = live_audio_allowed(access_code)
+    resolved = resolve_mode(mode, access_ok)
+    if resolved == "live":
+        from api.muse.daily_cap import daily_cap
+
+        daily_cap().charge("sessions")  # DailyCapExceeded → refused before any call
+    while len(SESSIONS) >= MAX_SESSIONS:
+        evict(next(iter(SESSIONS)))
     sid = session_id or uuid.uuid4().hex[:12]
-    s = Session(sid, build(muse_mode(mode), demo_case),
-                live_audio_allowed=live_audio_allowed(access_code))
+    s = Session(sid, build(resolved, demo_case), live_audio_allowed=access_ok)
     SESSIONS[sid] = s
     return s
+
+
+def evict(session_id: str) -> None:
+    """Drop a session AND cancel its background tasks (worker, model lane,
+    finalize pass), so an evicted session never keeps calling models."""
+    s = SESSIONS.pop(session_id, None)
+    if s is not None:
+        s.cancel_tasks()
 
 
 def get_or_create(session_id: str, access_code: str | None = None) -> Session:
     return SESSIONS.get(session_id) or create(session_id=session_id, access_code=access_code)
 
 
-__all__ = ["SESSIONS", "create", "get_or_create", "live_audio_allowed", "muse_mode"]
+__all__ = ["SESSIONS", "LiveNotAllowed", "create", "evict", "get_or_create",
+           "live_audio_allowed", "muse_mode", "resolve_mode"]

@@ -3,11 +3,21 @@
   "build": {
     "builder": "DOCKERFILE",
     "dockerfilePath": "Dockerfile.api",
-    "watchPatterns": ["engine/**", "api/**", "config/**", "bench/**", "fixtures/**", "pyproject.toml", "uv.lock", "Dockerfile.api"]
+    "watchPatterns": [
+      "engine/**",
+      "api/**",
+      "config/**",
+      "bench/**",
+      "fixtures/**",
+      "pyproject.toml",
+      "uv.lock",
+      "Dockerfile.api"
+    ]
   },
   "deploy": {
     "healthcheckPath": "/api/health",
     "restartPolicyType": "ON_FAILURE",
-    "numReplicas": 1
+    "numReplicas": 1,
+    "healthcheckTimeout": 60
   }
 }

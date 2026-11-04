@@ -1,5 +1,6 @@
 import { API_URL, USE_MOCK } from "./config"
 import type { DemoCase } from "./demo-cases"
+import { documentForm } from "./upload"
 
 export async function getDemoCases(): Promise<DemoCase[]> {
   if (USE_MOCK) return (await import("@/mocks/demo-cases")).MOCK_DEMO_CASES
@@ -8,9 +9,14 @@ export async function getDemoCases(): Promise<DemoCase[]> {
   return (await res.json()) as DemoCase[]
 }
 
-export type CreateSessionReq = { mode?: "mock" | "replay" | "live"; demo_case?: string }
+export type CreateSessionReq = {
+  mode?: "mock" | "replay" | "live"
+  demo_case?: string
+  /** DEMO_ACCESS_CODE for a live session (the server also needs LIVE_AUDIO=1). */
+  access_code?: string
+}
 
-/** POST /api/session → `{session_id}`. */
+/** POST /api/session → `{session_id}`. 403 = live not allowed, 429 = daily live cap. */
 export async function createSession(req: CreateSessionReq): Promise<string> {
   if (USE_MOCK) return (await import("@/mocks/mock-server")).createMockSession(req.demo_case)
   const res = await fetch(`${API_URL}/api/session`, {
@@ -18,30 +24,51 @@ export async function createSession(req: CreateSessionReq): Promise<string> {
     headers: { "content-type": "application/json" },
     body: JSON.stringify(req),
   })
-  if (!res.ok) throw new Error(`POST /api/session → ${res.status}`)
+  if (!res.ok) {
+    const detail = await res
+      .json()
+      .then((b: { detail?: string }) => b.detail)
+      .catch(() => undefined)
+    throw new Error(`POST /api/session → ${res.status}${detail ? `: ${detail}` : ""}`)
+  }
   const body = (await res.json()) as { session_id?: string; id?: string }
   const id = body.session_id ?? body.id
   if (!id) throw new Error("POST /api/session: no session_id in response")
   return id
 }
 
-/** POST /api/session/{id}/document (multipart image). State arrives via WS. */
-export async function uploadDocument(sessionId: string, image: Blob, name: string): Promise<void> {
+/** POST /api/session/{id}/document (multipart field `file`). State arrives via WS. */
+export async function uploadDocument(
+  sessionId: string,
+  image: Blob,
+  name: string,
+  documentId?: string
+): Promise<void> {
   if (USE_MOCK) {
     ;(await import("@/mocks/mock-server")).mockUploadDocument(sessionId, name)
     return
   }
-  const form = new FormData()
-  form.append("image", image, name)
   const res = await fetch(`${API_URL}/api/session/${encodeURIComponent(sessionId)}/document`, {
     method: "POST",
-    body: form,
+    body: documentForm(image, name, documentId),
   })
   if (!res.ok) throw new Error(`POST document → ${res.status}`)
 }
 
+/** The preloaded demo document's photo (web/public/demo-docs/<id>.png, synced from
+ *  fixtures/replays/: the exact image the replay was recorded with), or null. */
+export async function demoDocumentImage(id: string): Promise<Blob | null> {
+  try {
+    const res = await fetch(`/demo-docs/${encodeURIComponent(id)}.png`)
+    if (!res.ok || !(res.headers.get("content-type") ?? "").startsWith("image/")) return null
+    return await res.blob()
+  } catch {
+    return null
+  }
+}
+
 /** Renders a preloaded demo document (text) to a PNG, so it goes through the same
- *  image-upload path as a real photo. */
+ *  image-upload path as a real photo (fallback when there is no recorded photo). */
 export async function renderDocumentImage(text: string): Promise<Blob> {
   const canvas = document.createElement("canvas")
   canvas.width = 900

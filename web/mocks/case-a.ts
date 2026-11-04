@@ -9,6 +9,13 @@ const DX_A1 = [
   { diagnosis: "vestibular_neuritis", score_pct: 10, provisional: true },
 ]
 
+const DX_A3 = [
+  { diagnosis: "bppv_posterior", score_pct: 92, provisional: false },
+  { diagnosis: "bppv_horizontal", score_pct: 69, provisional: false },
+  { diagnosis: "vestibular_migraine", score_pct: 27, provisional: false },
+  { diagnosis: "vestibular_neuritis", score_pct: 10, provisional: false },
+]
+
 export const CASE_A: MockScript = {
   demo: MOCK_DEMO_CASES[0],
   steps: [
@@ -98,23 +105,33 @@ export const CASE_A: MockScript = {
           status: "answered",
         },
       ],
+      // L1: answered values are proposals and cannot lower urgency. Values from
+      // the real core (api/listen) on case A after the Dix-Hallpike answer.
       result: result({
-        urgency: "ambulatoria",
-        source_eval: "confirmed_plus_proposed",
+        urgency: "prioritaria",
+        source_eval: "confirmed",
         red_flags: [],
-        differential: [
-          { diagnosis: "bppv_posterior", score_pct: 92, provisional: true },
-          { diagnosis: "bppv_horizontal", score_pct: 69, provisional: true },
-          { diagnosis: "vestibular_migraine", score_pct: 27, provisional: true },
-          { diagnosis: "vestibular_neuritis", score_pct: 10, provisional: true },
-        ],
-        forced_actions: [],
-        blocked_actions: [],
-        applied_rails: [],
+        differential: DX_A3.map((d) => ({ ...d, provisional: d.diagnosis !== "vestibular_neuritis" })),
+        forced_actions: ["BLOQUEAR_EPLEY", "ESCALAR"],
+        blocked_actions: ["EPLEY"],
+        applied_rails: ["R-EPLEY-D", "R-E2"],
         advocate_floor_active: false,
       }),
     },
   ],
+  // The clinician's confirm step (confirm_all) → Ambulatoria, Epley not blocked.
+  onConfirmAll: {
+    result: result({
+      urgency: "ambulatoria",
+      source_eval: "confirmed",
+      red_flags: [],
+      differential: DX_A3,
+      forced_actions: [],
+      blocked_actions: [],
+      applied_rails: [],
+      advocate_floor_active: false,
+    }),
+  },
   finalize: {
     reasoning: {
       model_used: "muse-spark-1.3",
