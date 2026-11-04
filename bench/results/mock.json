@@ -1,11 +1,11 @@
 {
   "mode": "mock",
-  "generated_at": "2026-11-04T05:46:23Z",
+  "generated_at": "2026-11-04T12:12:48Z",
   "engine_version": "0.2.0-S1-P+6b99864626e1",
   "muse_model": "mock-extractor",
   "n_cases": 12,
   "planned_calls": 37,
-  "planner": "unavailable",
+  "planner": "api.listen.planner",
   "systems": {
     "baseline": {
       "key_accuracy": 0.938,
@@ -16,10 +16,11 @@
       "urgency_agreement": 0.917,
       "under_triage": 1,
       "top1_agreement": 1.0,
-      "questions_asked": null,
+      "questions_asked": 19,
+      "questions_per_case": 1.583,
       "calls": 37,
-      "latency_ms_mean": 3.86,
-      "latency_ms_p95": 5.55,
+      "latency_ms_mean": 3.04,
+      "latency_ms_p95": 4.48,
       "est_tokens_in": 0,
       "est_tokens_out": 0,
       "cost_usd": 0.0,
@@ -27,19 +28,20 @@
     },
     "muse": {
       "key_accuracy": 0.956,
-      "key_precision": 0.973,
+      "key_precision": 0.964,
       "red_flag_recall": 0.8,
       "negation_accuracy": 0.972,
       "negation_flips": 0,
       "urgency_agreement": 0.917,
       "under_triage": 1,
       "top1_agreement": 1.0,
-      "questions_asked": null,
+      "questions_asked": 19,
+      "questions_per_case": 1.583,
       "calls": 37,
-      "latency_ms_mean": 5.98,
-      "latency_ms_p95": 8.56,
-      "est_tokens_in": 15720,
-      "est_tokens_out": 5589,
+      "latency_ms_mean": 4.82,
+      "latency_ms_p95": 6.7,
+      "est_tokens_in": 15742,
+      "est_tokens_out": 5640,
       "cost_usd": 0.0,
       "dropped_deltas": 0
     }
@@ -361,7 +363,12 @@
           "under_triage": false,
           "top1_dx": "bppv_posterior",
           "top1_agrees": true,
-          "blocked_actions": []
+          "blocked_actions": [],
+          "questions": [
+            "focal_signs.dysarthria",
+            "dix_hallpike",
+            "nystagmus_direction"
+          ]
         },
         "muse": {
           "predicted_fields": {
@@ -407,7 +414,12 @@
           "under_triage": false,
           "top1_dx": "bppv_posterior",
           "top1_agrees": true,
-          "blocked_actions": []
+          "blocked_actions": [],
+          "questions": [
+            "focal_signs.dysarthria",
+            "dix_hallpike",
+            "nystagmus_direction"
+          ]
         }
       }
     },
@@ -470,6 +482,9 @@
           "top1_agrees": null,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         },
         "muse": {
@@ -525,6 +540,9 @@
           "top1_agrees": null,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         }
       }
@@ -582,7 +600,12 @@
           "under_triage": false,
           "top1_dx": "bppv_posterior",
           "top1_agrees": true,
-          "blocked_actions": []
+          "blocked_actions": [],
+          "questions": [
+            "focal_signs.dysarthria",
+            "dix_hallpike",
+            "nystagmus_direction"
+          ]
         },
         "muse": {
           "predicted_fields": {
@@ -631,7 +654,12 @@
           "under_triage": false,
           "top1_dx": "bppv_posterior",
           "top1_agrees": true,
-          "blocked_actions": []
+          "blocked_actions": [],
+          "questions": [
+            "focal_signs.dysarthria",
+            "dix_hallpike",
+            "nystagmus_direction"
+          ]
         }
       }
     },
@@ -687,6 +715,10 @@
           "top1_agrees": true,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria",
+            "otitis_mastoiditis"
           ]
         },
         "muse": {
@@ -735,6 +767,10 @@
           "top1_agrees": true,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria",
+            "otitis_mastoiditis"
           ]
         }
       }
@@ -788,6 +824,9 @@
           "top1_agrees": true,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         },
         "muse": {
@@ -833,6 +872,9 @@
           "top1_agrees": true,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         }
       }
@@ -884,6 +926,9 @@
           "top1_agrees": null,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         },
         "muse": {
@@ -927,6 +972,9 @@
           "top1_agrees": null,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         }
       }
@@ -1001,6 +1049,11 @@
           "top1_agrees": true,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria",
+            "hearing_loss",
+            "dix_hallpike"
           ]
         },
         "muse": {
@@ -1067,6 +1120,11 @@
           "top1_agrees": true,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria",
+            "hearing_loss",
+            "dix_hallpike"
           ]
         }
       }
@@ -1122,7 +1180,10 @@
           "under_triage": false,
           "top1_dx": "bppv_posterior",
           "top1_agrees": true,
-          "blocked_actions": []
+          "blocked_actions": [],
+          "questions": [
+            "focal_signs.dysarthria"
+          ]
         },
         "muse": {
           "predicted_fields": {
@@ -1166,7 +1227,10 @@
           "under_triage": false,
           "top1_dx": "bppv_posterior",
           "top1_agrees": true,
-          "blocked_actions": []
+          "blocked_actions": [],
+          "questions": [
+            "focal_signs.dysarthria"
+          ]
         }
       }
     },
@@ -1224,6 +1288,9 @@
           "top1_agrees": null,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         },
         "muse": {
@@ -1274,6 +1341,9 @@
           "top1_agrees": null,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         }
       }
@@ -1329,6 +1399,9 @@
           "top1_agrees": true,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         },
         "muse": {
@@ -1376,6 +1449,9 @@
           "top1_agrees": true,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         }
       }
@@ -1414,11 +1490,15 @@
           "top1_agrees": null,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         },
         "muse": {
           "predicted_fields": {
             "age_years": 58,
+            "context.last_known_well_minutes_ago": 10080,
             "onset": "unknown"
           },
           "per_key_correct": {
@@ -1427,10 +1507,12 @@
           },
           "n_gold_keys": 2,
           "n_correct": 2,
-          "n_predicted_keys": 2,
+          "n_predicted_keys": 3,
           "missing": [],
           "wrong": [],
-          "extra": [],
+          "extra": [
+            "context.last_known_well_minutes_ago"
+          ],
           "n_gold_negatives": 0,
           "n_negatives_correct": 0,
           "negation_flips": [],
@@ -1444,6 +1526,9 @@
           "top1_agrees": null,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         }
       }
@@ -1496,6 +1581,9 @@
           "top1_agrees": true,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         },
         "muse": {
@@ -1540,6 +1628,9 @@
           "top1_agrees": true,
           "blocked_actions": [
             "EPLEY"
+          ],
+          "questions": [
+            "focal_signs.dysarthria"
           ]
         }
       }

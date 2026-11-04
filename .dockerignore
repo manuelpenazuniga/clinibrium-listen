@@ -11,3 +11,7 @@ web
 docs
 api/tests
 engine/tests
+fixtures/audio
+web/e2e/out
+**/node_modules
+bench/tests

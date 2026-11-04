@@ -376,3 +376,19 @@ def test_cors_allowed_origins(monkeypatch: pytest.MonkeyPatch) -> None:
         assert ok.headers.get("access-control-allow-origin") == "https://listen.example.app"
         bad = c.get("/api/health", headers={"origin": "https://evil.example"})
         assert "access-control-allow-origin" not in bad.headers
+
+
+def test_deploy_files_default_to_replay_and_hold_no_secrets() -> None:
+    docker = (ROOT / "Dockerfile.api").read_text()
+    assert "MUSE_MODE=replay" in docker and "LIVE_AUDIO=0" in docker
+    assert "MUSE_RECORD=0" in docker and "MODEL_API_KEY=" not in docker
+    railway = json.loads((ROOT / "railway.json").read_text())
+    assert railway["build"]["dockerfilePath"] == "Dockerfile.api"
+    assert railway["deploy"]["healthcheckPath"] == "/api/health"
+    vercel = json.loads((ROOT / "web" / "vercel.json").read_text())
+    assert vercel["framework"] == "nextjs"
+    deploy = (ROOT / "DEPLOY.md").read_text()
+    for var in ("ALLOWED_ORIGINS", "DEMO_ACCESS_CODE", "LIVE_AUDIO", "MODEL_API_KEY",
+                "LIVE_DAILY_SESSIONS", "LIVE_DAILY_MODEL_CALLS", "LIVE_DAILY_ASR_STREAMS",
+                "NEXT_PUBLIC_API_URL", "NEXT_PUBLIC_API_WS_URL", "Root Directory"):
+        assert var in deploy, var

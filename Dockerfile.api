@@ -11,5 +11,19 @@ COPY config ./config
 COPY bench ./bench
 COPY fixtures ./fixtures
 ENV PATH="/app/.venv/bin:$PATH" PYTHONPATH="/app/engine:/app"
+# Public default: replay mode, fully offline (fixtures/replays), no live audio.
+# Live needs LIVE_AUDIO=1 + DEMO_ACCESS_CODE + MODEL_API_KEY + the MUSE_MAX_* budgets,
+# and each client must present the code (enforced server-side). See DEPLOY.md.
+ENV MUSE_MODE=replay \
+    MUSE_RECORD=0 \
+    LIVE_AUDIO=0 \
+    LIVE_DAILY_SESSIONS=20 \
+    LIVE_DAILY_MODEL_CALLS=300 \
+    LIVE_DAILY_ASR_STREAMS=40 \
+    LIVE_CAP_FILE=/tmp/clinibrium/live-cap.json \
+    MUSE_USAGE_LEDGER=/tmp/clinibrium/usage-llm.jsonl \
+    MUSE_USAGE_LOG=/tmp/clinibrium/usage-asr.jsonl
+RUN useradd --create-home --uid 10001 app && mkdir -p /tmp/clinibrium && chown -R app /tmp/clinibrium
+USER app
 EXPOSE 8000
 CMD ["sh", "-c", "uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]

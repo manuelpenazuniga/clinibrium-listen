@@ -1,6 +1,6 @@
 {
-  "mode": "live",
-  "generated_at": "2026-11-04T11:36:16Z",
+  "mode": "replay",
+  "generated_at": "2026-11-04T12:12:41Z",
   "n_cases": 12,
   "systems": {
     "baseline": "keyword baseline",
@@ -57,21 +57,27 @@
     },
     {
       "metric": "questions_asked",
-      "label": "Questions asked",
-      "baseline": null,
-      "muse": null
+      "label": "Questions asked (planner, total)",
+      "baseline": 19,
+      "muse": 21
+    },
+    {
+      "metric": "questions_per_case",
+      "label": "Questions asked per case (mean)",
+      "baseline": 1.583,
+      "muse": 1.75
     },
     {
       "metric": "latency_ms_mean",
       "label": "Latency per call, mean (ms)",
-      "baseline": 3.95,
-      "muse": 3872.78
+      "baseline": 3.35,
+      "muse": 2.21
     },
     {
       "metric": "latency_ms_p95",
       "label": "Latency per call, p95 (ms)",
-      "baseline": 6.83,
-      "muse": 5752.37
+      "baseline": 4.62,
+      "muse": 2.93
     },
     {
       "metric": "cost_usd",
