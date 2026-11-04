@@ -1,0 +1,16 @@
+{
+  "_doc": "MOCK placeholder for bench/results/table.json (workstream 1D). Numbers are illustrative, not results.",
+  "mock": true,
+  "generated_at": "2026-11-04T12:00:00Z",
+  "mode": "mock",
+  "n_cases": 8,
+  "columns": ["metric", "baseline", "muse"],
+  "rows": [
+    { "metric": "Per-key accuracy", "baseline": "—", "muse": "—" },
+    { "metric": "Red-flag recall (buried)", "baseline": "—", "muse": "—" },
+    { "metric": "Negation accuracy", "baseline": "—", "muse": "—" },
+    { "metric": "Urgency agreement", "baseline": "—", "muse": "—" },
+    { "metric": "Questions asked (mean)", "baseline": "—", "muse": "—" },
+    { "metric": "Latency p50 (s)", "baseline": "—", "muse": "—" }
+  ]
+}

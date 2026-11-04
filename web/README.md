@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Clinibrium Listen — web
 
-## Getting Started
+Next.js 16 + shadcn/ui (base-nova) + the vendored `orb` / `waveform` visual components.
+Research prototype · Not for clinical use · The physician decides.
 
-First, run the development server:
+## Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+NEXT_PUBLIC_MOCK=1 pnpm dev          # fully in-browser, against web/mocks/ (no API needed)
+pnpm dev                              # against the API at NEXT_PUBLIC_API_URL / NEXT_PUBLIC_API_WS_URL
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Mock mode is on when `NEXT_PUBLIC_MOCK=1` **or** `NEXT_PUBLIC_API_URL` is unset.
+`NEXT_PUBLIC_MOCK_LIVE_AUDIO=1` makes the mock report `live_audio_allowed=true`, so the
+mic button (AudioWorklet) shows instead of "Play demo case".
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Gate: `pnpm typecheck && pnpm lint && pnpm build` (plus `./check.sh` at the repo root).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Screens
 
-## Learn More
+| Route | What |
+|---|---|
+| `/` | Landing: demo cases (`GET /api/demo-cases`) → `POST /api/session {demo_case}` → `/case/{id}?demo=A` |
+| `/case/[id]` | Orb + live captions, grouped form (item states), decision card, question card (speechSynthesis), confirmation requests, window clock (only when `state.onset`), document upload, kill switch (header), finalize with blocking items |
+| `/case/[id]/summary` | Decision, differential, explanation + cited chunk IDs, deterministic letter (copy/print), receipt + **Verify** (WebCrypto SHA-256 over `receipt.canonical_json`) |
+| `/bench` | Table rendered generically from `mocks/bench-table.json` (placeholder for `bench/results/table.json`) |
 
-To learn more about Next.js, take a look at the following resources:
+## Layout
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `lib/contracts.ts` — **generated**, never edit (`scripts/gen_contracts.sh`).
+- `lib/protocol.ts` — WS envelopes (SPECS §5.4): client `{type, ...}` messages; server `partial` / `state` / `error`.
+- `lib/field-catalog.json` — slim copy of `config/field_catalog.json` (labels, groups, enums). Regenerate with `pnpm sync:catalog`; `node scripts/sync-catalog.mjs --check` detects drift.
+- `hooks/use-session.ts` — WS client (real socket or mock), full `SessionState` per message.
+- `hooks/use-mic-stream.ts` + `public/pcm16-worklet.js` — mic → 16 kHz mono PCM16, 100 ms (3200-byte) binary frames.
+- `hooks/use-demo-player.ts` — "Play demo case": sends the scripted turns as `text_turn`, then answers planner questions from `answers` (works against the mock and a replay-mode server).
+- `mocks/` — in-browser WS mock: hand-written `SessionState` patch sequences for cases A and B, small reducers for clinician actions, receipts with SHA-256 precomputed outside the browser.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The UI never computes urgency or actions: it renders `state.result` as sent. The finalize
+blocker list is display-only; the server enforces it.

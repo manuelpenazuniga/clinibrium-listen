@@ -1,0 +1,18 @@
+import type { Receipt } from "@/lib/contracts"
+
+// GENERATED once (Node crypto, outside the browser) so the Verify button checks a
+// hash it did not compute itself. canonical_json: sorted keys, no floats.
+
+export const RECEIPT_A: Receipt = {
+  canonical_json: "{\"clinician_actions\":[{\"action\":\"confirm_all\",\"snapshot\":8}],\"confirmed\":{\"age_years\":45,\"dix_hallpike\":\"right_positive\",\"duration\":\"seconds\",\"focal_signs\":[],\"hearing_loss\":\"none\",\"nystagmus_fatigable\":true,\"timing_pattern\":\"episodic_triggered\",\"tinnitus\":false,\"torsion_confirmed_by_clinician\":true,\"trigger\":\"positional_head\"},\"engine_version\":\"0.2.0-S1-P+6b99864626e1\",\"model_ids\":[\"mock-extractor\",\"mock-phraser\",\"muse-spark-1.3\"],\"prompt_sha256\":{\"extractor\":\"59a8bc416887433e67a452c29dece8b6983706c9b15af568718da0048a02e541\",\"phrasing\":\"ad364e94f128b673c62e36543406a034f81644d880385b72ca04f9ef01dd47df\",\"reasoner\":\"17c5d8fc5d1749e8209b44b6d74fd2ed640f9ed5faff4840fda6222bc84e2c77\"},\"result\":{\"applied_rails\":[],\"blocked_actions\":[],\"differential\":[[\"bppv_posterior\",92],[\"bppv_horizontal\",69],[\"vestibular_migraine\",27],[\"vestibular_neuritis\",10]],\"forced_actions\":[],\"red_flags\":[],\"urgency\":\"ambulatoria\"},\"snapshot\":9,\"turn_sha256\":[\"39d62a521841c472cebee9cb7accc46a06a5b0cb1bd4a425d7fd81aaceb85c0a\",\"02ce7c715a0bee96653c25307eb8200eac9d22ed7b56ecfafe7b349a3fbd18fe\",\"a3c38777b8a24d2eab98335b63172e77e784e0ed96c8abeed7eb16a2c18b69ce\"]}",
+  sha256: "0bdffc55037da34c54d87c079ab5cc097f64088c3fb4e7151c6679b18287a3f2",
+  snapshot: 9,
+  created_at: "2026-11-04T15:00:00Z",
+}
+
+export const RECEIPT_B: Receipt = {
+  canonical_json: "{\"clinician_actions\":[{\"action\":\"resolve_conflict\",\"choice_index\":0,\"key\":\"focal_signs.diplopia\",\"snapshot\":9},{\"action\":\"resolve_confirmation\",\"decision\":\"confirm\",\"id\":\"c1\",\"snapshot\":10},{\"action\":\"confirm_all\",\"snapshot\":12},{\"action\":\"kill_switch\",\"on\":true,\"snapshot\":13}],\"confirmed\":{\"age_years\":68,\"context.anticoagulated\":true,\"context.last_known_well_minutes_ago\":720,\"duration\":\"hours\",\"focal_signs\":[\"diplopia\"],\"headache_neck_pain_sudden_severe\":false,\"hearing_loss\":\"none\",\"nystagmus_direction\":\"horizontal\",\"onset\":\"sudden\",\"timing_pattern\":\"acute_continuous\",\"vascular_risk_factors\":[\"diabetes\",\"hypertension\"]},\"engine_version\":\"0.2.0-S1-P+6b99864626e1\",\"model_ids\":[\"mock-advocate\",\"mock-extractor\",\"mock-vision\",\"muse-wonder-1.0\"],\"prompt_sha256\":{\"advocate\":\"cec5a0d4d5e3869863f97d0922e06b0b71fd3b596a3e1f3a5490636412d772c1\",\"extractor\":\"59a8bc416887433e67a452c29dece8b6983706c9b15af568718da0048a02e541\",\"reasoner\":\"17c5d8fc5d1749e8209b44b6d74fd2ed640f9ed5faff4840fda6222bc84e2c77\",\"vision\":\"a0919419628d29370a56d09ef2de99ff389392cfc44a1a63d65b2fcf45d4e480\"},\"result\":{\"applied_rails\":[\"R-EPLEY-D\",\"R-INV1\"],\"blocked_actions\":[\"EPLEY\"],\"differential\":[[\"vestibular_neuritis\",57],[\"labyrinthitis\",31],[\"bppv_horizontal\",31],[\"central_suspected\",20]],\"forced_actions\":[\"BLOQUEAR_EPLEY\",\"DERIVAR_URGENTE\",\"ESCALAR\",\"NO_BENIGNO\"],\"red_flags\":[\"A5\",\"A7\"],\"urgency\":\"inmediata\"},\"snapshot\":14,\"turn_sha256\":[\"d74f3ddf35f630db53fa03c46015dee5983592816256b633e628491ce45b55b8\",\"a6dbfca48821ba550de3cd24458dfa41028ab7e33bfcb7d30fc36025ea02d735\",\"7c30e774a256c47eab01100628f1cc2b432ce882f7533c36022543ac10d61806\"]}",
+  sha256: "ee8978a0e594ea4c783bde6927eeeb7b533cf5e7116755fe63b9af1c1ea5afb2",
+  snapshot: 14,
+  created_at: "2026-11-04T15:00:00Z",
+}
