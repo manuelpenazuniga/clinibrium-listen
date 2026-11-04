@@ -167,7 +167,9 @@ def check_asr(client: httpx.Client, key: str, wav: Path) -> dict[str, Any]:
     with wave.open(str(wav)) as w:
         info = {"channels": w.getnchannels(), "sample_width": w.getsampwidth(),
                 "rate": w.getframerate(), "seconds": round(w.getnframes() / w.getframerate(), 2)}
-    request = {"model": "muse-voice-transcribe-1.0", "languageBias": ["Spanish"]}
+    # `audioEncoding` is REQUIRED (HTTP 400 without it; not in SPECS §3.1). "WAV" accepted.
+    request = {"model": "muse-voice-transcribe-1.0", "languageBias": ["Spanish"],
+               "audioEncoding": "WAV"}
     t0 = time.monotonic()
     r = client.post("/asr/transcribe", timeout=120, files={
         "request": (None, json.dumps(request), "application/json"),
@@ -182,7 +184,10 @@ def check_asr(client: httpx.Client, key: str, wav: Path) -> dict[str, Any]:
     out["response_keys"] = sorted(body) if isinstance(body, dict) else type(body).__name__
     turns = body.get("turns", []) if isinstance(body, dict) else []
     out["turns"] = turns
-    text = " ".join(t.get("transcript", "") for t in turns)
+    out["audio_duration_ms"] = body.get("audioDurationMs") if isinstance(body, dict) else None
+    # Observed: text at top-level `transcript`; `turns` may be empty for short clips.
+    text = " ".join(t.get("transcript", "") for t in turns) or (
+        body.get("transcript", "") if isinstance(body, dict) else "")
     out.update(ok=bool(text.strip()), transcript=text,
                spanish_hits=[w for w in ("paciente", "vertigo", "horas", "diplopia")
                              if w in normalize(text)])
@@ -228,8 +233,21 @@ def corrections(report: dict[str, Any]) -> list[str]:
     if c.get("status") and c["status"] != 200:
         out.append(f"- `/v1/asr/transcribe` returned HTTP {c['status']} with the documented "
                    "multipart shape; see body above.")
-    elif c.get("response_keys") and "turns" not in c["response_keys"]:
-        out.append(f"- ASR response keys are {c['response_keys']}, not `turns[]`.")
+    else:
+        out.append("- `/v1/asr/transcribe`: the `request` JSON REQUIRES `audioEncoding` "
+                   "(HTTP 400 \"You must specify the 'audioEncoding' field\" without it); "
+                   "`\"WAV\"` is accepted.")
+        if c.get("response_keys"):
+            out.append(f"- ASR response keys are {c['response_keys']}: full text at top-level "
+                       f"`transcript`; `turns` had {len(c.get('turns', []))} item(s) for a "
+                       f"{c['wav']['seconds']} s clip, so consumers must fall back to "
+                       "`transcript` when `turns` is empty.")
+    ok_efforts = [x["reasoning_effort"] for x in b.get("attempts", []) if x["status"] == 200]
+    if ok_efforts:
+        out.append(f"- Strict `json_schema` works as specified; `reasoning_effort={ok_efforts[0]}` "
+                   "accepted on muse-spark-1.3. The schema from "
+                   "`api.listen.contracts.strict_json_schema(ExtractorOut)` (refs inlined, all "
+                   "properties required, nullable optionals) was accepted unchanged.")
     return out or ["- none observed"]
 
 
