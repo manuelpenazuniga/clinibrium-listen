@@ -22,6 +22,7 @@ class CreateSession(BaseModel):
     mode: str | None = None
     demo_case: str | None = None
     access_code: str | None = None
+    lang: str | None = None  # "es" | "en": dictation language (prompts, ASR bias)
 
 
 def _session(session_id: str) -> Session:
@@ -37,7 +38,8 @@ async def create_session(body: CreateSession | None = None,
                          ) -> dict[str, Any]:
     body = body or CreateSession()
     try:
-        s = registry.create(body.mode, body.demo_case, body.access_code or x_demo_access_code)
+        s = registry.create(body.mode, body.demo_case, body.access_code or x_demo_access_code,
+                            lang=body.lang)
     except registry.LiveNotAllowed as exc:
         raise HTTPException(403, str(exc)) from exc
     except DailyCapExceeded as exc:

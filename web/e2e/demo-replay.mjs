@@ -91,8 +91,15 @@ async function finalizeAndVerify(page, obs, caseId) {
   await page.screenshot({ path: path.join(OUT, `${caseId}-summary.png`), fullPage: true })
 }
 
-async function caseA(browser) {
+/** This check drives the Spanish UI (Spanish labels and dictation); English is the default. */
+async function spanishPage(browser) {
   const page = await browser.newPage()
+  await page.addInitScript(() => localStorage.setItem("clinibrium.lang", "es"))
+  return page
+}
+
+async function caseA(browser) {
+  const page = await spanishPage(browser)
   const consoleErrors = []
   page.on("console", (m) => m.type() === "error" && consoleErrors.push(m.text()))
   const { sessionId, offered } = await openCase(page, "A")
@@ -135,7 +142,7 @@ async function caseA(browser) {
 }
 
 async function caseB(browser) {
-  const page = await browser.newPage()
+  const page = await spanishPage(browser)
   const consoleErrors = []
   page.on("console", (m) => m.type() === "error" && consoleErrors.push(m.text()))
   const { sessionId } = await openCase(page, "B")

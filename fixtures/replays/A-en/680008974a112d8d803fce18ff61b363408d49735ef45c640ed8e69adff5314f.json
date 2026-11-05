@@ -1,0 +1,26 @@
+{
+  "replay_key": "680008974a112d8d803fce18ff61b363408d49735ef45c640ed8e69adff5314f",
+  "role": "advocate",
+  "model": "muse-wonder-1.0",
+  "reasoning_effort": "medium",
+  "max_completion_tokens": 2500,
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the \"stroke advocate\": a safety reviewer who reads the full dictation of an emergency-department vertigo case and looks for central alarm findings (posterior fossa stroke) that were mentioned but are NOT in the form.\n\nInput (JSON): `keys` (allowed alarm keys and their meaning), `turns` (full dictation, in English), `current_values` (what is already in the form) and `result` (the engine's current urgency and red flags, context only).\n\nMandatory rules:\n- You may only ADD confirmation requests. Never remove, contradict or downgrade anything, and never set urgency or actions.\n- Each request must rest on a `quote` copied literally from the dictation (same words) that mentions the finding, even if it is colloquial or transient (\"yesterday the patient saw double for a while\").\n- Do not propose keys that are already in `current_values`.\n- Do not propose negated findings (\"no diplopia\" is NOT a request).\n- Use only keys from `keys`. Put the value in a single slot (bool → `value_bool`; the others null).\n- `rationale`: one sentence in English explaining why the physician should confirm it.\n- If there is nothing to add, return `{\"requests\": []}`.\n"
+    },
+    {
+      "role": "user",
+      "content": "{\"current_values\":{},\"keys\":[{\"key\":\"focal_signs.diplopia\",\"label\":\"Diplopia\",\"type\":\"bool\"},{\"key\":\"focal_signs.dysarthria\",\"label\":\"Dysarthria\",\"type\":\"bool\"},{\"key\":\"focal_signs.dysphagia\",\"label\":\"Dysphagia\",\"type\":\"bool\"},{\"key\":\"focal_signs.limb_weakness\",\"label\":\"Limb weakness\",\"type\":\"bool\"},{\"key\":\"focal_signs.facial_droop\",\"label\":\"Facial droop\",\"type\":\"bool\"},{\"key\":\"focal_signs.numbness\",\"label\":\"Numbness\",\"type\":\"bool\"},{\"key\":\"focal_signs.hiccups\",\"label\":\"Hiccups\",\"type\":\"bool\"},{\"key\":\"focal_signs.horner\",\"label\":\"Horner syndrome\",\"type\":\"bool\"},{\"key\":\"truncal_ataxia_severe\",\"label\":\"Severe truncal ataxia\",\"type\":\"bool\"},{\"key\":\"headache_neck_pain_sudden_severe\",\"label\":\"Sudden severe headache / neck pain\",\"type\":\"bool\"},{\"key\":\"altered_consciousness\",\"label\":\"Altered consciousness\",\"type\":\"bool\"},{\"key\":\"skew_deviation\",\"label\":\"Skew deviation\",\"type\":\"bool\"},{\"key\":\"nystagmus_direction_changing_gaze\",\"label\":\"Gaze-direction-changing nystagmus\",\"type\":\"bool\"},{\"key\":\"presyncope_syncope\",\"label\":\"Presyncope / syncope\",\"type\":\"bool\"},{\"key\":\"context.anticoagulated\",\"label\":\"Anticoagulated\",\"type\":\"bool\"}],\"result\":null,\"turns\":[\"45-year-old patient, vertigo lasting seconds when rolling over in bed, no neurological symptoms.\",\"Episodes triggered since the day before yesterday. No hearing loss or tinnitus, no diplopia, no dysarthria.\",\"Right positive, torsional, it fatigues.\"]}"
+    }
+  ],
+  "response": {
+    "content": "{\"requests\": []}",
+    "usage": {
+      "prompt_tokens": 668,
+      "completion_tokens": 276,
+      "reasoning_tokens": 262
+    },
+    "latency_ms": 3149
+  }
+}

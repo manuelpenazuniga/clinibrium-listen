@@ -24,7 +24,7 @@ from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 
 from adapter import engine_version  # noqa: E402
 from api.catalog import load_catalog  # noqa: E402
-from api.demo_cases import load_demo_cases  # noqa: E402
+from api.demo_cases import all_demo_cases  # noqa: E402
 from api.listen import routes, ws  # noqa: E402
 
 DISCLAIMER = "Research prototype · Not for clinical use · The physician decides."
@@ -56,7 +56,7 @@ def create_app() -> FastAPI:
 
     @app.get("/api/demo-cases")
     def demo_cases() -> list[dict[str, Any]]:
-        return load_demo_cases()
+        return all_demo_cases()
 
     app.include_router(routes.router)
     app.include_router(ws.router)

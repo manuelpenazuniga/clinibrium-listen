@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useCallback, useContext, useMemo, useSyncExternalStore } from "react"
+import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExternalStore } from "react"
 
 export type Lang = "es" | "en"
 
@@ -70,7 +70,7 @@ const STRINGS = {
   skip: { es: "Omitir", en: "Skip" },
   answer_hint: {
     es: "Responda por voz o escriba: «no», «sí, hace tres meses», «no lo evalué».",
-    en: "Answer by voice or type: “no”, “sí, hace tres meses”, “no lo evalué”.",
+    en: "Answer by voice or type: “no”, “yes, three months ago”, “not assessed”.",
   },
   confirmations: { es: "Solicitudes de confirmación", en: "Confirmation requests" },
   dismiss: { es: "Descartar", en: "Dismiss" },
@@ -169,11 +169,12 @@ const Ctx = createContext<LangCtx | null>(null)
 const STORAGE_KEY = "clinibrium.lang"
 const listeners = new Set<() => void>()
 
+/** English by default; Spanish only when the viewer picked it. */
 function readLang(): Lang {
   try {
-    return localStorage.getItem(STORAGE_KEY) === "en" ? "en" : "es"
+    return localStorage.getItem(STORAGE_KEY) === "es" ? "es" : "en"
   } catch {
-    return "es"
+    return "en"
   }
 }
 
@@ -183,7 +184,10 @@ function subscribe(cb: () => void) {
 }
 
 export function LangProvider({ children }: { children: React.ReactNode }) {
-  const lang = useSyncExternalStore<Lang>(subscribe, readLang, () => "es")
+  const lang = useSyncExternalStore<Lang>(subscribe, readLang, () => "en")
+  useEffect(() => {
+    document.documentElement.lang = lang
+  }, [lang])
   const setLang = useCallback((l: Lang) => {
     try {
       localStorage.setItem(STORAGE_KEY, l)

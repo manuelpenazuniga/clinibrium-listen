@@ -42,6 +42,8 @@ _MOTIVO_GROUPS = ("temporalidad",)
 _ANTECEDENTES_GROUPS = ("riesgo_vascular",)
 _ANTECEDENTES_KEYS = ("context.medications",)
 
+URGENCY_EN = {"inmediata": "Immediate", "prioritaria": "Priority", "ambulatoria": "Outpatient"}
+
 
 def _value_text(f: CatalogField, v: FieldValue) -> tuple[str, str]:
     if f.type == "bool":
@@ -107,8 +109,9 @@ def build_letter(fields: Mapping[str, FieldState], result: EngineResultView, sna
             text_en=f"Leading hypothesis (decision support, not a diagnosis): {en}.",
             keys=ckeys))
 
+    urg_en = URGENCY_EN.get(result.urgency, result.urgency)
     urgencia = [LetterStatement(text_es=f"Urgencia: {result.urgency.capitalize()}.",
-                                text_en=f"Urgency: {result.urgency}.", keys=ckeys)]
+                                text_en=f"Urgency: {urg_en}.", keys=ckeys)]
     for h in result.red_flags:
         urgencia.append(LetterStatement(
             text_es=f"Bandera roja {h.id}: {h.label}.",

@@ -7,6 +7,7 @@ catalog keys/values only. Any key outside `config/field_catalog.json` raises
 from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
+from typing import Literal
 
 from api.catalog import load_catalog
 from api.listen.contracts import EngineResultView, FieldValue, Question, Turn
@@ -72,9 +73,10 @@ def phrase_draft(draft: QuestionDraft) -> QuestionDraft:
 
 
 def reasoner_ctx(confirmed: Mapping[str, FieldValue], result: EngineResultView,
-                 grounding: Sequence[GroundingChunkView]) -> ReasonerCtx:
+                 grounding: Sequence[GroundingChunkView],
+                 lang: Literal["es", "en"] = "es") -> ReasonerCtx:
     return ReasonerCtx(confirmed_values=_values_ok(confirmed), result=result,
-                       grounding=list(grounding))
+                       grounding=list(grounding), lang=lang)
 
 
 __all__ = ["EgressError", "advocate_ctx", "extract_ctx", "phrase_draft", "reasoner_ctx",

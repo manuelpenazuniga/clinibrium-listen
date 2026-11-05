@@ -11,8 +11,10 @@ enum value has no metadata, so the catalog can never silently drift from the
 engine. Catalog order (= planner tie-break order) follows GROUPS, then the
 order of the entries in META.
 
-Lexicon shape (all terms in natural Spanish; consumers normalize: lowercase,
-accents stripped, whitespace collapsed, matched on word boundaries):
+Lexicon shape (terms in natural Spanish, plus the English terms of `LEXICON_EN`
+merged into the same buckets, so Spanish and English dictations are validated by
+the same rules; consumers normalize: lowercase, accents stripped, whitespace
+collapsed, matched on word boundaries):
   - bool:  {"*": concept terms, "false": terms that can only support `false`}
            (a concept term preceded by a negation cue within 4 tokens ⇒ false)
   - enum:  {<value>: terms that support that value}
@@ -61,6 +63,8 @@ GROUPS: list[tuple[str, str, str]] = [  # (id, label_es, label_en) — display +
 NOT_ASSESSED_VALUES = {"not_done"}
 
 NEGATION_CUES = ["sin", "no", "niega", "negativo", "negativa", "ausencia de", "descarta"]
+NEGATION_CUES_EN = ["not", "without", "denies", "denied", "negative for", "absence of",
+                    "rules out", "ruled out"]  # "no" is shared with Spanish
 
 ENUM_LABELS: dict[type[Enum], dict[str, tuple[str, str]]] = {
     SymptomDuration: {
@@ -352,6 +356,188 @@ META: dict[str, Meta] = {
 
 CONTEXT_KEYS = {k for k in META if k.startswith("context.")}
 
+# English dictation terms, merged into META's lexicon buckets (same shape: a
+# subset of each key's buckets). Kept apart so the Spanish lexicon above stays
+# exactly as reviewed.
+LEXICON_EN: dict[str, dict[str, list[str]]] = {
+    # --- Timing ---
+    "duration": {
+        "seconds": ["seconds", "a few seconds", "lasting seconds"],
+        "under_1min": ["less than a minute", "under a minute", "less than 1 minute"],
+        "minutes": ["minutes"],
+        "hours": ["hours"],
+        "over_24h_continuous": ["more than 24 hours", "more than a day", "over a day"],
+        "days": ["days", "several days"],
+        "recurrent_episodic": ["recurrent episodes", "recurrent", "repeated attacks"],
+    },
+    "onset": {
+        "sudden": ["sudden", "suddenly", "abrupt", "abruptly"],
+        "gradual": ["gradual", "gradually", "progressive", "progressively"],
+        "unknown": ["unknown onset", "onset unknown", "unclear onset"],
+    },
+    "trigger": {
+        "positional_head": ["rolling over in bed", "rolling over", "turning over in bed",
+                            "turning the head", "turning his head", "turning her head",
+                            "lying down", "in bed", "position changes", "positional",
+                            "looking up"],
+        "spontaneous": ["spontaneous", "spontaneously", "no trigger", "at rest"],
+        "orthostatic": ["standing up", "on standing", "orthostatic"],
+        "valsalva": ["straining", "when coughing", "when sneezing"],
+        "sound_pressure": ["loud noises", "loud sounds", "tullio phenomenon"],
+        "none": ["no identifiable trigger"],
+    },
+    "timing_pattern": {
+        "acute_continuous": ["continuous", "constant", "persistent vertigo"],
+        "episodic_triggered": ["episodes triggered", "triggered episodes",
+                               "positional episodes"],
+        "episodic_spontaneous": ["spontaneous episodes", "spontaneous attacks"],
+        "chronic": ["chronic", "months of"],
+    },
+    "episode_count": {"*": ["episodes", "episode", "attacks", "times"]},
+    "episode_duration": {
+        "seconds": ["episodes last seconds", "lasting seconds each", "attacks of seconds"],
+        "under_1min": ["episodes last less than a minute"],
+        "minutes": ["episodes last minutes", "attacks of minutes", "lasting minutes each"],
+        "hours": ["episodes last hours", "attacks of hours", "lasting hours each"],
+        "over_24h_continuous": ["episodes last more than a day"],
+        "days": ["episodes last days"],
+    },
+    "context.last_known_well_minutes_ago": {
+        "*": ["ago", "since", "last known well", "was well", "was fine"]},
+    # --- Ear ---
+    "hearing_loss": {
+        "none": ["no hearing loss", "normal hearing", "hearing is normal", "hears well"],
+        "sudden_unilateral": ["sudden hearing loss", "sudden deafness",
+                              "sudden loss of hearing"],
+        "fluctuating": ["fluctuating hearing loss", "fluctuating hearing", "fluctuating"],
+        "chronic": ["chronic hearing loss", "presbycusis", "longstanding hearing loss"],
+    },
+    "tinnitus": {"*": ["tinnitus", "ringing in the ear", "ringing in the ears", "buzzing"]},
+    "aural_fullness": {"*": ["aural fullness", "ear fullness", "blocked ear",
+                             "pressure in the ear"]},
+    "otitis_mastoiditis": {"*": ["otitis", "mastoiditis", "otorrhea", "ear discharge"]},
+    # --- Central neuro ---
+    "focal_signs.dysarthria": {"*": ["dysarthria", "dysarthric", "slurred speech",
+                                     "slurring", "trouble speaking", "difficulty speaking"]},
+    "focal_signs.dysphagia": {"*": ["dysphagia", "trouble swallowing",
+                                    "difficulty swallowing", "choking"]},
+    "focal_signs.diplopia": {"*": ["diplopia", "double vision", "saw double", "seeing double",
+                                   "sees double"]},
+    "focal_signs.limb_weakness": {"*": ["weakness", "hemiparesis", "weak arm", "weak leg",
+                                        "loss of strength", "reduced strength"]},
+    "focal_signs.facial_droop": {"*": ["facial droop", "facial palsy", "facial weakness",
+                                       "facial asymmetry", "drooping of the mouth"]},
+    "focal_signs.numbness": {"*": ["numbness", "tingling", "paresthesia", "paresthesias",
+                                   "hypoesthesia", "pins and needles"]},
+    "focal_signs.hiccups": {"*": ["hiccups", "persistent hiccups", "singultus"]},
+    "focal_signs.horner": {"*": ["horner", "ptosis and miosis", "ptosis with miosis"]},
+    "truncal_ataxia_severe": {
+        "*": ["truncal ataxia", "unable to walk", "cannot walk", "can t walk",
+              "unable to stand", "cannot sit without support", "unable to sit unsupported"],
+        "false": ["walks without difficulty", "normal gait", "walks normally"]},
+    "headache_neck_pain_sudden_severe": {
+        "*": ["sudden headache", "severe headache", "thunderclap headache",
+              "worst headache", "sudden neck pain", "severe neck pain"]},
+    "altered_consciousness": {
+        "*": ["altered consciousness", "altered mental status", "drowsy", "confused",
+              "disoriented", "obtunded"],
+        "false": ["alert", "lucid", "alert and oriented"]},
+    # --- Vascular risk ---
+    "age_years": {"*": ["years", "year", "year old", "years old", "age", "aged"]},
+    "vascular_risk_factors.hypertension": {"*": ["hypertensive", "hypertension", "htn",
+                                                 "high blood pressure"]},
+    "vascular_risk_factors.diabetes": {"*": ["diabetic", "diabetes", "t2dm"]},
+    "vascular_risk_factors.atrial_fibrillation": {"*": ["atrial fibrillation", "afib",
+                                                        "a fib"]},
+    "vascular_risk_factors.smoking": {"*": ["smoker", "smoking", "smokes"]},
+    "vascular_risk_factors.prior_stroke_tia": {"*": ["prior stroke", "previous stroke",
+                                                     "stroke", "tia",
+                                                     "transient ischemic attack"]},
+    "known_carotid_vertebrobasilar_disease": {"*": ["carotid stenosis", "carotid disease",
+                                                    "vertebrobasilar",
+                                                    "vertebral dissection",
+                                                    "carotid dissection"]},
+    "context.anticoagulated": {"*": ["anticoagulated", "anticoagulant", "anticoagulation",
+                                     "blood thinner", "blood thinners", "acenocoumarol",
+                                     "warfarin", "apixaban", "rivaroxaban", "dabigatran"]},
+    "context.prior_stroke_tia": {"*": ["prior stroke", "previous stroke", "stroke", "tia",
+                                       "transient ischemic attack"]},
+    # --- Examination ---
+    "head_impulse": {
+        "normal": ["head impulse normal", "normal head impulse", "hit normal",
+                   "normal hit"],
+        "abnormal_corrective_saccade": ["corrective saccade", "abnormal head impulse",
+                                        "head impulse abnormal", "abnormal hit",
+                                        "hit abnormal", "head impulse positive",
+                                        "positive head impulse"],
+    },
+    "nystagmus_direction": {
+        "none": ["no nystagmus"],
+        "horizontal": ["horizontal nystagmus"],
+        "vertical_pure": ["vertical nystagmus", "pure vertical"],
+        "torsional_pure": ["torsional nystagmus", "pure torsional"],
+        "mixed": ["mixed nystagmus", "horizontal torsional", "horizontal-torsional"],
+        "direction_changing": ["direction changing", "direction-changing",
+                               "changes direction", "bidirectional nystagmus"],
+    },
+    "nystagmus_direction_changing_gaze": {"*": ["changes direction with gaze",
+                                                "gaze evoked nystagmus",
+                                                "gaze-evoked nystagmus"]},
+    "skew_deviation": {"*": ["skew", "skew deviation", "vertical misalignment",
+                             "abnormal cover test"]},
+    "nystagmus_latency_s": {"*": ["latency"]},
+    "nystagmus_duration_s": {"*": ["nystagmus duration", "nystagmus lasts"]},
+    "nystagmus_fatigable": {"*": ["fatigable", "fatigues", "fatiguing", "it fatigues"],
+                            "false": ["persistent", "not fatigable", "non fatigable"]},
+    "nystagmus_suppressed_by_fixation": {"*": ["suppressed by fixation",
+                                               "suppresses with fixation",
+                                               "suppressed with fixation"]},
+    "dix_hallpike": {
+        "right_positive": ["right positive", "positive on the right", "positive right",
+                           "positive to the right"],
+        "left_positive": ["left positive", "positive on the left", "positive left",
+                          "positive to the left"],
+        "bilateral_positive": ["bilaterally positive", "positive bilaterally",
+                               "bilateral positive"],
+        "negative": ["dix-hallpike negative", "dix hallpike negative", "hallpike negative",
+                     "negative dix-hallpike", "negative dix hallpike"],
+    },
+    "torsion_confirmed_by_clinician": {"*": ["torsional", "torsion", "rotatory",
+                                             "torsional component"]},
+    # --- Other ---
+    "migrainous_features": {"*": ["migraine", "migrainous", "photophobia", "phonophobia",
+                                  "aura"]},
+    "fever": {"*": ["fever", "febrile", "chills"], "false": ["afebrile"]},
+    "neck_stiffness": {"*": ["neck stiffness", "stiff neck", "meningeal signs",
+                             "meningism"]},
+    "presyncope_syncope": {"*": ["syncope", "presyncope", "fainted", "fainting",
+                                 "passed out", "lost consciousness"]},
+    "palpitations": {"*": ["palpitations", "tachycardia", "racing heart"]},
+    "chest_pain": {"*": ["chest pain", "chest tightness", "chest pressure"]},
+    "recent_head_neck_trauma": {"*": ["trauma", "head injury", "hit his head",
+                                      "hit her head", "whiplash"]},
+    "cervical_pathology": {"*": ["cervical spine disease", "cervical disc",
+                                 "cervical spondylosis", "cervical arthritis"]},
+    "cardiovascular_instability": {"*": ["hemodynamically unstable",
+                                         "hemodynamic instability", "hypotensive",
+                                         "hypotension", "shock"]},
+    "worsening_during_flow": {"*": ["worsening", "getting worse", "worse"]},
+    "context.medications": {"*": ["takes", "medications", "on treatment with", "drugs"]},
+}
+
+
+def _merge_lexicon(key: str, lexicon: dict[str, list[str]]) -> dict[str, list[str]]:
+    """META's Spanish buckets + LEXICON_EN's English terms (order kept, no dupes)."""
+    extra = LEXICON_EN.get(key, {})
+    unknown = set(extra) - set(lexicon) - {"*", "false"}
+    if unknown:
+        raise SystemExit(f"{key}: LEXICON_EN buckets {sorted(unknown)} not in META")
+    merged = {b: list(terms) for b, terms in lexicon.items()}
+    for bucket, terms in extra.items():
+        merged.setdefault(bucket, [])
+        merged[bucket] += [t for t in terms if t not in merged[bucket]]
+    return merged
+
 
 def _enum_of(annotation: Any) -> type[Enum] | None:
     origin = get_origin(annotation)
@@ -397,6 +583,9 @@ def engine_keys() -> list[tuple[str, str, type[Enum] | None, str | None]]:
 def build() -> dict[str, Any]:
     expected = engine_keys()
     engine_key_names = {k for k, *_ in expected}
+    stray = set(LEXICON_EN) - set(META)
+    if stray:
+        raise SystemExit(f"LEXICON_EN keys not in META: {sorted(stray)}")
     missing = engine_key_names - set(META)
     extra = set(META) - engine_key_names - CONTEXT_KEYS
     if missing or extra:
@@ -406,7 +595,8 @@ def build() -> dict[str, Any]:
     group_ids = [g for g, *_ in GROUPS]
 
     fields: list[dict[str, Any]] = []
-    for key, (typ, group, label_es, label_en, askable, lexicon) in META.items():
+    for key, (typ, group, label_es, label_en, askable, es_lexicon) in META.items():
+        lexicon = _merge_lexicon(key, es_lexicon)
         enum: type[Enum] | None = None
         engine_field: str | None = None
         if key in by_key:
@@ -449,7 +639,7 @@ def build() -> dict[str, Any]:
         "_doc": "GENERATED by scripts/gen_catalog.py from CaseFeatures + enums. Do not edit.",
         "version": 1,
         "groups": [{"id": g, "label_es": es, "label_en": en} for g, es, en in GROUPS],
-        "negation_cues": NEGATION_CUES,
+        "negation_cues": NEGATION_CUES + [c for c in NEGATION_CUES_EN if c not in NEGATION_CUES],
         "negation_window_tokens": 4,
         "not_assessed_values_excluded": sorted(NOT_ASSESSED_VALUES),
         "fields": fields,

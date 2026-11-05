@@ -20,7 +20,7 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from api.catalog import load_catalog
 from api.listen import egress, policy
@@ -89,10 +89,12 @@ class _Job:
 class Session:
     def __init__(self, session_id: str, providers: Providers, *,
                  live_audio_allowed: bool = False,
+                 lang: Literal["es", "en"] = "es",
                  clock: Callable[[], datetime] = utcnow,
                  model_timeout_s: float = MODEL_TIMEOUT_S,
                  final_timeout_s: float | None = None) -> None:
         self.providers = providers
+        self.lang = lang  # dictation + model-text language (prompts, reasoner, notes)
         self.clock = clock
         self.timeout = model_timeout_s
         self.final_timeout = (final_timeout_s if final_timeout_s is not None
@@ -549,7 +551,8 @@ class Session:
         grounding = [GroundingChunkView(chunk_id=c.source_id, text=c.text) for c in chunks]
         reasoner = (self.providers.reasoner_wonder if result.red_flags
                     else self.providers.reasoner_spark)
-        rctx = egress.reasoner_ctx(policy.confirmed_values(self.state.fields), result, grounding)
+        rctx = egress.reasoner_ctx(policy.confirmed_values(self.state.fields), result, grounding,
+                                   lang=self.lang)
         actx = egress.advocate_ctx(self.state.turns,
                                    policy.confirmed_values(self.state.fields), result)
         r_out, a_out = await asyncio.gather(
@@ -577,9 +580,10 @@ class Session:
         if isinstance(a_out, AdvocateOut):
             catalog = load_catalog()
             for req in self._advocate_requests(a_out):
-                label = catalog.get(req.key).label_es
+                f = catalog.get(req.key)
                 view.suggested_next_steps.append(
-                    f"Revisar (advocate): {label} — «{req.quote}»")
+                    f"Review (advocate): {f.label_en} — “{req.quote}”" if self.lang == "en"
+                    else f"Revisar (advocate): {f.label_es} — «{req.quote}»")
         self.state.reasoning = view
         self._broadcast(self._state_msg())
 

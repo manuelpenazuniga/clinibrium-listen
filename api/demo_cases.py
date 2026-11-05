@@ -100,6 +100,64 @@ BUILTIN_DEMO_CASES: list[dict[str, Any]] = [
 ]
 
 
+# English versions of A and B for the English UI (scripted, no real patient data).
+# Same gold as the Spanish cases: the engine must land on the same urgency.
+# Served by /api/demo-cases but NOT part of the bench (bench/cases/ stays Spanish).
+ENGLISH_DEMO_CASES: list[dict[str, Any]] = [
+    {
+        "id": "A-en",
+        "lang": "en",
+        "title_es": "Caso A (en inglés) — VPPB posterior derecho",
+        "title_en": "Case A — right posterior BPPV",
+        "turns": [
+            {
+                "turn_id": 1, "start_ms": 0, "end_ms": 7000,
+                "text": "45-year-old patient, vertigo lasting seconds when rolling over in "
+                        "bed, no neurological symptoms.",
+            },
+            {
+                "turn_id": 2, "start_ms": 7800, "end_ms": 13000,
+                "text": "Episodes triggered since the day before yesterday. No hearing loss "
+                        "or tinnitus, no diplopia, no dysarthria.",
+            },
+        ],
+        "answers": {"dix_hallpike": "Right positive, torsional, it fatigues."},
+        "documents": [],
+        "gold": BUILTIN_DEMO_CASES[0]["gold"],
+    },
+    {
+        "id": "B-en",
+        "lang": "en",
+        "title_es": "Caso B (en inglés) — síndrome vestibular agudo con diplopía enterrada",
+        "title_en": "Case B — acute vestibular syndrome with buried diplopia",
+        "turns": [
+            {
+                "turn_id": 1, "start_ms": 0, "end_ms": 8000,
+                "text": "68-year-old patient, hypertensive and diabetic, presenting with "
+                        "constant vertigo that started 12 hours ago.",
+            },
+            {
+                "turn_id": 2, "start_ms": 8800, "end_ms": 16000,
+                "text": "Sudden onset, with nausea and vomiting, no headache. Yesterday the "
+                        "patient saw double for a while, not now.",
+            },
+            {
+                "turn_id": 3, "start_ms": 16800, "end_ms": 22000,
+                "text": "On examination, horizontal nystagmus, no hearing loss.",
+            },
+        ],
+        "answers": {},
+        "documents": BUILTIN_DEMO_CASES[1]["documents"],
+        "gold": BUILTIN_DEMO_CASES[1]["gold"],
+    },
+]
+
+
+def all_demo_cases() -> list[dict[str, Any]]:
+    """What /api/demo-cases serves: the bench/built-in cases + the English demos."""
+    return [*load_demo_cases(), *ENGLISH_DEMO_CASES]
+
+
 def load_demo_cases() -> list[dict[str, Any]]:
     """`bench/cases/*.json` if present (workstream 1D), else the built-in A and B."""
     if BENCH_CASES_DIR.is_dir():

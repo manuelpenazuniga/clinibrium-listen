@@ -9,7 +9,7 @@ import { SiteHeader } from "@/components/site-header"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { createSession, getDemoCases } from "@/lib/api"
-import { playableDemoCases, type DemoCase } from "@/lib/demo-cases"
+import { demoLetter, playableDemoCases, type DemoCase } from "@/lib/demo-cases"
 import { useLang, type Lang } from "@/lib/i18n"
 import { URGENCY_TEXT, urgencyLabel } from "@/lib/labels"
 import { cn } from "@/lib/utils"
@@ -68,14 +68,15 @@ export function Landing() {
   const { lang, t } = useLang()
   const copy = COPY[lang]
   const router = useRouter()
-  const [cases, setCases] = useState<DemoCase[] | null>(null)
+  const [allCases, setAllCases] = useState<DemoCase[] | null>(null)
+  const cases = allCases && playableDemoCases(allCases, lang)
   const [busy, setBusy] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [accessCode, setAccessCode] = useState("")
 
   useEffect(() => {
     getDemoCases()
-      .then((all) => setCases(playableDemoCases(all)))
+      .then(setAllCases)
       .catch((e) => setError(String(e)))
   }, [])
 
@@ -86,7 +87,7 @@ export function Landing() {
     try {
       // Live only with an access code; the server enforces LIVE_AUDIO=1 + the code.
       const id = await createSession(
-        demoCase ? { demo_case: demoCase } : code ? { mode: "live", access_code: code } : {}
+        demoCase ? { demo_case: demoCase, lang } : code ? { mode: "live", access_code: code, lang } : { lang }
       )
       router.push(`/case/${encodeURIComponent(id)}${demoCase ? `?demo=${encodeURIComponent(demoCase)}` : ""}`)
     } catch (e) {
@@ -127,7 +128,7 @@ export function Landing() {
           <h2 className="text-lg font-medium">{copy.cases}</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {(cases ?? []).map((c) => {
-              const note = CASE_NOTES[c.id]
+              const note = CASE_NOTES[demoLetter(c.id)]
               return (
                 <article
                   key={c.id}
@@ -143,7 +144,7 @@ export function Landing() {
                   <div className="mt-auto flex items-center justify-between gap-3">
                     <Button disabled={busy != null} onClick={() => void open(c.id)}>
                       <PlayIcon />
-                      {t("open_case")} {c.id}
+                      {t("open_case")} {demoLetter(c.id)}
                     </Button>
                     {note && (
                       <span className="text-sm text-muted-foreground">
