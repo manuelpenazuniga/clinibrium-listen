@@ -12,6 +12,9 @@ import { LiveMicrophoneWaveform } from "@/components/ui/waveform"
 import type { SessionState } from "@/lib/contracts"
 import type { DemoCase } from "@/lib/demo-cases"
 import { useLang } from "@/lib/i18n"
+import { cn } from "@/lib/utils"
+
+import { TranscriptTurnText } from "./transcript-turn"
 
 function mmss(ms: number) {
   const s = Math.floor(ms / 1000)
@@ -72,26 +75,36 @@ export function VoicePanel({
           <h2 className="text-sm font-medium text-muted-foreground">{t("captions")}</h2>
           <div
             ref={scroller}
-            aria-live="polite"
-            className="max-h-44 min-h-20 space-y-2 overflow-y-auto pr-1 font-serif text-[1.0625rem] leading-snug"
+            className="max-h-44 min-h-20 overflow-y-auto pr-1 font-serif text-[1.0625rem] leading-snug"
           >
-            {state.turns.length === 0 && !partial && (
-              <p className="text-muted-foreground">{t("no_turns")}</p>
-            )}
-            {state.turns.map((turn) => (
-              <p key={turn.turn_id} className="flex gap-2">
-                <span className="mt-1 shrink-0 font-mono text-[11px] text-listen tabular-nums">
-                  {mmss(turn.start_ms)}
-                </span>
-                <span>{turn.text}</span>
-              </p>
-            ))}
+            {/* Final turns only. The live ASR partial / demo typing line below
+                sits outside this region, so screen readers announce each turn
+                once, not every word as it is typed. */}
+            <div aria-live="polite" aria-relevant="additions" className="space-y-2">
+              {state.turns.length === 0 && !partial && (
+                <p className="text-muted-foreground">{t("no_turns")}</p>
+              )}
+              {state.turns.map((turn) => (
+                <p key={turn.turn_id} className="flex gap-2" data-testid="transcript-turn">
+                  <span className="mt-1 shrink-0 font-mono text-[11px] text-listen tabular-nums">
+                    {mmss(turn.start_ms)}
+                  </span>
+                  <TranscriptTurnText text={turn.text} turnId={turn.turn_id} fields={state.fields} />
+                </p>
+              ))}
+            </div>
             {partial && (
-              <p className="flex gap-2 text-muted-foreground italic">
-                <span className="mt-0.5 shrink-0 font-mono text-[11px]">··:··</span>
-                <span>
+              <p
+                aria-hidden="true"
+                data-testid="transcript-typing"
+                className={cn("flex gap-2", state.turns.length > 0 && "mt-2")}
+              >
+                <span className="mt-1 shrink-0 font-mono text-[11px] text-muted-foreground tabular-nums">
+                  ··:··
+                </span>
+                <span className="opacity-70">
                   {partial}
-                  <span className="ml-0.5 inline-block h-3.5 w-px animate-pulse bg-current align-middle" />
+                  <span className="ml-0.5 inline-block h-[1.1em] w-0.5 animate-pulse bg-listen align-text-bottom" />
                 </span>
               </p>
             )}
