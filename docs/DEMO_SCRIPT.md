@@ -95,7 +95,7 @@ quote "Acenocumarol según control de TACO".
 **Screen:** request confirmed → diplopia filled (confirmed). Clinician step card. Header kill switch flips to
 **Modelos detenidos**; the orb goes grey. Band still **Inmediata**, Epley still blocked, clock unchanged.
 **Action:** **Confirmar** on the advocate request → **Revisé y confirmo los hallazgos propuestos** → toggle the
-**Interruptor de modelos** off. Hold 2 s on the unchanged band.
+the **Modelos activos** switch in the header off (it turns into **Modelos detenidos**). Hold 2 s on the unchanged band.
 
 > **EN:** I confirm the double vision and the rest of the findings. Now the kill switch: all model work stops.
 > Urgency, blocked actions, the clock: identical. No decision depends on a model being available.
@@ -129,7 +129,7 @@ needed) → when the clinician-step card appears, click **Revisé y confirmo los
 > nunca bajarla. Confirmo. Ahora Ambulatoria. Epley permitido. La bajó el médico, no un modelo.
 
 ### 8 · Bench — 2:06–2:20
-**Screen:** `/bench` full table for ~5 s, then zoom on the case F row (baseline **ambulatoria ✗**, Muse inmediata).
+**Screen:** `/bench`: the paired bars for ~5 s (urgency 91,7 % vs 100 %, red flags 80 % vs 100 %), then scroll to the case F row: keywords show **Ambulatoria** highlighted in red, Muse shows **Inmediata**.
 Subtitle: *12 synthetic, scripted cases · not a clinical validation*.
 **Action:** click **Benchmark** in the header.
 
