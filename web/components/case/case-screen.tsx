@@ -79,9 +79,11 @@ export function CaseScreen({ sessionId, demoId }: { sessionId: string; demoId: s
   const locked = state.phase === "finalized"
   const blockers = finalizeBlockers(state)
   const pendingQ = state.questions.find((q) => q.status === "pending")
+  // live ASR partial, or the demo player's client-side typing line
+  const liveText = player.typing ?? partial
   const orbState: AgentState = speaking
     ? "talking"
-    : mic.recording || (partial && !busy)
+    : mic.recording || player.typing || (partial && !busy)
       ? "listening"
       : busy || player.playing
         ? "thinking"
@@ -133,7 +135,7 @@ export function CaseScreen({ sessionId, demoId }: { sessionId: string; demoId: s
           <div className="max-lg:order-1">
             <VoicePanel
               state={state}
-              partial={partial}
+              partial={liveText}
               orbState={orbState}
               recording={mic.recording}
               micError={mic.error}

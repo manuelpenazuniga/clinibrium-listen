@@ -38,7 +38,8 @@ function observe(sessionId) {
     if (m.type === "state") obs.state = m.state
     else if (m.type === "error") obs.errors.push(`${m.code}: ${m.message}`)
   }
-  obs.until = async (pred, what, timeoutMs = 30_000) => {
+  // Generous default: the demo player types each turn out (≤ 6 s/turn) before sending it.
+  obs.until = async (pred, what, timeoutMs = 45_000) => {
     const t0 = Date.now()
     while (!(obs.state && pred(obs.state))) {
       if (Date.now() - t0 > timeoutMs) throw new Error(`timeout waiting for ${what}`)
@@ -58,6 +59,18 @@ async function openCase(page, id) {
   await page.waitForURL(/\/case\//)
   const sessionId = decodeURIComponent(new URL(page.url()).pathname.split("/")[2])
   return { sessionId, offered }
+}
+
+/** The player reveals each turn word by word before sending it (lib/typing.ts). */
+async function noteTyping(page, caseId) {
+  const typing = page.getByTestId("transcript-typing")
+  const seen = await typing.waitFor({ timeout: 15_000 }).then(() => true).catch(() => false)
+  note(caseId, "Typing line shown before the turn is sent", seen ? `“${((await typing.textContent().catch(() => "")) ?? "").replace(/^··:··/, "").trim()}…”` : "not observed")
+}
+
+/** Dictation ends when the Play button is enabled again ("Reproducir caso demo"). */
+async function waitDictationDone(page) {
+  await page.getByRole("button", { name: /Reproducir caso demo/ }).and(page.locator(":enabled")).waitFor({ timeout: 60_000 })
 }
 
 async function finalizeAndVerify(page, obs, caseId) {
@@ -89,7 +102,8 @@ async function caseA(browser) {
   check("A", "Session runs on the real API (replay), not the web mock", !sessionId.startsWith("mock-"), sessionId)
 
   await page.getByRole("button", { name: /Reproducir caso demo/ }).click()
-  let st = await obs.until((s) => s.questions.some((q) => q.key === "dix_hallpike"), "Dix-Hallpike question")
+  await noteTyping(page, "A")
+  let st = await obs.until((s) => s.questions.some((q) => q.key === "dix_hallpike"), "Dix-Hallpike question", 60_000)
   const dix = st.questions.find((q) => q.key === "dix_hallpike")
   check("A", "Planner asks for Dix-Hallpike", !!dix, `“${dix.text_es}” (reason: ${dix.reason})`)
   st = await obs.until((s) => s.fields.dix_hallpike, "Dix-Hallpike answer")
@@ -100,7 +114,7 @@ async function caseA(browser) {
     `urgency=${st.result.urgency}, blocked=${st.result.blocked_actions}`)
 
   const step = page.getByTestId("clinician-confirm-step")
-  await step.waitFor({ timeout: 20_000 })
+  await step.waitFor({ timeout: 30_000 })
   await page.waitForTimeout(3000) // the step stays: the player never confirms by itself
   st = obs.state
   check("A", "Visible clinician-confirm step; nothing auto-confirmed", (await step.isVisible()) && Object.values(st.fields).every((f) => f.status === "proposed"),
@@ -128,8 +142,9 @@ async function caseB(browser) {
   const obs = observe(sessionId)
   await obs.until((s) => s.session_id === sessionId, "initial state")
   await page.getByRole("button", { name: /Reproducir caso demo/ }).click()
+  await noteTyping(page, "B")
 
-  let st = await obs.until((s) => s.fields["focal_signs.diplopia"], "diplopia")
+  let st = await obs.until((s) => s.fields["focal_signs.diplopia"], "diplopia", 60_000)
   const dip = st.fields["focal_signs.diplopia"]
   check("B", "“…ayer vio doble un rato…” → diplopia proposed as a sticky alert", dip.value === true && dip.sticky_alert,
     `quote=“${dip.evidence[0].quote}”`)
@@ -140,12 +155,17 @@ async function caseB(browser) {
   st = await obs.until((s) => s.onset, "window clock")
   check("B", "Window clock appears", !!st.onset && (await page.getByText(/ventana|window/i).first().isVisible().catch(() => false)),
     `windows=${st.onset.windows.map((w) => `${w.label_en}:${w.remaining_min}min`).join(", ")}`)
-  st = await obs.until((s) => s.confirmations.length > 0, "advocate request", 30_000)
+  const alert = page.getByTestId("transcript-highlight").and(page.locator('[data-tone="alert"]')).first()
+  const alertSeen = await alert.waitFor({ timeout: 10_000 }).then(() => true).catch(() => false)
+  note("B", "Diplopia quote highlighted as an alert in the transcript", alertSeen ? `“${await alert.textContent()}”` : "not observed")
+  st = await obs.until((s) => s.confirmations.length > 0, "advocate request", 60_000)
   const req = st.confirmations[0]
   check("B", "Advocate raises a confirmation request", req.status === "pending" && st.result.advocate_floor_active,
     `${req.key}=${req.value} “${req.quote}”`)
 
-  // medication-list photo (the recorded synthetic image) → anticoagulated
+  // medication-list photo (the recorded synthetic image) → anticoagulated,
+  // once the typed dictation has finished
+  await waitDictationDone(page)
   await page.getByRole("button", { name: /B-meds/ }).click()
   st = await obs.until((s) => s.fields["context.anticoagulated"], "anticoagulated from photo")
   const ac = st.fields["context.anticoagulated"]
@@ -158,7 +178,7 @@ async function caseB(browser) {
   check("B", "Clinician confirms the advocate request → diplopia confirmed", st.fields["focal_signs.diplopia"].status === "confirmed",
     `floor active=${st.result.advocate_floor_active}`)
   const step = page.getByTestId("clinician-confirm-step")
-  await step.waitFor({ timeout: 20_000 })
+  await step.waitFor({ timeout: 30_000 })
   await step.getByRole("button").click()
   st = await obs.until((s) => Object.values(s.fields).every((f) => f.status !== "proposed"), "all confirmed")
   const blockersText = await page.getByText(/Debe resolver|must resolve/i).count()
