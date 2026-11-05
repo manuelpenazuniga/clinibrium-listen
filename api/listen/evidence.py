@@ -8,8 +8,12 @@
   term preceded by a negation cue within `negation_window_tokens` tokens (same
   clause), or followed by a postfix negation ("diplopía negativa"), can only
   yield `false`.
-- **Short answers:** `sí/si/positivo` / `no/negativo` / `no lo evalué…` are
-  classified before any model sees the turn.
+- **Short answers:** `sí/si/positivo` / `no/negativo` / `no lo evalué…` (and
+  `yes/positive` / `no/negative` / `not assessed…`) are classified before any
+  model sees the turn.
+
+Spanish and English dictations go through the same rules: the catalog lexicon
+and negation cues hold both languages, and the token sets below do too.
 
 Everything here is pure. Failures return a reason string (logged by the
 session), never raise.
@@ -27,9 +31,10 @@ from api.listen.numbers import UNIT_MINUTES, minutes_ago, numbers_in
 
 _TOKEN = re.compile(r"[a-z0-9]+")
 _CLAUSE_SPLIT = re.compile(r"[.;:,¿?¡!\n]+")
-POSTFIX_NEGATIONS = frozenset({"negativo", "negativa", "ausente"})
-# Tokens that end a negation's scope ("sin cefalea y con disartria").
-NEGATION_BREAKERS = frozenset({"con", "pero"})
+POSTFIX_NEGATIONS = frozenset({"negativo", "negativa", "ausente", "negative", "absent"})
+# Tokens that end a negation's scope ("sin cefalea y con disartria",
+# "no headache but with dysarthria").
+NEGATION_BREAKERS = frozenset({"con", "pero", "with", "but"})
 LKW_KEY = "context.last_known_well_minutes_ago"
 
 
@@ -132,7 +137,7 @@ def int_supported(key: str, value: int, quote: str) -> str | None:
         mins = minutes_ago(toks)
         if mins is not None:
             ok.add(mins)
-            if "media" in toks or "medio" in toks:  # "hace 1 hora y media"
+            if {"media", "medio", "half"} & set(toks):  # "hace 1 hora y media"
                 ok |= {mins + f // 2 for _, _, end in found if end < len(toks)
                        for f in [UNIT_MINUTES.get(toks[end], 0)] if f}
         if value in ok:
@@ -207,10 +212,13 @@ _SKIP = frozenset({
     "no lo evalue", "no lo evalué", "no evaluado", "no evaluada", "no se evaluo",
     "no lo evaluamos", "no se", "no lo se", "no realizado", "no realizada",
     "no lo hice", "no se hizo", "no lo examine",
+    "not assessed", "not done", "not tested", "not examined", "not evaluated",
+    "i did not assess it", "i didn t assess it", "i didn t check", "i did not check",
+    "i don t know", "unknown",
 })
 _SKIP_NORM = frozenset(normalize(s) for s in _SKIP)
-_YES = frozenset({"si", "positivo", "positiva", "presente"})
-_NO = frozenset({"no", "negativo", "negativa", "ausente"})
+_YES = frozenset({"si", "positivo", "positiva", "presente", "yes", "positive", "present"})
+_NO = frozenset({"no", "negativo", "negativa", "ausente", "negative", "absent"})
 
 
 def classify_short_answer(text: str) -> ShortAnswer | None:

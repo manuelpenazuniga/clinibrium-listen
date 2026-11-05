@@ -10,7 +10,7 @@ ASR in replay mode is the scripted mock stream (demo-case timing).
 
 Recording the demo cases (live, budget-guarded, run once):
     MUSE_RECORD=1 MUSE_MAX_LIVE_CALLS=… MUSE_MAX_WONDER_CALLS=… \
-        uv run python -m api.muse.replay record [--only A,B,phrasing]
+        uv run python -m api.muse.replay record [--only A,B,A-en,B-en,phrasing]
 """
 from __future__ import annotations
 
@@ -33,6 +33,7 @@ from api.muse.client import (  # noqa: E402
     REPLAYS_DIR,
     ChatRequest,
     ChatResult,
+    Lang,
     ReplayMiss,
     build_with_transport,
 )
@@ -74,9 +75,9 @@ class ReplayTransport:
                           latency_ms=int(resp.get("latency_ms", 0)))
 
 
-def build_providers() -> Providers:
+def build_providers(lang: Lang = "es") -> Providers:
     """MUSE_MODE=replay provider bundle (api.muse.interfaces.get_providers)."""
-    providers: Providers = build_with_transport("replay", ReplayTransport())
+    providers: Providers = build_with_transport("replay", ReplayTransport(), lang)
     return providers
 
 
@@ -182,7 +183,8 @@ async def _record_case(p: Providers, case: dict[str, Any]) -> list[str]:
     confirmed = {k: v for k, v in case["gold"]["fields"].items()}
     expl = await reasoner.explain(ReasonerCtx(
         confirmed_values=confirmed, result=view,
-        grounding=_grounding(engine_result, case["gold"]["fields"])))
+        grounding=_grounding(engine_result, case["gold"]["fields"]),
+        lang=case.get("lang", "es")))
     log.append(f"{case['id']} reasoner[{reasoner.model_id}] cites {expl.cited_chunk_ids}")
     return log
 
@@ -204,7 +206,7 @@ async def _record_phrasing(p: Providers) -> list[str]:
 
 
 async def record(only: set[str]) -> None:
-    from api.demo_cases import BUILTIN_DEMO_CASES
+    from api.demo_cases import BUILTIN_DEMO_CASES, ENGLISH_DEMO_CASES
     from api.muse.client import LiveTransport
 
     if os.environ.get("MUSE_RECORD") != "1":
@@ -222,9 +224,9 @@ async def record(only: set[str]) -> None:
                 return ChatResult(content=r["content"], usage=r.get("usage", {}))
             return await live.send(req)
 
-    p = build_with_transport("live", SkipRecorded())
-    for case in BUILTIN_DEMO_CASES:
+    for case in [*BUILTIN_DEMO_CASES, *ENGLISH_DEMO_CASES]:
         if case["id"] in only:
+            p = build_with_transport("live", SkipRecorded(), case.get("lang", "es"))
             for line in await _record_case(p, case):
                 print(line)
     if "phrasing" in only:

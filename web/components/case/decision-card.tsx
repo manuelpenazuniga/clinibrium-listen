@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { EngineResultView } from "@/lib/contracts"
 import { useLang } from "@/lib/i18n"
-import { actionLabel, dxLabel, URGENCY_TONE, urgencyLabel } from "@/lib/labels"
+import { actionLabel, dxLabel, redFlagLabel, URGENCY_TONE, urgencyLabel } from "@/lib/labels"
 import { cn } from "@/lib/utils"
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -96,7 +96,7 @@ export function DecisionCard({
                   <FlagIcon
                     className={cn("size-4", rf.severity === "high" ? "text-urgent" : "text-priority")}
                   />
-                  <span>{rf.label}</span>
+                  <span>{redFlagLabel(rf.id, rf.label, lang)}</span>
                   <span className="font-mono text-[11px] text-muted-foreground">{rf.id}</span>
                   {rf.provisional && <Badge variant="outline">{t("provisional")}</Badge>}
                 </li>

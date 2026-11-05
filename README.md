@@ -7,7 +7,7 @@ clinical rules engine makes the safety call. The physician decides.
 > **Research prototype · Not for clinical use · The physician decides.**
 > Not an AI diagnosis tool. Scripted dictations only — no real patient data.
 
-**Try it:** [clinibrium-listen.vercel.app](https://clinibrium-listen.vercel.app) — public replay mode, two scripted cases, no sign-up.
+**Try it:** [clinibrium-listen.vercel.app](https://clinibrium-listen.vercel.app) — public replay mode, two scripted cases in English (switch to *es* for the original Chilean-Spanish dictations), no sign-up.
 Built for the Meta Global AI Developer Hackathon (Indie track, *Build for Your World*).
 
 ![Case B: a dictation with buried diplopia. The engine sets Inmediata and blocks the Epley manoeuvre while the findings are still only proposed.](docs/images/case-b.png)
@@ -34,7 +34,7 @@ rules, and leaves every decision to the physician.
 
 | Layer | What it does | What it can **never** do |
 |---|---|---|
-| **Speech model (ML)** — `muse-voice-transcribe-1.0` | Live transcription of the Spanish dictation, streamed over a WebSocket | — |
+| **Speech model (ML)** — `muse-voice-transcribe-1.0` | Live transcription of the dictation (Spanish or English), streamed over a WebSocket | — |
 | **LLMs** — `muse-spark-1.3`, `muse-wonder-1.0` | Propose field values *with the exact quote* they came from; phrase the next question; read a medication photo; a second-look "stroke advocate"; explain the final decision with cited sources | Set urgency, block or force an action, write the letter |
 | **Deterministic engine** — `engine/clinibrium` | Red flags (including **HINTS**: head impulse, nystagmus, test of skew), a differential built on the team's paraphrase of the **Bárány Society ICVD criteria**, safety rails, urgency and referral | Change without a signed clinical review — the logic is frozen and fingerprinted |
 | **Physician** | Confirms, rejects or edits each finding; resolves conflicts; finalizes | — |
@@ -107,7 +107,7 @@ implementations, chosen by `MUSE_MODE`:
 | Case | What it shows | Ends at |
 |---|---|---|
 | **A — right posterior BPPV** | The dictated Dix-Hallpike keeps urgency at *Prioritaria* and Epley blocked **until the physician confirms it** (L1). After confirmation: *Ambulatoria*, Epley allowed. | Ambulatoria |
-| **B — acute vestibular syndrome with buried diplopia** | "Ayer vio doble un rato" is caught as a sticky alert, the engine sets *Inmediata* and blocks Epley, the stroke-window clock starts, and a medication photo adds anticoagulation. The kill switch leaves the decision unchanged (L4). | Inmediata |
+| **B — acute vestibular syndrome with buried diplopia** | "Yesterday the patient saw double for a while" (in Spanish, "ayer vio doble un rato") is caught as a sticky alert, the engine sets *Inmediata* and blocks Epley, the stroke-window clock starts, and a medication photo adds anticoagulation. The kill switch leaves the decision unchanged (L4). | Inmediata |
 
 The full shot list is in [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md). The browser
 end-to-end run of both cases passes 26/26 checks against the deployed site
@@ -173,7 +173,7 @@ cd web && pnpm install && pnpm dev         # web on :3000
 - The public deployment runs **replay only** and never calls Meta. Live sessions (used to record the demo) send scripted audio, text and images to the Meta Model API.
 - The only secret is `MODEL_API_KEY`, held as a server environment variable.
 - The engine covers **adult vertigo and dizziness** only; some criteria carry `TODO(clinical)` notes awaiting specialist review.
-- Spanish dictation only; the UI is bilingual (ES/EN).
+- Dictation in Spanish or English. The evidence checks (lexicon, negations, spoken numbers) hold both languages; the extractor, advocate and reasoner have one prompt per language. The bench covers the twelve Spanish cases only. The UI opens in English; *es* switches it, and the demo cases, to Spanish.
 - Sessions live in memory: no database, no authentication, no EHR integration.
 - Not clinically validated and not approved by any regulatory authority. **The physician decides.**
 

@@ -12,7 +12,7 @@ from typing import Any
 
 from api.catalog import Catalog, CatalogField, load_catalog
 from api.listen.contracts import DeltaOut, ExtractorOut, FieldValue
-from api.muse.client import SPARK, MuseClient, MuseError, load_prompt
+from api.muse.client import SPARK, Lang, MuseClient, MuseError, load_prompt, prompt_name_for
 from api.muse.interfaces import ExtractCtx
 
 CONTEXT_TURNS = 4  # previous turns sent as context
@@ -26,13 +26,15 @@ def check_keys(keys: list[str] | Any, catalog: Catalog | None = None) -> None:
         raise MuseError(f"egress blocked: unknown catalog keys {unknown}")
 
 
-def key_spec(keys: list[str], catalog: Catalog | None = None) -> list[dict[str, Any]]:
+def key_spec(keys: list[str], catalog: Catalog | None = None,
+             lang: Lang = "es") -> list[dict[str, Any]]:
     """Compact per-key spec (key, type, label, enum values) — no lexicons."""
     cat = catalog or load_catalog()
     out: list[dict[str, Any]] = []
     for k in keys:
         f = cat.get(k)
-        item: dict[str, Any] = {"key": k, "type": f.type, "label": f.label_es}
+        label = f.label_en if lang == "en" else f.label_es
+        item: dict[str, Any] = {"key": k, "type": f.type, "label": label}
         if f.enum_values:
             item["values"] = f.enum_values
         out.append(item)
@@ -78,8 +80,12 @@ def _values(values: dict[str, FieldValue]) -> dict[str, FieldValue]:
 
 
 class LiveExtractor:
-    def __init__(self, client: MuseClient) -> None:
+    """`lang` picks the prompt (extractor.md / extractor_en.md) and the key labels;
+    the evidence gate is the same for both languages."""
+
+    def __init__(self, client: MuseClient, lang: Lang = "es") -> None:
         self.client = client
+        self.lang = lang
 
     async def extract(self, ctx: ExtractCtx) -> ExtractorOut:
         check_keys(ctx.catalog_keys)
@@ -89,7 +95,7 @@ class LiveExtractor:
             check_keys([q.key])
         prev = [t.text for t in ctx.turns if t.turn_id != ctx.new_turn.turn_id][-CONTEXT_TURNS:]
         user = {
-            "keys": key_spec(ctx.catalog_keys),
+            "keys": key_spec(ctx.catalog_keys, lang=self.lang),
             "context_turns": prev,
             "current_values": _values(ctx.current_values),
             "pending_question": ({"id": q.id, "key": q.key, "text_es": q.text_es}
@@ -102,9 +108,10 @@ class LiveExtractor:
         # been recorded without one; fall back to that recording. The pending
         # question is still applied by sanitize_deltas below.
         alt = [{"new_turn": ctx.new_turn.text, "pending_key": None}] if q else None
+        prompt = prompt_name_for("extractor", self.lang)
         out = await self.client.complete(
-            role="extractor", model=SPARK, system=load_prompt("extractor"), user=user,
-            out=ExtractorOut, key_inputs=key_inputs, prompt_name="extractor",
+            role="extractor", model=SPARK, system=load_prompt(prompt), user=user,
+            out=ExtractorOut, key_inputs=key_inputs, prompt_name=prompt,
             alt_key_inputs=alt)
         return ExtractorOut(deltas=sanitize_deltas(
             out.deltas, ctx.catalog_keys, q.id if q else None, q.key if q else None))

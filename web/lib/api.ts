@@ -14,6 +14,8 @@ export type CreateSessionReq = {
   demo_case?: string
   /** DEMO_ACCESS_CODE for a live session (the server also needs LIVE_AUDIO=1). */
   access_code?: string
+  /** Dictation language: picks the extractor prompts and the live ASR language. */
+  lang?: "es" | "en"
 }
 
 /** POST /api/session → `{session_id}`. 403 = live not allowed, 429 = daily live cap. */

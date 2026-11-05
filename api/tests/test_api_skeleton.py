@@ -15,4 +15,4 @@ def test_health() -> None:
 def test_demo_cases_builtin(monkeypatch, tmp_path) -> None:  # type: ignore[no-untyped-def]
     monkeypatch.setattr("api.demo_cases.BENCH_CASES_DIR", tmp_path)
     cases = TestClient(create_app()).get("/api/demo-cases").json()
-    assert [c["id"] for c in cases] == ["A", "B"]
+    assert [c["id"] for c in cases] == ["A", "B", "A-en", "B-en"]

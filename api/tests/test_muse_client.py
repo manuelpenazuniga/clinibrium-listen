@@ -246,7 +246,8 @@ def test_replay_key_is_stable_and_sensitive() -> None:
 
 def test_prompt_hashes_cover_every_role() -> None:
     h = prompt_hashes()
-    assert set(h) == {"extractor", "phrasing", "advocate", "vision", "reasoner"}
+    assert set(h) == {"extractor", "phrasing", "advocate", "vision", "reasoner",
+                      "extractor_en", "advocate_en", "reasoner_en"}
     assert all(len(v) == 64 for v in h.values())
 
 

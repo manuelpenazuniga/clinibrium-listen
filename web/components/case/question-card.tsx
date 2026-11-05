@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { fieldLabel } from "@/lib/catalog"
 import type { Question } from "@/lib/contracts"
 import { useLang } from "@/lib/i18n"
+import { questionReason } from "@/lib/labels"
 
 /** The one pending question (planner). Optional read-aloud via speechSynthesis. */
 export function QuestionCard({
@@ -47,7 +48,7 @@ export function QuestionCard({
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="font-serif text-[1.375rem] leading-snug text-balance">{text}</p>
-        <p className="text-xs leading-relaxed text-muted-foreground">{question.reason}</p>
+        <p className="text-xs leading-relaxed text-muted-foreground">{questionReason(question.reason, lang)}</p>
         <p className="text-xs text-muted-foreground">{t("answer_hint")}</p>
         <div className="flex gap-2">
           {canSpeak && (

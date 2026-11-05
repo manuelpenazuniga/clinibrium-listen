@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from api.catalog import load_catalog, normalize
 from api.listen.contracts import AdvocateItemOut, AdvocateOut
-from api.muse.client import WONDER, MuseClient, load_prompt
+from api.muse.client import WONDER, Lang, MuseClient, load_prompt, prompt_name_for
 from api.muse.extractor import _slot_ok, check_keys, key_spec
 from api.muse.interfaces import AdvocateCtx
 from api.muse.mock import ADVOCATE_ALERT_KEYS
@@ -32,8 +32,9 @@ def sanitize_requests(items: list[AdvocateItemOut], ctx: AdvocateCtx,
 
 
 class LiveAdvocate:
-    def __init__(self, client: MuseClient) -> None:
+    def __init__(self, client: MuseClient, lang: Lang = "es") -> None:
         self.client = client
+        self.lang = lang
 
     async def review(self, ctx: AdvocateCtx) -> AdvocateOut:
         check_keys(ctx.catalog_keys)
@@ -43,7 +44,7 @@ class LiveAdvocate:
             return AdvocateOut(requests=[])
         r = ctx.result
         user = {
-            "keys": key_spec(allowed),
+            "keys": key_spec(allowed, lang=self.lang),
             "turns": [t.text for t in ctx.turns],
             "current_values": {k: ctx.current_values[k] for k in sorted(ctx.current_values)},
             "result": ({"urgency": r.urgency, "red_flags": [f.id for f in r.red_flags]}
@@ -51,8 +52,9 @@ class LiveAdvocate:
         }
         # Output is filtered against current_values afterwards, so the key holds
         # only the dictation itself.
+        prompt = prompt_name_for("advocate", self.lang)
         out = await self.client.complete(
-            role="advocate", model=WONDER, system=load_prompt("advocate"), user=user,
+            role="advocate", model=WONDER, system=load_prompt(prompt), user=user,
             out=AdvocateOut, key_inputs={"turns": [t.text for t in ctx.turns]},
-            prompt_name="advocate")
+            prompt_name=prompt)
         return AdvocateOut(requests=sanitize_requests(out.requests, ctx, allowed))

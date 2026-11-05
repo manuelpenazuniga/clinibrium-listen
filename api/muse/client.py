@@ -88,6 +88,17 @@ class ReplayMiss(MuseError):
 # ------------------------------------------------------------------ prompts
 
 
+Lang = Literal["es", "en"]
+
+# Roles with a separate English prompt (`<role>_en.md`). The Spanish prompt files
+# are unchanged, so their recorded replays (keyed by prompt hash) stay valid.
+LOCALIZED_PROMPTS = frozenset({"extractor", "advocate", "reasoner"})
+
+
+def prompt_name_for(name: str, lang: Lang) -> str:
+    return f"{name}_en" if lang == "en" and name in LOCALIZED_PROMPTS else name
+
+
 def load_prompt(name: str) -> str:
     return (PROMPTS_DIR / f"{name}.md").read_text(encoding="utf-8")
 
@@ -424,7 +435,10 @@ class _DailyCappedFileAsr:
         return await self.inner.transcribe(wav, first_turn_id)
 
 
-def live_asr() -> tuple[Any, Any]:
+ASR_LANGUAGE_BIAS: dict[str, list[str]] = {"es": ["Spanish"], "en": ["English"]}
+
+
+def live_asr(lang: Lang = "es") -> tuple[Any, Any]:
     """1B1's live ASR: `RealtimeAsrStream` (lazy; connects on the first audio frame)
     and the push-to-talk `FileAsr`. Both are budget-guarded by 1B1's usage ledger
     (MUSE_MAX_AUDIO_SECONDS unset → fail closed before any network I/O), and each
@@ -435,12 +449,13 @@ def live_asr() -> tuple[Any, Any]:
 
     def open_asr() -> RealtimeAsrStream:
         daily_cap().charge("asr_streams")
-        return RealtimeAsrStream()
+        return RealtimeAsrStream(language_bias=ASR_LANGUAGE_BIAS[lang])
 
-    return open_asr, _DailyCappedFileAsr(FileAsr())
+    return open_asr, _DailyCappedFileAsr(FileAsr(language_bias=ASR_LANGUAGE_BIAS[lang]))
 
 
-def build_with_transport(mode: Literal["live", "replay"], transport: Transport) -> Any:
+def build_with_transport(mode: Literal["live", "replay"], transport: Transport,
+                         lang: Lang = "es") -> Any:
     from api.muse.advocate import LiveAdvocate
     from api.muse.extractor import LiveExtractor
     from api.muse.interfaces import Providers
@@ -453,7 +468,7 @@ def build_with_transport(mode: Literal["live", "replay"], transport: Transport) 
                  "advocate": WONDER, "vision": SPARK, "reasoner_spark": SPARK,
                  "reasoner_wonder": WONDER}
     if mode == "live":
-        open_asr, asr_file = live_asr()
+        open_asr, asr_file = live_asr(lang)
     else:
         from api.muse import mock
 
@@ -463,14 +478,14 @@ def build_with_transport(mode: Literal["live", "replay"], transport: Transport) 
         model_ids["asr"] = "mock-asr"
     return Providers(
         mode=mode, open_asr=open_asr, asr_file=asr_file,
-        extractor=LiveExtractor(client), phraser=LivePhraser(client),
-        advocate=LiveAdvocate(client), vision=LiveVision(client),
+        extractor=LiveExtractor(client, lang), phraser=LivePhraser(client),
+        advocate=LiveAdvocate(client, lang), vision=LiveVision(client),
         reasoner_spark=LiveReasoner(client, SPARK),
         reasoner_wonder=LiveReasoner(client, WONDER),
         model_ids=model_ids,
     )
 
 
-def build_providers() -> Any:
+def build_providers(lang: Lang = "es") -> Any:
     """MUSE_MODE=live provider bundle (api.muse.interfaces.get_providers)."""
-    return build_with_transport("live", DailyCappedTransport(LiveTransport()))
+    return build_with_transport("live", DailyCappedTransport(LiveTransport()), lang)

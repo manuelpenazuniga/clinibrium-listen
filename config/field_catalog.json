@@ -40,7 +40,15 @@
     "negativo",
     "negativa",
     "ausencia de",
-    "descarta"
+    "descarta",
+    "not",
+    "without",
+    "denies",
+    "denied",
+    "negative for",
+    "absence of",
+    "rules out",
+    "ruled out"
   ],
   "negation_window_tokens": 4,
   "not_assessed_values_excluded": [
@@ -86,31 +94,47 @@
         "seconds": [
           "segundos",
           "unos segundos",
-          "pocos segundos"
+          "pocos segundos",
+          "seconds",
+          "a few seconds",
+          "lasting seconds"
         ],
         "under_1min": [
           "menos de un minuto",
-          "menos de 1 minuto"
+          "menos de 1 minuto",
+          "less than a minute",
+          "under a minute",
+          "less than 1 minute"
         ],
         "minutes": [
-          "minutos"
+          "minutos",
+          "minutes"
         ],
         "hours": [
-          "horas"
+          "horas",
+          "hours"
         ],
         "over_24h_continuous": [
           "más de 24 horas",
           "más de un día",
-          "mas de un dia"
+          "mas de un dia",
+          "more than 24 hours",
+          "more than a day",
+          "over a day"
         ],
         "days": [
           "días",
-          "varios días"
+          "varios días",
+          "days",
+          "several days"
         ],
         "recurrent_episodic": [
           "episodios recurrentes",
           "recurrente",
-          "crisis repetidas"
+          "crisis repetidas",
+          "recurrent episodes",
+          "recurrent",
+          "repeated attacks"
         ]
       }
     },
@@ -145,19 +169,29 @@
           "brusca",
           "de golpe",
           "repentino",
-          "repentina"
+          "repentina",
+          "sudden",
+          "suddenly",
+          "abrupt",
+          "abruptly"
         ],
         "gradual": [
           "gradual",
           "progresivo",
           "progresiva",
           "paulatino",
-          "de a poco"
+          "de a poco",
+          "gradually",
+          "progressive",
+          "progressively"
         ],
         "unknown": [
           "inicio desconocido",
           "no precisa el inicio",
-          "no sabe cuándo empezó"
+          "no sabe cuándo empezó",
+          "unknown onset",
+          "onset unknown",
+          "unclear onset"
         ]
       }
     },
@@ -202,33 +236,58 @@
           "en la cama",
           "cambios de posición",
           "posicional",
-          "al mirar hacia arriba"
+          "al mirar hacia arriba",
+          "rolling over in bed",
+          "rolling over",
+          "turning over in bed",
+          "turning the head",
+          "turning his head",
+          "turning her head",
+          "lying down",
+          "in bed",
+          "position changes",
+          "positional",
+          "looking up"
         ],
         "spontaneous": [
           "espontáneo",
           "espontánea",
           "sin desencadenante",
-          "en reposo"
+          "en reposo",
+          "spontaneous",
+          "spontaneously",
+          "no trigger",
+          "at rest"
         ],
         "orthostatic": [
           "al ponerse de pie",
           "al pararse",
           "ortostático",
-          "ortostatismo"
+          "ortostatismo",
+          "standing up",
+          "on standing",
+          "orthostatic"
         ],
         "valsalva": [
           "valsalva",
           "al pujar",
           "al toser",
-          "al estornudar"
+          "al estornudar",
+          "straining",
+          "when coughing",
+          "when sneezing"
         ],
         "sound_pressure": [
           "ruidos fuertes",
           "sonidos fuertes",
-          "fenómeno de tulio"
+          "fenómeno de tulio",
+          "loud noises",
+          "loud sounds",
+          "tullio phenomenon"
         ],
         "none": [
-          "sin gatillante identificable"
+          "sin gatillante identificable",
+          "no identifiable trigger"
         ]
       }
     },
@@ -263,21 +322,31 @@
           "continuo",
           "continua",
           "constante",
-          "permanente"
+          "permanente",
+          "continuous",
+          "constant",
+          "persistent vertigo"
         ],
         "episodic_triggered": [
           "episodios gatillados",
           "episodios desencadenados",
-          "crisis posicionales"
+          "crisis posicionales",
+          "episodes triggered",
+          "triggered episodes",
+          "positional episodes"
         ],
         "episodic_spontaneous": [
           "episodios espontáneos",
-          "crisis espontáneas"
+          "crisis espontáneas",
+          "spontaneous episodes",
+          "spontaneous attacks"
         ],
         "chronic": [
           "crónico",
           "crónica",
-          "meses de evolución"
+          "meses de evolución",
+          "chronic",
+          "months of"
         ]
       }
     },
@@ -297,7 +366,11 @@
           "episodios",
           "episodio",
           "crisis",
-          "veces"
+          "veces",
+          "episodes",
+          "episode",
+          "attacks",
+          "times"
         ]
       }
     },
@@ -340,28 +413,40 @@
         "seconds": [
           "duran segundos",
           "episodios de segundos",
-          "crisis de segundos"
+          "crisis de segundos",
+          "episodes last seconds",
+          "lasting seconds each",
+          "attacks of seconds"
         ],
         "under_1min": [
           "duran menos de un minuto",
-          "episodios de menos de un minuto"
+          "episodios de menos de un minuto",
+          "episodes last less than a minute"
         ],
         "minutes": [
           "duran minutos",
           "episodios de minutos",
-          "crisis de minutos"
+          "crisis de minutos",
+          "episodes last minutes",
+          "attacks of minutes",
+          "lasting minutes each"
         ],
         "hours": [
           "duran horas",
           "episodios de horas",
-          "crisis de horas"
+          "crisis de horas",
+          "episodes last hours",
+          "attacks of hours",
+          "lasting hours each"
         ],
         "over_24h_continuous": [
-          "duran más de un día"
+          "duran más de un día",
+          "episodes last more than a day"
         ],
         "days": [
           "duran días",
-          "episodios de días"
+          "episodios de días",
+          "episodes last days"
         ],
         "recurrent_episodic": []
       }
@@ -382,7 +467,12 @@
           "hace",
           "desde",
           "última vez bien",
-          "estaba bien"
+          "estaba bien",
+          "ago",
+          "since",
+          "last known well",
+          "was well",
+          "was fine"
         ]
       }
     },
@@ -416,23 +506,36 @@
         "none": [
           "sin hipoacusia",
           "audición normal",
-          "oye bien"
+          "oye bien",
+          "no hearing loss",
+          "normal hearing",
+          "hearing is normal",
+          "hears well"
         ],
         "sudden_unilateral": [
           "hipoacusia súbita",
           "sordera súbita",
           "pérdida auditiva súbita",
-          "dejó de oír"
+          "dejó de oír",
+          "sudden hearing loss",
+          "sudden deafness",
+          "sudden loss of hearing"
         ],
         "fluctuating": [
           "hipoacusia fluctuante",
           "audición fluctuante",
-          "fluctuante"
+          "fluctuante",
+          "fluctuating hearing loss",
+          "fluctuating hearing",
+          "fluctuating"
         ],
         "chronic": [
           "hipoacusia crónica",
           "presbiacusia",
-          "sordera de años"
+          "sordera de años",
+          "chronic hearing loss",
+          "presbycusis",
+          "longstanding hearing loss"
         ]
       }
     },
@@ -454,7 +557,10 @@
           "acúfeno",
           "acúfenos",
           "zumbido",
-          "pitido"
+          "pitido",
+          "ringing in the ear",
+          "ringing in the ears",
+          "buzzing"
         ]
       }
     },
@@ -475,7 +581,11 @@
           "plenitud aural",
           "oído tapado",
           "oído lleno",
-          "presión en el oído"
+          "presión en el oído",
+          "aural fullness",
+          "ear fullness",
+          "blocked ear",
+          "pressure in the ear"
         ]
       }
     },
@@ -495,7 +605,9 @@
           "otitis",
           "mastoiditis",
           "otorrea",
-          "supuración del oído"
+          "supuración del oído",
+          "otorrhea",
+          "ear discharge"
         ]
       }
     },
@@ -519,7 +631,13 @@
           "traposo",
           "traposa",
           "arrastra las palabras",
-          "dificultad para hablar"
+          "dificultad para hablar",
+          "dysarthria",
+          "dysarthric",
+          "slurred speech",
+          "slurring",
+          "trouble speaking",
+          "difficulty speaking"
         ]
       }
     },
@@ -539,7 +657,11 @@
           "disfagia",
           "dificultad para tragar",
           "se atora",
-          "se atraganta"
+          "se atraganta",
+          "dysphagia",
+          "trouble swallowing",
+          "difficulty swallowing",
+          "choking"
         ]
       }
     },
@@ -561,7 +683,12 @@
           "ve doble",
           "vio doble",
           "veía doble",
-          "viendo doble"
+          "viendo doble",
+          "diplopia",
+          "double vision",
+          "saw double",
+          "seeing double",
+          "sees double"
         ]
       }
     },
@@ -584,7 +711,13 @@
           "paresia braquial",
           "paresia crural",
           "pérdida de fuerza",
-          "fuerza disminuida"
+          "fuerza disminuida",
+          "weakness",
+          "hemiparesis",
+          "weak arm",
+          "weak leg",
+          "loss of strength",
+          "reduced strength"
         ]
       }
     },
@@ -606,7 +739,12 @@
           "asimetría facial",
           "desviación de la comisura",
           "boca chueca",
-          "cara chueca"
+          "cara chueca",
+          "facial droop",
+          "facial palsy",
+          "facial weakness",
+          "facial asymmetry",
+          "drooping of the mouth"
         ]
       }
     },
@@ -628,7 +766,13 @@
           "parestesia",
           "parestesias",
           "hipoestesia",
-          "entumecimiento"
+          "entumecimiento",
+          "numbness",
+          "tingling",
+          "paresthesia",
+          "paresthesias",
+          "hypoesthesia",
+          "pins and needles"
         ]
       }
     },
@@ -647,7 +791,10 @@
         "*": [
           "hipo",
           "hipo persistente",
-          "singulto"
+          "singulto",
+          "hiccups",
+          "persistent hiccups",
+          "singultus"
         ]
       }
     },
@@ -666,7 +813,9 @@
         "*": [
           "horner",
           "ptosis y miosis",
-          "ptosis con miosis"
+          "ptosis con miosis",
+          "ptosis and miosis",
+          "ptosis with miosis"
         ]
       }
     },
@@ -687,12 +836,22 @@
           "no puede caminar",
           "no logra caminar",
           "no puede mantenerse de pie",
-          "no puede sentarse sin apoyo"
+          "no puede sentarse sin apoyo",
+          "truncal ataxia",
+          "unable to walk",
+          "cannot walk",
+          "can t walk",
+          "unable to stand",
+          "cannot sit without support",
+          "unable to sit unsupported"
         ],
         "false": [
           "camina sin dificultad",
           "marcha normal",
-          "camina normal"
+          "camina normal",
+          "walks without difficulty",
+          "normal gait",
+          "walks normally"
         ]
       }
     },
@@ -716,7 +875,13 @@
           "dolor de cabeza intenso",
           "cervicalgia súbita",
           "cervicalgia intensa",
-          "dolor de cuello súbito"
+          "dolor de cuello súbito",
+          "sudden headache",
+          "severe headache",
+          "thunderclap headache",
+          "worst headache",
+          "sudden neck pain",
+          "severe neck pain"
         ]
       }
     },
@@ -740,14 +905,23 @@
           "confuso",
           "confusa",
           "desorientado",
-          "desorientada"
+          "desorientada",
+          "altered consciousness",
+          "altered mental status",
+          "drowsy",
+          "confused",
+          "disoriented",
+          "obtunded"
         ],
         "false": [
           "vigil",
           "lúcido",
           "lúcida",
           "consciente y orientado",
-          "consciente y orientada"
+          "consciente y orientada",
+          "alert",
+          "lucid",
+          "alert and oriented"
         ]
       }
     },
@@ -766,7 +940,13 @@
         "*": [
           "años",
           "año",
-          "edad"
+          "edad",
+          "years",
+          "year",
+          "year old",
+          "years old",
+          "age",
+          "aged"
         ]
       }
     },
@@ -786,7 +966,11 @@
           "hipertenso",
           "hipertensa",
           "hipertensión",
-          "hta"
+          "hta",
+          "hypertensive",
+          "hypertension",
+          "htn",
+          "high blood pressure"
         ]
       }
     },
@@ -807,7 +991,9 @@
           "diabética",
           "diabetes",
           "dm",
-          "dm2"
+          "dm2",
+          "diabetic",
+          "t2dm"
         ]
       }
     },
@@ -826,7 +1012,10 @@
         "*": [
           "fibrilación auricular",
           "arritmia completa",
-          "fa"
+          "fa",
+          "atrial fibrillation",
+          "afib",
+          "a fib"
         ]
       }
     },
@@ -847,7 +1036,10 @@
           "fumadora",
           "tabaquismo",
           "tabáquico",
-          "fuma"
+          "fuma",
+          "smoker",
+          "smoking",
+          "smokes"
         ]
       }
     },
@@ -870,7 +1062,11 @@
           "infarto cerebral",
           "tia",
           "ait",
-          "isquemia cerebral transitoria"
+          "isquemia cerebral transitoria",
+          "prior stroke",
+          "previous stroke",
+          "stroke",
+          "transient ischemic attack"
         ]
       }
     },
@@ -891,7 +1087,11 @@
           "enfermedad carotídea",
           "vertebrobasilar",
           "disección vertebral",
-          "disección carotídea"
+          "disección carotídea",
+          "carotid stenosis",
+          "carotid disease",
+          "vertebral dissection",
+          "carotid dissection"
         ]
       }
     },
@@ -917,7 +1117,17 @@
           "warfarina",
           "apixabán",
           "rivaroxabán",
-          "dabigatrán"
+          "dabigatrán",
+          "anticoagulated",
+          "anticoagulant",
+          "anticoagulation",
+          "blood thinner",
+          "blood thinners",
+          "acenocoumarol",
+          "warfarin",
+          "apixaban",
+          "rivaroxaban",
+          "dabigatran"
         ]
       }
     },
@@ -940,7 +1150,11 @@
           "infarto cerebral",
           "tia",
           "ait",
-          "isquemia cerebral transitoria"
+          "isquemia cerebral transitoria",
+          "prior stroke",
+          "previous stroke",
+          "stroke",
+          "transient ischemic attack"
         ]
       }
     },
@@ -969,7 +1183,9 @@
           "impulso cefálico normal",
           "head impulse normal",
           "hit normal",
-          "impulso normal"
+          "impulso normal",
+          "normal head impulse",
+          "normal hit"
         ],
         "abnormal_corrective_saccade": [
           "sacada correctiva",
@@ -977,7 +1193,14 @@
           "head impulse alterado",
           "hit alterado",
           "hit positivo",
-          "head impulse positivo"
+          "head impulse positivo",
+          "corrective saccade",
+          "abnormal head impulse",
+          "head impulse abnormal",
+          "abnormal hit",
+          "hit abnormal",
+          "head impulse positive",
+          "positive head impulse"
         ]
       }
     },
@@ -1017,32 +1240,44 @@
         "none": [
           "sin nistagmo",
           "sin nistagmus",
-          "no hay nistagmo"
+          "no hay nistagmo",
+          "no nystagmus"
         ],
         "horizontal": [
           "nistagmo horizontal",
-          "nistagmus horizontal"
+          "nistagmus horizontal",
+          "horizontal nystagmus"
         ],
         "vertical_pure": [
           "nistagmo vertical",
           "nistagmus vertical",
-          "vertical puro"
+          "vertical puro",
+          "vertical nystagmus",
+          "pure vertical"
         ],
         "torsional_pure": [
           "nistagmo torsional",
           "nistagmus torsional",
-          "torsional puro"
+          "torsional puro",
+          "torsional nystagmus",
+          "pure torsional"
         ],
         "mixed": [
           "nistagmo mixto",
           "horizonto-torsional",
-          "horizontal-torsional"
+          "horizontal-torsional",
+          "mixed nystagmus",
+          "horizontal torsional"
         ],
         "direction_changing": [
           "cambia de dirección",
           "nistagmo cambiante",
           "nistagmo bidireccional",
-          "cambia de sentido"
+          "cambia de sentido",
+          "direction changing",
+          "direction-changing",
+          "changes direction",
+          "bidirectional nystagmus"
         ]
       }
     },
@@ -1061,7 +1296,10 @@
         "*": [
           "cambia con la mirada",
           "cambia de dirección con la mirada",
-          "nistagmo evocado por la mirada"
+          "nistagmo evocado por la mirada",
+          "changes direction with gaze",
+          "gaze evoked nystagmus",
+          "gaze-evoked nystagmus"
         ]
       }
     },
@@ -1082,7 +1320,10 @@
           "desviación oblicua",
           "desviación vertical",
           "cover test alterado",
-          "test de cobertura alterado"
+          "test de cobertura alterado",
+          "skew deviation",
+          "vertical misalignment",
+          "abnormal cover test"
         ]
       }
     },
@@ -1099,7 +1340,8 @@
       "askable": false,
       "lexicon": {
         "*": [
-          "latencia"
+          "latencia",
+          "latency"
         ]
       }
     },
@@ -1117,7 +1359,9 @@
       "lexicon": {
         "*": [
           "duración del nistagmo",
-          "nistagmo dura"
+          "nistagmo dura",
+          "nystagmus duration",
+          "nystagmus lasts"
         ]
       }
     },
@@ -1137,11 +1381,17 @@
           "se agota",
           "agotable",
           "fatigable",
-          "se fatiga"
+          "se fatiga",
+          "fatigues",
+          "fatiguing",
+          "it fatigues"
         ],
         "false": [
           "persistente",
-          "no agotable"
+          "no agotable",
+          "persistent",
+          "not fatigable",
+          "non fatigable"
         ]
       }
     },
@@ -1161,7 +1411,10 @@
           "suprime con la fijación",
           "se suprime al fijar",
           "se inhibe con la fijación",
-          "suprime con fijación"
+          "suprime con fijación",
+          "suppressed by fixation",
+          "suppresses with fixation",
+          "suppressed with fixation"
         ]
       }
     },
@@ -1196,23 +1449,39 @@
           "positivo derecho",
           "positivo a derecha",
           "positivo a la derecha",
-          "derecho positivo"
+          "derecho positivo",
+          "right positive",
+          "positive on the right",
+          "positive right",
+          "positive to the right"
         ],
         "left_positive": [
           "positivo izquierdo",
           "positivo a izquierda",
           "positivo a la izquierda",
-          "izquierdo positivo"
+          "izquierdo positivo",
+          "left positive",
+          "positive on the left",
+          "positive left",
+          "positive to the left"
         ],
         "bilateral_positive": [
           "positivo bilateral",
-          "bilateral positivo"
+          "bilateral positivo",
+          "bilaterally positive",
+          "positive bilaterally",
+          "bilateral positive"
         ],
         "negative": [
           "dix-hallpike negativo",
           "dix hallpike negativo",
           "hallpike negativo",
-          "maniobra negativa"
+          "maniobra negativa",
+          "dix-hallpike negative",
+          "dix hallpike negative",
+          "hallpike negative",
+          "negative dix-hallpike",
+          "negative dix hallpike"
         ]
       }
     },
@@ -1232,7 +1501,10 @@
           "torsional",
           "torsión",
           "rotatorio",
-          "componente torsional"
+          "componente torsional",
+          "torsion",
+          "rotatory",
+          "torsional component"
         ]
       }
     },
@@ -1254,7 +1526,11 @@
           "jaqueca",
           "fotofobia",
           "fonofobia",
-          "aura"
+          "aura",
+          "migraine",
+          "migrainous",
+          "photophobia",
+          "phonophobia"
         ]
       }
     },
@@ -1273,10 +1549,14 @@
         "*": [
           "fiebre",
           "febril",
-          "calofríos"
+          "calofríos",
+          "fever",
+          "febrile",
+          "chills"
         ],
         "false": [
-          "afebril"
+          "afebril",
+          "afebrile"
         ]
       }
     },
@@ -1296,7 +1576,11 @@
           "rigidez de nuca",
           "rigidez nucal",
           "signos meníngeos",
-          "meningismo"
+          "meningismo",
+          "neck stiffness",
+          "stiff neck",
+          "meningeal signs",
+          "meningism"
         ]
       }
     },
@@ -1318,7 +1602,13 @@
           "desmayo",
           "se desmayó",
           "lipotimia",
-          "perdió el conocimiento"
+          "perdió el conocimiento",
+          "syncope",
+          "presyncope",
+          "fainted",
+          "fainting",
+          "passed out",
+          "lost consciousness"
         ]
       }
     },
@@ -1337,7 +1627,10 @@
         "*": [
           "palpitaciones",
           "taquicardia",
-          "corazón acelerado"
+          "corazón acelerado",
+          "palpitations",
+          "tachycardia",
+          "racing heart"
         ]
       }
     },
@@ -1357,7 +1650,10 @@
           "dolor torácico",
           "dolor de pecho",
           "dolor precordial",
-          "opresión torácica"
+          "opresión torácica",
+          "chest pain",
+          "chest tightness",
+          "chest pressure"
         ]
       }
     },
@@ -1378,7 +1674,11 @@
           "traumatismo",
           "golpe en la cabeza",
           "tec",
-          "latigazo"
+          "latigazo",
+          "head injury",
+          "hit his head",
+          "hit her head",
+          "whiplash"
         ]
       }
     },
@@ -1398,7 +1698,11 @@
           "patología cervical",
           "hernia cervical",
           "artrosis cervical",
-          "cervicoartrosis"
+          "cervicoartrosis",
+          "cervical spine disease",
+          "cervical disc",
+          "cervical spondylosis",
+          "cervical arthritis"
         ]
       }
     },
@@ -1420,7 +1724,11 @@
           "hipotenso",
           "hipotensa",
           "hipotensión",
-          "shock"
+          "shock",
+          "hemodynamically unstable",
+          "hemodynamic instability",
+          "hypotensive",
+          "hypotension"
         ]
       }
     },
@@ -1439,7 +1747,10 @@
         "*": [
           "empeora",
           "empeoramiento",
-          "va peor"
+          "va peor",
+          "worsening",
+          "getting worse",
+          "worse"
         ]
       }
     },
@@ -1460,7 +1771,11 @@
           "usa",
           "medicamentos",
           "fármacos",
-          "tratamiento con"
+          "tratamiento con",
+          "takes",
+          "medications",
+          "on treatment with",
+          "drugs"
         ]
       }
     }

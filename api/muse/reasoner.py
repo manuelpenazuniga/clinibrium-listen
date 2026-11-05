@@ -7,7 +7,7 @@ decision (L3) — the session ignores it for urgency.
 from __future__ import annotations
 
 from api.listen.contracts import EngineResultView, ReasonerOut
-from api.muse.client import SPARK, WONDER, MuseClient, load_prompt
+from api.muse.client import SPARK, WONDER, MuseClient, load_prompt, prompt_name_for
 from api.muse.extractor import check_keys
 from api.muse.interfaces import Providers, Reasoner, ReasonerCtx
 
@@ -46,9 +46,10 @@ class LiveReasoner:
         key_inputs = {"urgency": r.urgency, "red_flags": sorted(f.id for f in r.red_flags),
                       "top1": r.differential[0].diagnosis if r.differential else None,
                       "lang": ctx.lang}
+        prompt = prompt_name_for("reasoner", ctx.lang)
         out = await self.client.complete(
-            role="reasoner", model=self.model_id, system=load_prompt("reasoner"), user=user,
-            out=ReasonerOut, key_inputs=key_inputs, prompt_name="reasoner")
+            role="reasoner", model=self.model_id, system=load_prompt(prompt), user=user,
+            out=ReasonerOut, key_inputs=key_inputs, prompt_name=prompt)
         delivered = {c.chunk_id for c in ctx.grounding}
         cited = [c for c in dict.fromkeys(out.cited_chunk_ids) if c in delivered]
         return out.model_copy(update={

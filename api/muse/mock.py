@@ -30,6 +30,7 @@ from api.listen.contracts import (
     Turn,
     VisionOut,
 )
+from api.listen.evidence import NEGATION_BREAKERS, POSTFIX_NEGATIONS
 from api.listen.numbers import minutes_ago, number_ending_at
 from api.muse.interfaces import (
     AdvocateCtx,
@@ -43,8 +44,9 @@ from api.muse.interfaces import (
 
 MOCK_CONFIDENCE_PCT = 90
 
-_POSTFIX_NEGATIONS = {"negativo", "negativa", "ausente"}
-_NEGATION_BREAKERS = {"con", "pero"}
+# shared with the evidence gate, so the mock and the gate read negation alike
+_POSTFIX_NEGATIONS = POSTFIX_NEGATIONS
+_NEGATION_BREAKERS = NEGATION_BREAKERS
 _CLAUSE_SPLIT = re.compile(r"[.;:,¿?¡!\n]+")
 _TOKEN = re.compile(r"[a-z0-9]+")
 
@@ -112,12 +114,15 @@ def _number_near(tokens: list[str], start: int, end: int) -> int | None:
         value, first = hit
         if first > 0 and tokens[first - 1] == "hace":
             return None  # "hace 3 años" is a time, not an age
+        if stop < len(tokens) - 1 and tokens[stop + 1] == "ago":
+            return None  # "3 years ago" is a time, not an age
         return value
     return None
 
 
 _DECIMAL = re.compile(r"(\d+(?:[.,]\d+)?)")
-_MEDS = re.compile(r"\b(?:toma|usa|en tratamiento con)\s+(.+)$", re.IGNORECASE)
+_MEDS = re.compile(r"\b(?:toma|usa|en tratamiento con|takes|on treatment with)\s+(.+)$",
+                   re.IGNORECASE)
 
 
 def _delta(key: str, quote: str, *, b: bool | None = None, i: int | None = None,

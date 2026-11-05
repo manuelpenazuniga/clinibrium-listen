@@ -42,7 +42,7 @@ export const DISCLAIMER =
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="es"
+      lang="en"
       className={`${uiSans.variable} ${readSerif.variable} ${dataMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
