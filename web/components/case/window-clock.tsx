@@ -13,7 +13,15 @@ function hm(min: number) {
   return `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")} min`
 }
 
-/** Window clock — rendered only when the server sends `onset`. No treatment text. */
+/** A window's length: "4 h 30 min", "24 h". */
+function span(min: number) {
+  const m = Math.max(0, Math.round(min))
+  return m % 60 === 0 ? `${m / 60} h` : `${Math.floor(m / 60)} h ${m % 60} min`
+}
+
+/** Stroke time window — rendered only when the server sends `onset`. It says what
+ *  the clock measures (time since last known well) and which windows are still
+ *  open; it never names a treatment. */
 export function WindowClock({ onset, frozen }: { onset: OnsetInfo; frozen: boolean }) {
   const { lang, t } = useLang()
   const [now, setNow] = useState<number | null>(null)
@@ -45,6 +53,7 @@ export function WindowClock({ onset, frozen }: { onset: OnsetInfo; frozen: boole
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
+        <p className="text-[13px] leading-snug text-muted-foreground">{t("window_explainer")}</p>
         <div className="text-sm">
           <span className="text-muted-foreground">{t("lkw")}: </span>
           <span className="font-medium">
@@ -55,6 +64,14 @@ export function WindowClock({ onset, frozen }: { onset: OnsetInfo; frozen: boole
                 })
               : "—"}
           </span>
+          {onset.windows[0] && (
+            <span className="font-medium">
+              {" · "}
+              {lang === "es"
+                ? `hace ${hm(onset.windows[0].elapsed_min + drift)}`
+                : `${hm(onset.windows[0].elapsed_min + drift)} ago`}
+            </span>
+          )}
           {onset.quote && <span className="text-muted-foreground"> · “{onset.quote}”</span>}
         </div>
         {onset.windows.map((w) => {
@@ -65,14 +82,17 @@ export function WindowClock({ onset, frozen }: { onset: OnsetInfo; frozen: boole
           return (
             <div key={w.label_en} className="space-y-1">
               <div className="flex items-baseline justify-between gap-2 text-sm">
-                <span>{lang === "es" ? w.label_es : w.label_en}</span>
+                <span>
+                  {lang === "es" ? w.label_es : w.label_en}{" "}
+                  <span className="whitespace-nowrap text-muted-foreground">· {span(w.minutes)}</span>
+                </span>
                 <span
                   className={cn(
-                    "font-mono text-xs tabular-nums",
-                    expired ? "text-muted-foreground" : "text-foreground"
+                    "text-right text-xs whitespace-nowrap tabular-nums",
+                    expired ? "text-muted-foreground" : "font-medium text-foreground"
                   )}
                 >
-                  {expired ? t("expired") : `${hm(remaining)} ${t("remaining")}`}
+                  {expired ? t("expired") : `${t("window_open")} · ${hm(remaining)} ${t("remaining")}`}
                 </span>
               </div>
               <div className="h-2 rounded-full bg-muted">
@@ -80,9 +100,6 @@ export function WindowClock({ onset, frozen }: { onset: OnsetInfo; frozen: boole
                   className={cn("h-full rounded-full", expired ? "bg-muted-foreground/40" : "bg-listen")}
                   style={{ width: `${pct}%` }}
                 />
-              </div>
-              <div className="text-xs text-muted-foreground">
-                {hm(elapsed)} {t("elapsed")} / {hm(w.minutes)}
               </div>
             </div>
           )

@@ -256,8 +256,8 @@ export const CASE_B: MockScript = {
 function onsetFrom(start: Date) {
   const lkw = new Date(start.getTime() - LKW_MIN * 60_000)
   const windows = [
-    { label_es: "Ventana 1 del protocolo local", label_en: "Local protocol window 1", minutes: 270 },
-    { label_es: "Ventana 2 del protocolo local", label_en: "Local protocol window 2", minutes: 1440 },
+    { label_es: "Ventana temprana de ACV", label_en: "Early stroke window", minutes: 270 },
+    { label_es: "Ventana extendida de ACV", label_en: "Extended stroke window", minutes: 1440 },
   ].map((w) => ({
     ...w,
     elapsed_min: LKW_MIN,

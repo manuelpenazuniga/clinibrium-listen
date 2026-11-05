@@ -137,6 +137,31 @@ limits: [bench/README.md](bench/README.md). Live view: [/bench](https://clinibri
 
 ![Bench page: paired bars for the four headline metrics.](docs/images/bench.png)
 
+## FAQ
+
+**Isn't this just an AI diagnosing patients?**
+No. Models never set urgency or actions; they only propose field values, each with a quote, or ask the physician to confirm something. A deterministic engine makes the safety call, and the physician confirms, edits or rejects every finding.
+
+**How does it save the physician time?**
+The physician keeps examining and talking; nobody fills a form. Findings arrive in the form with their quotes, the planner asks only the one question that would change the decision, and the referral letter is generated from the confirmed findings. What is left for the physician is to review and confirm.
+
+**Why HINTS, and what does the system add to it?**
+HINTS (head impulse, nystagmus, test of skew) is the best bedside tool for spotting a stroke behind acute vertigo, but its accuracy depends on who performs it and on whom: about 97 % sensitivity for neurologists, 83 % in mixed emergency cohorts, and guidelines (GRACE-3) restrict it to acute continuous vertigo with nystagmus. The engine applies it only in acute continuous vertigo (also requiring spontaneous nystagmus, as GRACE-3 does, is not built yet), reads a normal head impulse there as a central warning, asks for a Dix-Hallpike in positional vertigo instead, and shows which exam items were not assessed. Structured algorithms have already helped non-specialists reach high sensitivity; whether ours improves accuracy is something we still have to measure.
+
+**Is it clinically validated?**
+No, and we don't claim it. It's built on HINTS, with published evidence when trained examiners perform it (Kattah et al., Stroke 2009), and on our paraphrases of the Bárány ICVD criteria. Some weights and thresholds are provisional, marked for clinical calibration. Our test set is 12 synthetic, scripted cases.
+
+**What if the LLM hallucinates or misses something?**
+A finding is dropped unless its quote is in the transcript and supports the value; "no diplopia" can never become diplopia present, in Spanish or in English. Unconfirmed values can only raise urgency. If the extractor misses a red flag, the advocate is a second net: on one live run the extractor missed "vio doble" and the advocate caught it.
+
+**Where is the machine learning? Why not one end-to-end model?**
+The ML is Meta's speech model; there is no trained diagnostic classifier. We split the work on purpose: models are good at listening and reading messy language, rules are auditable and don't drift. The kill switch proves no decision depends on a model.
+
+**What did you build during the hackathon, and what about patient data?**
+The engine is our pre-existing work, ported unchanged and frozen. Everything else is new: the voice workflow, the Meta integration, evidence checks in Spanish and English, the conservative policy, the planner, letter, receipt, web app and bench. All dictations are scripted; the public site runs replays of recorded responses and makes no model calls.
+
+Sources for the HINTS figures: Kattah et al., *Stroke* 2009; Ohle et al., *Acad Emerg Med* 2020; Edlow et al. (GRACE-3), *Acad Emerg Med* 2023. More in [docs/PITCH.md](docs/PITCH.md#evidence-behind-the-claims).
+
 ## Run it locally
 
 Requirements: Python 3.12 with [uv](https://docs.astral.sh/uv/), Node 22 with pnpm.
