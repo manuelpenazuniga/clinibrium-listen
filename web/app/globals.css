@@ -9,7 +9,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-ui);
   --font-serif: var(--font-read);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-data);
   --font-heading: var(--font-sans);
   --color-listen: var(--listen);
   --color-listen-soft: var(--listen-soft);
