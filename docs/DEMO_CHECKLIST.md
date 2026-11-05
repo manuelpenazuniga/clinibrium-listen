@@ -42,7 +42,7 @@ The **live** run of the same script is Phase 2b.
 | 1 | "…ayer vio doble un rato…" → diplopia proposed as a **sticky alert** | ✅ | `focal_signs.diplopia=true`, quote "vio doble un rato" |
 | 2 | Diplopia **conflict** | ℹ️ | No conflict opens: see the note below |
 | 3 | **Inmediata**, Epley blocked | ✅ | red flags A5\*, A7\* (provisional) |
-| 4 | **Window clock** | ✅ | Last known well 720 min ago; windows 270 / 1440 min ("configure per local stroke protocol") |
+| 4 | **Stroke time window** | ✅ | Last known well 12 h ago; early stroke window (4 h 30 min) closed, extended stroke window (24 h) open; defaults to set per local protocol |
 | 5 | **Advocate** raises a confirmation request | ✅ | `focal_signs.diplopia=true`, quote "Ayer vio doble un rato"; the advocate floor is active |
 | 6 | **Medication photo** → proposes *anticoagulado* | ✅ | `context.anticoagulated=true` (source `document`), quote "Acenocumarol según control de TACO" |
 | 7 | Clinician confirms the advocate request | ✅ | diplopia confirmed; floor off |
